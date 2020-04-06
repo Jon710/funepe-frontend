@@ -1,0 +1,144 @@
+1. COnfigurar o ambiente e colocar no ar o projeto 03 relativo ao API NODE
+https://github.com/infinitered/reactotron/releases
+2. Criar applicacao web projeto09
+3. yarn add react-router-dom
+4. Criar uma pasta 'pages' e 'routes/index.js' e 'services/history.js'
+5. Instalar o history 'yarn add history'
+6. DEntro da pasta PAGES criar 4 subpastas com index.js: SigIn, SignUp,
+Dashboard e Profile, depois usar snppet rnc nos quatro index.js
+7. No index.js do routes importar todos e criar as rotas
+8. No App.js importar Routes e history
+    <Router history={history}>
+      <Routes />;
+    </Router>
+9. Criar corpo do history.js
+10. Instalar reactotron 'yarn add reactotron-react-js'
+ROTAS PRIVADAS
+1.  yarn add react-router-dom E yarn add reactotron-react-js
+2. yarn add prop-types
+LAYOUTS DAS PAGINAS
+1. yarn add styled-components
+2. CRIAR PASTA _LAYOUTS
+ESTILOS GLOBAIS
+1. downaload font https://fonts.google.com/specimen/Roboto
+2. @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+ROOT IMPORT
+1. Instalar 'yarn add customize-cra react-app-rewired -D'
+2. Criar o arquivo config-overrides.js na raiz do projeto - esse arquivo será
+aberto pelo rewired - com isso poderemos usar o '~' para referenciar a pasta SRC
+3. Instalar o 'yarn add babel-plugin-root-import -D '
+4. No packge.json trocar o scripts por 'react-app-rewired
+5. Instalar o 'yarn add eslint-import-resolver-babel-plugin-root-import -D' e criar
+no .eslintrc o 'settings'
+ESTILZAR AUTH
+1. yarn add polished E configurar os estilos styles.js e baixar o LOGO
+fazer isso para LogIn e LogUp
+2. instalar yarn add @rocketseat/unform
+VALIDACOES
+1. Instalar 'yarn add yup' - bilbioteca para fazer validacoes de campos
+CONFIGURAR O STORE
+1. Auth do usuario será feito pelo redux - token jwt que precisa ser enviado,
+tem de estar em um lugar que todos tenhm acesso na applicacao
+2. REDUX - criar uma past store no SRC
+3. Instalar o redux 'yarn add redux redux-saga react-redux reactotron-redux reactotron-redux-saga immer '
+4. Criar:
+>STORE
+  >MODULES
+    >AUTH
+      >ACTIONS.js
+      >REDUCER.js - sempre será uma funcao, e contem bilbioteca immer para manipula estados
+      >SAGAS.js
+    >ROOTREDUCER.js - vai unir todos os reducers do modules (metodo combineReducers())
+    >ROOTSAGA.js - vai unir todos os sagas do modules
+>CREATESTORE.js - criar uma variavel ENHANCER
+>INDEX.js - criar os middlewares e stores, importar os roots
+5. APP.js importar o PROVIDER do react-redux e colocar por volta de tudo <Provider>{{}}</Provider>
+e depois importar o STORE criado no INDEX.js anterior
+AUTENTICACAO
+1. Comecar definindo as ACTIONS que serao utilizadas.
+2. Depois implementar o sagas.js importando - import { takeLatest, call, put, all }
+3. Importar  AXIOS 'yarn add axios'
+4. ver aula novamente.
+ARMAZENAR PERFIL
+1. criar o MODULES 'user' semelhante ao modules 'auth'
+PERSISTINDO NO BD DO BROWSER
+1. Importar o 'yarn add redux-persist' para persistir os dados da autenticacao e do usuario
+no BD do BROWSER
+EXIBINDO TOASTS
+1. Instalar o Toastify 'yarn add react-toastify' para exibir aquelas pequenas msg toast
+que aparecem do lado.
+2. Importar no APP.js <ToastContainer autoClose={3000} />
+3. No estilo global.js - import 'react-toastify/dist/ReactToastify.css';
+4. No SAGAS.js do modeule AUTH importar - import { toast } from 'react-toastify';
+e no local do console.tron.error (console.tron.error('Usuario nao é prestador');)
+trocar por [toast.error('Usuario nao é prestador');]
+CADASTRO NA APLICACAO
+1. Criar no ACTIONS.js signupRequest
+2. Importar no arquivo index.js do SignUp o - import { useDispatch } from 'react-redux';
+3. Criar a const dispatch
+4. No SAGA de Auth inlcuir para poder OUVIR o dispatch() do SignUp (index)
+REQUISCOES AUTENTICADAS
+1. No SAGAS.js do AUTH fazer chamada da API na propriedade dos HEADERS;
+api.defaults.headers.Authorization = `Bearer ${token}`;
+2. No INDEX.js do Dashboard importar a API para testar api.get('appointments');
+CONFIGURAR O HEADER
+1. Estilizar o Wrapper do HEADER -  CRIAR UMA PASTA components COM O HEADER
+2. API Adorable - api.adorable.io para criar avatar
+NOTIFICACOES
+1. Criar pasta NOTIFICATIONS em components
+2. Instalar yarn add react-icons
+3. Instalar yarn add react-perfect-scrollbar
+4. Importar no GLOBALS.js import 'react-perfect-scrollbar/dist/css/styles.css';
+5. yarn add date-fns@next
+LOGOUT
+1. Defino uam action em AUTH = signOut(), e no REDUCER do AUTH eu vou ouvir
+essa ACTION - case '@auth/SIGN_OUT', e no REDUCER do USER eu vou ouvir essa action
+tambem - case '@user/SIGN_OUT' e coloco Profile = null;
+2. Depois no SAGAS.js de AUTH vou ouvir essa ACTION e usar o history e redirecionar
+o usario para raiz do projeto:
+export function signOut() {
+  history.push('/');
+}
+3. VOlto no PROFILE novamente e importar a action SIGN_OUT, e crio a funcao
+function handleSignOut() para o onClick() do botao Sair do GoBarber.
+ESTILIZAR O DASHBOARD
+1. yarn add date-fns-tz para trabalhar com Time Zone
+2. yarn add react-number-format <https://www.npmjs.com/package/react-number-format>
+3. yarn add bootstrap
+
+
+DEPLOY
+https://facebook.github.io/create-react-app/docs/deployment
+The last command shown above will serve your static site on the port 3000. 
+Like many of serve’s internal settings, the port can be adjusted using the -l or --listen flags:
+
+
+npm run build
+npm install -g serve
+serve -s build -l 3000
+
+
+      <Badge onClick={handleToggleVisible} hasUnread={hasUnread}>
+        <MdNotifications color="darkgreen" size={20} />
+      </Badge>
+
+      <NotificationList visible={visible}>
+        <Scroll>
+          {notifications.map(notification => (
+            <Notification key={notification._id} unread={!notification.read}>
+              <p>{notification.content}</p>
+              <time>{notification.timeDistance}</time>
+              {!notification.read && (
+                <button
+                  type="button"
+                  onClick={() => handleMarkAsRead(notification._id)}
+                >
+                  Marcar como lida
+                </button>
+              )}
+            </Notification>
+          ))}
+        </Scroll>
+      </NotificationList>
+
+
