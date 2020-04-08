@@ -41,6 +41,7 @@ export default function CaixaEntrada() {
               counter: (c += 1),
             }))
             .then();
+
           console.log('Instance of Protocolos: ', typeof listProtocolo);
           setCxEntrada(protocolos);
           setCount(c);
