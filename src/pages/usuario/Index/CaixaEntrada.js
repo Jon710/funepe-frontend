@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -8,7 +7,7 @@ import { MdSupervisorAccount } from 'react-icons/md';
 import { addDays, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
-import { getFirstRender } from '~/redux/features/protocolo/protocoloSlide';
+import { getFirstRender } from '~/redux/features/protocolo/protocoloSlice';
 import Documento from '~/pages/usuario/Modal/Documento';
 import Despachos from '~/pages/usuario/Modal/Despachos';
 
@@ -31,15 +30,18 @@ export default function CaixaEntrada() {
         const listProtocolo = await dispatch(getFirstRender(usuario));
         console.log('Protocolo CaixaEntrada', listProtocolo);
         if (listProtocolo) {
-          const protocolos = listProtocolo.map(protocolo => ({
-            ...protocolo,
-            dataFormatada: format(
-              addDays(parseISO(protocolo.dataenvio), 1),
-              'dd/MM/yyyy',
-              { locale: pt }
-            ),
-            counter: (c += 1),
-          }));
+          const protocolos = listProtocolo
+            .map(protocolo => ({
+              ...protocolo,
+              dataFormatada: format(
+                addDays(parseISO(protocolo.dataenvio), 1),
+                'dd/MM/yyyy',
+                { locale: pt }
+              ),
+              counter: (c += 1),
+            }))
+            .then();
+          console.log('Instance of Protocolos: ', typeof listProtocolo);
           setCxEntrada(protocolos);
           setCount(c);
           setLoading(false);
@@ -64,6 +66,7 @@ export default function CaixaEntrada() {
           >
             Protocolar Documento
           </button>
+
           {loading ? (
             <>
               <Spinner

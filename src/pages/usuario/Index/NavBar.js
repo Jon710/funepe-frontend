@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
 import Notifications from '~/pages/usuario/Notifications';
-import { signOutUser } from '~/redux/features/usuario/usuarioSlide';
+// import Paciente from '~/pages/usuario/Index/Paciente';
+import { signOutUser } from '~/redux/features/usuario/usuarioSlice';
 
 import logo from '~/assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -22,6 +23,14 @@ export default function NavBar() {
     console.log('Usuario Saiu.');
     dispatch(signOutUser());
   }
+
+  // function handleArquivados() {
+  //   return (
+  //     <>
+  //       <Paciente />
+  //     </>
+  //   );
+  // }
 
   return (
     <nav
@@ -82,9 +91,10 @@ export default function NavBar() {
             </a>
           </li>
           <li className="nav-item">
-            <a className="nav-link" href="#a">
+            {/* <a className="nav-link" href="#a">
               Arquivados
-            </a>
+            </a> */}
+            <Nav.Link href="/frmpac">Arquivados</Nav.Link>
           </li>
           <li className="nav-item dropdown">
             <a

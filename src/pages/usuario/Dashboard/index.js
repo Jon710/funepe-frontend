@@ -23,7 +23,7 @@ import {
 import history from '~/services/history';
 import api from '~/services/api';
 import FormEditAgenda from '~/pages/usuario/Index/FormEditAgenda';
-import { getFirstRender } from '~/redux/features/protocolo/protocoloSlide';
+import { getFirstRender } from '~/redux/features/protocolo/protocoloSlice';
 
 function Popup(props) {
   const { documento } = props;
