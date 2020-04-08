@@ -1,3 +1,5 @@
+/* eslint-disable react/forbid-prop-types */
+/* eslint-disable no-plusplus */
 /* eslint-disable no-console */
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -57,7 +59,7 @@ export default function Upload(props) {
     background: 'lightGrey',
   };
 
-  const handleSubmit = async event => {
+  const handleSubmit = async () => {
     console.log('handleSubmit Files', arquivos);
     sendBackData(arquivos);
     try {
