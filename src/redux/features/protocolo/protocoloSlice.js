@@ -81,7 +81,7 @@ export default sliceProtocolo.reducer;
 
 /** *************THUNKS************** */
 
-export const getFirstRender = (usuario) => {
+export const getFirstRender = usuario => {
   console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
@@ -154,7 +154,7 @@ export const selectAllProtocolo = () => {
   };
 };
 
-export const addProtocolo = (payload) => {
+export const addProtocolo = payload => {
   console.log('addProtocolo: ', payload);
   return async (dispatch, getState) => {
     try {
@@ -189,7 +189,7 @@ export const addProtocolo = (payload) => {
   };
 };
 
-export const addDocumentoRequest = (payload) => {
+export const addDocumentoRequest = payload => {
   console.log('addDocumentoRequest: ', payload);
   return async (dispatch, getState) => {
     try {
