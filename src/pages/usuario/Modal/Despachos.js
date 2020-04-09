@@ -10,7 +10,7 @@ import DocumentoEdit from '~/pages/usuario/Modal/DocumentoEdit';
 
 export default function Despachos(props) {
   const { documento } = props;
-  console.log('Despachos');
+  // console.log('Despachos');
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);

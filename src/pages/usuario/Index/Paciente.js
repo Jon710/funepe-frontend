@@ -38,7 +38,7 @@ export default function Paciente() {
         <h1> React File Upload Example</h1>
         <input type="file" multiple onChange={onChange} />
         <button type="submit">Upload File</button>
-        <hr/>
+        <hr />
         <h3>React Multiple File Upload</h3>
         <div className="form-group">
           <input type="file" multiple />

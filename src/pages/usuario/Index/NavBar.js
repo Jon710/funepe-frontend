@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap';
@@ -41,7 +42,7 @@ export default function NavBar() {
         <a href="/perfilmedico">
           <span>
             {usuario.username !== undefined
-              ? `Dr. ${usuario.username}`
+              ? `Usuário: ${usuario.username}`
               : dataICM}
           </span>
         </a>
