@@ -1,18 +1,18 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import CaixaEntrada from '~/pages/usuario/Index/CaixaEntrada';
-import SignUpMed from '~/pages/usuario/SignUpMed';
-// import Dashboard from '~/pages/usuario/Dashboard';
-import PerfilMedico from '~/pages/usuario/PerfilMedico';
-import Content from '~/pages/usuario/Index/Content';
-import Home from '~/pages/usuario/Index/Home';
-import Paciente from '~/pages/usuario/Index/Paciente';
-import Medico from '~/pages/usuario/Index/Medico';
-import Agenda from '~/pages/usuario/Index/Agenda';
-import Atividade from '~/pages/usuario/Index/Atividade';
+import CaixaEntrada from '../pages/usuario/Index/CaixaEntrada';
+import SignUpMed from '../pages/usuario/SignUpMed';
+// // import Dashboard from '~/pages/usuario/Dashboard';
+import PerfilMedico from '../pages/usuario/PerfilMedico';
+import Content from '../pages/usuario/Index/Content';
+import Home from '../pages/usuario/Index/Home';
+import Paciente from '../pages/usuario/Index/Paciente';
+import Medico from '../pages/usuario/Index/Medico';
+import Agenda from '../pages/usuario/Index/Agenda';
+import Atividade from '../pages/usuario/Index/Atividade';
 
-import Auth from '~/pages/usuario/Auth';
+import Auth from '../pages/usuario/Auth';
 
 export default function Routes() {
   return (

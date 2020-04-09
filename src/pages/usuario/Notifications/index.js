@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-console */
 /* eslint-disable no-return-assign */
 import React, { useState, useEffect } from 'react';
@@ -7,7 +9,7 @@ import { parseISO, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { Container, Badge, Modal, Button } from 'react-bootstrap';
 
-import api from '~/services/api';
+import api from '../../../services/api';
 
 import { Notification } from './styles';
 
@@ -15,7 +17,7 @@ export default function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [show, setShow] = useState(false);
   const [count, setCount] = useState(0);
-  const usuario = useSelector(state => state.usuario);
+  const usuario = useSelector((state) => state.usuario);
   console.log('selector', usuario);
 
   const handleClose = () => setShow(false);
@@ -25,7 +27,7 @@ export default function Notifications() {
     let c = 0;
     async function loadNotification() {
       const response = await api.get(`medico/notify/${usuario.codMed}`);
-      const data = response.data.map(notification => ({
+      const data = response.data.map((notification) => ({
         ...notification,
         timeDistance: formatDistance(
           parseISO(notification.createdAt),
@@ -46,13 +48,13 @@ export default function Notifications() {
     await api.put(`medico/notify/update/${id}`);
 
     setNotifications(
-      notifications.map(notification =>
+      notifications.map((notification) =>
         notification._id === id ? { ...notification, read: true } : notification
       )
     );
     let c = 0;
     setCount(c);
-    notifications.map(notification =>
+    notifications.map((notification) =>
       notification.read === false ? setCount((c += 1)) : 0
     );
   }
@@ -74,7 +76,7 @@ export default function Notifications() {
           <Modal.Title>Notificações</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {notifications.map(notification =>
+          {notifications.map((notification) =>
             notification.read === false ? (
               <Notification key={notification._id} unread={!notification.read}>
                 <p>{notification.content}</p>

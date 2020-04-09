@@ -9,22 +9,31 @@ import { toast } from 'react-toastify';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+<<<<<<< HEAD
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
 import history from '~/services/history';
 import api from '~/services/api';
 // import Upload from './Upload';
 import { addDocumentoRequest } from '~/redux/features/protocolo/protocoloSlice';
+=======
+import history from '../../../services/history';
+import { addDocumentoRequest } from '../../../redux/features/protocolo/protocoloSlide';
+>>>>>>> cadastro
 
 export default function Documento(props) {
   const { idDoc } = props;
   console.log(`Entrando no DocumentoAdd`);
   const dispatch = useDispatch();
+<<<<<<< HEAD
   const { usuario } = useSelector(state => state.usuario);
   const { protocolo } = useSelector(state => state.protocolo);
   console.log('PROTOCOLO SELECTOR: ', protocolo);
   const { iddocumento } = useSelector(state => state.protocolo.documento);
   console.log('DOCUMENTO SELECTOR: ', iddocumento);
+=======
+  const { usuario } = useSelector((state) => state.usuario);
+>>>>>>> cadastro
 
   const [idtipodocumento, setIdTipoDoc] = useState('');
   const [idprioridade, setIdPrio] = useState('');
@@ -207,7 +216,7 @@ export default function Documento(props) {
                         name="rdDoc"
                         id="rd01"
                         value={1}
-                        onChange={e => setOrigem(e.target.value)}
+                        onChange={(e) => setOrigem(e.target.value)}
                       />
                       <Form.Check
                         type="radio"
@@ -216,7 +225,7 @@ export default function Documento(props) {
                         name="rdDoc"
                         id="rd02"
                         value={2}
-                        onChange={e => setOrigem(e.target.value)}
+                        onChange={(e) => setOrigem(e.target.value)}
                       />
                     </Form.Group>
                   </Form.Group>
@@ -226,7 +235,7 @@ export default function Documento(props) {
                     <Form.Control
                       as="select"
                       value={idtipodocumento}
-                      onChange={e => setIdTipoDoc(e.target.value)}
+                      onChange={(e) => setIdTipoDoc(e.target.value)}
                     >
                       <option value="1">Ofício</option>
                       <option value="2">Portaria</option>
@@ -240,7 +249,7 @@ export default function Documento(props) {
                     <Form.Control
                       as="select"
                       value={status}
-                      onChange={e => setStatus(e.target.value)}
+                      onChange={(e) => setStatus(e.target.value)}
                     >
                       <option value="1">Enviado</option>
                       <option value="2">Recebido</option>
@@ -265,7 +274,7 @@ export default function Documento(props) {
                     <Form.Label>Expedidor</Form.Label>
                     <Form.Control
                       value={idexpedidor}
-                      onChange={e => setIdExped(e.target.value)}
+                      onChange={(e) => setIdExped(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>
@@ -275,21 +284,21 @@ export default function Documento(props) {
                     <Form.Label>Prazo(dias)</Form.Label>
                     <Form.Control
                       value={prazo}
-                      onChange={e => setPrazo(e.target.value)}
+                      onChange={(e) => setPrazo(e.target.value)}
                     />
                   </Form.Group>
                   <Form.Group as={Col} controlId="editNrDoc">
                     <Form.Label>Nr Documento</Form.Label>
                     <Form.Control
                       value={nrdocumento}
-                      onChange={e => setNrDocumento(e.target.value)}
+                      onChange={(e) => setNrDocumento(e.target.value)}
                     />
                   </Form.Group>
                   <Form.Group as={Col} controlId="editNrProtocolo">
                     <Form.Label>Nr de Protocolo</Form.Label>
                     <Form.Control
                       value={nrprotocolo}
-                      onChange={e => setNrProtocolo(e.target.value)}
+                      onChange={(e) => setNrProtocolo(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>
@@ -299,7 +308,7 @@ export default function Documento(props) {
                     <Form.Label>Documento</Form.Label>
                     <Form.Control
                       value={documento}
-                      onChange={e => setDocumento(e.target.value)}
+                      onChange={(e) => setDocumento(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>
@@ -311,7 +320,7 @@ export default function Documento(props) {
                       as="textarea"
                       rows="3"
                       value={assunto}
-                      onChange={e => setAssunto(e.target.value)}
+                      onChange={(e) => setAssunto(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>
@@ -322,7 +331,7 @@ export default function Documento(props) {
                     <Form.Control
                       type="text"
                       value={idprioridade}
-                      onChange={e => setIdPrio(e.target.value)}
+                      onChange={(e) => setIdPrio(e.target.value)}
                     />
                   </Form.Group>
                   <Form.Group as={Col} controlId="editSigilo">
@@ -330,7 +339,7 @@ export default function Documento(props) {
                     <Form.Control
                       type="text"
                       value={sigilo}
-                      onChange={e => setSigilo(e.target.value)}
+                      onChange={(e) => setSigilo(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>
@@ -341,7 +350,7 @@ export default function Documento(props) {
                     <Form.Control
                       type="text"
                       value={referencia}
-                      onChange={e => setReferencia(e.target.value)}
+                      onChange={(e) => setReferencia(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>
@@ -353,7 +362,7 @@ export default function Documento(props) {
                       as="textarea"
                       rows="3"
                       value={observacao}
-                      onChange={e => setObservacao(e.target.value)}
+                      onChange={(e) => setObservacao(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>

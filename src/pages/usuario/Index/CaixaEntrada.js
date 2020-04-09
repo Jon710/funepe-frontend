@@ -7,15 +7,21 @@ import { MdSupervisorAccount } from 'react-icons/md';
 import { addDays, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
+<<<<<<< HEAD
 import { getFirstRender } from '~/redux/features/protocolo/protocoloSlice';
 import Documento from '~/pages/usuario/Modal/Documento';
 import Despachos from '~/pages/usuario/Modal/Despachos';
+=======
+import { getFirstRender } from '../../../redux/features/protocolo/protocoloSlide';
+import Documento from '../Modal/Documento';
+import Despachos from '../Modal/Despachos';
+>>>>>>> cadastro
 
 export default function CaixaEntrada() {
   console.log('Function CaixaEntrada');
   const dispatch = useDispatch();
-  const { usuario } = useSelector(state => state.usuario);
-  const { documento } = useSelector(state => state.protocolo);
+  const { usuario } = useSelector((state) => state.usuario);
+  const { documento } = useSelector((state) => state.protocolo);
   console.log('Function CaixaEntrada-documento', documento.iddocumento);
   const [cxEntrada, setCxEntrada] = useState([]);
   const [count, setCount] = useState(0);
@@ -30,6 +36,7 @@ export default function CaixaEntrada() {
         const listProtocolo = await dispatch(getFirstRender(usuario));
         console.log('Protocolo CaixaEntrada', listProtocolo);
         if (listProtocolo) {
+<<<<<<< HEAD
           const protocolos = listProtocolo
             .map(protocolo => ({
               ...protocolo,
@@ -42,6 +49,17 @@ export default function CaixaEntrada() {
             }))
             .then();
           console.log('Instance of Protocolos: ', typeof listProtocolo);
+=======
+          const protocolos = listProtocolo.map((protocolo) => ({
+            ...protocolo,
+            dataFormatada: format(
+              addDays(parseISO(protocolo.dataenvio), 1),
+              'dd/MM/yyyy',
+              { locale: pt }
+            ),
+            counter: (c += 1),
+          }));
+>>>>>>> cadastro
           setCxEntrada(protocolos);
           setCount(c);
           setLoading(false);
@@ -99,7 +117,7 @@ export default function CaixaEntrada() {
           </thead>
           <tbody>
             {cxEntrada !== undefined ? (
-              cxEntrada.map(a => (
+              cxEntrada.map((a) => (
                 <tr key={a.counter}>
                   <td>{a.counter}</td>
                   <td>{a.documento.nrdocumento}</td>
