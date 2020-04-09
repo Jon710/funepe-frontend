@@ -2,17 +2,17 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
-import Notifications from '../Notifications';
-import { signOutUser } from '../../../redux/features/usuario/usuarioSlide';
+import Notifications from '~/pages/usuario/Notifications';
+import { signOutUser } from '~/redux/features/usuario/usuarioSlide';
 
-import logo from '../../../assets/logo.jpg';
+import logo from '~/assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/vendor/fontawesome-free/css/all.min.css';
 import '../../../styles/css/resume.min.css';
 
 export default function NavBar() {
-  const { usuario } = useSelector((state) => state.usuario);
-  const { signIn } = useSelector((state) => state.usuario);
+  const { usuario } = useSelector(state => state.usuario);
+  const { signIn } = useSelector(state => state.usuario);
   console.log('Usuario NavBar');
 
   const dispatch = useDispatch();

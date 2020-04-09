@@ -1,8 +1,9 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-console */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import history from '~/services/history';
-import api from '~/services/api';
+import history from '../../../services/history';
+import api from '../../../services/api';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 
@@ -80,7 +81,7 @@ export default sliceProtocolo.reducer;
 
 /** *************THUNKS************** */
 
-export const getFirstRender = usuario => {
+export const getFirstRender = (usuario) => {
   console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
@@ -110,11 +111,10 @@ export const getFirstRender = usuario => {
       const { caixaentradas } = response.data;
       if (caixaentradas.length >= 0) {
         await dispatch(protocoloSuccess({ caixaentradas }));
-        const { protocolo } = Object.assign(
-          {},
-          getState().protocolo,
-          caixaentradas
-        );
+        const { protocolo } = {
+          ...getState().protocolo,
+          ...caixaentradas,
+        };
         return protocolo;
       }
       toast.info('Nenhum Registro Localizado!');
@@ -154,7 +154,7 @@ export const selectAllProtocolo = () => {
   };
 };
 
-export const addProtocolo = payload => {
+export const addProtocolo = (payload) => {
   console.log('addProtocolo: ', payload);
   return async (dispatch, getState) => {
     try {
@@ -168,12 +168,14 @@ export const addProtocolo = payload => {
         statusprazo: 1,
       };
       console.log('addProtocoloCxEntrada', caixaentrada);
-      await api.post(
+      const response = await api.post(
         `usuarios/${usuario.idusuario}/caixaentrada/`,
         caixaentrada
       );
+      console.log('PROTOCOLADO: ', response.data);
       dispatch(selectAllProtocolo());
       toast.success('Protocolo atualizado com sucesso!');
+      return response.data;
     } catch (error) {
       toast.error(
         `ERRO ao Protocolar Documento - addProtocolo ${error.message}`
@@ -187,7 +189,7 @@ export const addProtocolo = payload => {
   };
 };
 
-export const addDocumentoRequest = payload => {
+export const addDocumentoRequest = (payload) => {
   console.log('addDocumentoRequest: ', payload);
   return async (dispatch, getState) => {
     try {
@@ -198,9 +200,11 @@ export const addDocumentoRequest = payload => {
         `usuarios/${usuario.idusuario}/documents/`,
         newDocumento
       );
+      console.log('ADD DOCUMENTO: ', response.data);
       await dispatch(addDocumentoSuccess(response.data));
       toast.success('Documento inserido com sucesso!');
       await dispatch(addProtocolo(response.data));
+      return response.data;
     } catch (error) {
       console.log('ERROR: ', error.response.data.error.message);
       toast.error(

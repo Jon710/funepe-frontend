@@ -37,11 +37,11 @@ function Popup(props) {
     if (documento) {
       api
         .put('/agenda/situacao', documento)
-        .then(result => {
+        .then((result) => {
           console.log('success', result);
           history.push('/home');
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('ERRO: ', err);
           toast.error(err.response.data.error);
         });
@@ -149,8 +149,8 @@ Popup.defaultProps = {
 export default function Dashboard() {
   console.log('Usuario Dashboard');
   const dispatch = useDispatch();
-  const { usuario } = useSelector(state => state.usuario);
-  const { protocolo } = useSelector(state => state.protocolo);
+  const { usuario } = useSelector((state) => state.usuario);
+  const { protocolo } = useSelector((state) => state.protocolo);
   console.log('Usuario Dashboard', protocolo);
 
   const [cxEntrada, setCxEntrada] = useState([]);
@@ -315,7 +315,7 @@ export default function Dashboard() {
           </tr>
         </thead>
         <tbody>
-          {cxEntrada.map(a => (
+          {cxEntrada.map((a) => (
             <tr key={a.counter} style={changeColor(a)}>
               <td>{a.counter}</td>
               <td>{formatarHora(a.HORARIO)}</td>
