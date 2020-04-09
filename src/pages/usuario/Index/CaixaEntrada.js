@@ -1,52 +1,44 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-return-assign */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
-import { Table, Spinner, Container, Button } from 'react-bootstrap';
+import { Table, Spinner, Container } from 'react-bootstrap';
 import { MdSupervisorAccount } from 'react-icons/md';
 import { addDays, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
+<<<<<<< HEAD
 import { getFirstRender } from '~/redux/features/protocolo/protocoloSlice';
 import Documento from '~/pages/usuario/Modal/Documento';
 import Despachos from '~/pages/usuario/Modal/Despachos';
+=======
+import { getFirstRender } from '../../../redux/features/protocolo/protocoloSlide';
+import Documento from '../Modal/Documento';
+import Despachos from '../Modal/Despachos';
+>>>>>>> cadastro
 
 export default function CaixaEntrada() {
-  // console.log('Function CaixaEntrada');
+  console.log('Function CaixaEntrada');
   const dispatch = useDispatch();
-  const { usuario } = useSelector(state => state.usuario);
-  const { documento } = useSelector(state => state.protocolo);
-  // console.log('Function CaixaEntrada-documento', documento.iddocumento);
+  const { usuario } = useSelector((state) => state.usuario);
+  const { documento } = useSelector((state) => state.protocolo);
+  console.log('Function CaixaEntrada-documento', documento.iddocumento);
   const [cxEntrada, setCxEntrada] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [lastUpdate, setLastUpdate] = useState(Date.now());
-  const [show, setShow] = useState(false);
-
-  const handleShow = () => setShow(true);
 
   useEffect(() => {
     let c = 0;
-    function loadDocumentos() {
+    async function loadDocumentos() {
       console.log('Usuario CaixaEntrada', usuario);
       setLoading(true);
       if (usuario.idusuario !== 0) {
-<<<<<<< HEAD
         const listProtocolo = await dispatch(getFirstRender(usuario));
         console.log('Protocolo CaixaEntrada', listProtocolo);
         if (listProtocolo) {
 <<<<<<< HEAD
           const protocolos = listProtocolo
             .map(protocolo => ({
-=======
-        // const listProtocolo = dispatch(getFirstRender(usuario));
-        dispatch(getFirstRender(usuario)).then(response => {
-          console.log('Protocolo CaixaEntrada', response, lastUpdate);
-          if (response.length > 0) {
-            const protocolos = response.map(protocolo => ({
->>>>>>> protocolo
               ...protocolo,
               dataFormatada: format(
                 addDays(parseISO(protocolo.dataenvio), 1),
@@ -54,7 +46,6 @@ export default function CaixaEntrada() {
                 { locale: pt }
               ),
               counter: (c += 1),
-<<<<<<< HEAD
             }))
             .then();
           console.log('Instance of Protocolos: ', typeof listProtocolo);
@@ -73,33 +64,26 @@ export default function CaixaEntrada() {
           setCount(c);
           setLoading(false);
         }
-=======
-            }));
-
-            // console.log('Instance of Protocolos: ', typeof response);
-            setCxEntrada(protocolos);
-            setCount(c);
-            setLoading(false);
-            setLastUpdate(Date.now());
-            setShow(false);
-            // toast.warn('Protocolado!');
-          }
-        });
->>>>>>> protocolo
       } else {
         toast.warn('Usuário não identificado!');
       }
     }
     loadDocumentos();
-  }, [documento.iddocumento, count]);
+  }, [dispatch, usuario, documento.iddocumento]);
 
   return (
     <Container fluid>
       <div className="container-fluid">
         <div>
-          <Button variant="primary" onClick={handleShow}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            data-toggle="modal"
+            data-target="#idDocumento"
+            mt="2"
+          >
             Protocolar Documento
-          </Button>
+          </button>
 
           {loading ? (
             <>
@@ -115,7 +99,7 @@ export default function CaixaEntrada() {
           ) : (
             <>
               <MdSupervisorAccount size={50} variant="primary" />
-              <Documento show={show} idDoc="idDocumento" />
+              <Documento idDoc="idDocumento" />
             </>
           )}
         </div>

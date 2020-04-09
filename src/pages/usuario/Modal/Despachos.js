@@ -10,7 +10,7 @@ import DocumentoEdit from './DocumentoEdit';
 
 export default function Despachos(props) {
   const { documento } = props;
-  // console.log('Despachos');
+  console.log('Despachos');
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -21,11 +21,11 @@ export default function Despachos(props) {
     if (documento) {
       api
         .put('/agenda/situacao', documento)
-        .then(result => {
+        .then((result) => {
           console.log('success', result);
           history.push('/home');
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('ERRO: ', err);
           toast.error(err.response.data.error);
         });
