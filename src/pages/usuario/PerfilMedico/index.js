@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Form, Button, Container } from 'react-bootstrap';
 
-import logo from '../../../assets/logo.png';
-import NavBar from '../Index/NavBar';
+import logo from '~/assets/logo.png';
+import NavBar from '~/pages/usuario/Index/NavBar';
 
 // import {
 //   signOutMed,
@@ -15,9 +15,9 @@ export default function PerfilMedico() {
   // const dispatch = useDispatch();
   const [validated, setValidated] = useState(false);
 
-  const profile = useSelector((state) => state.usuario.profile);
+  const profile = useSelector(state => state.usuario.profile);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -48,7 +48,7 @@ export default function PerfilMedico() {
     setValidated(true);
   };
 
-  const handleClickMed = (event) => {
+  const handleClickMed = event => {
     event.preventDefault();
     window.location.href = '/mlogin';
   };

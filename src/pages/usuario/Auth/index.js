@@ -6,15 +6,15 @@ import { Form, Button, Card, Container } from 'react-bootstrap';
 import { getFirstRender } from '../../../redux/features/usuario/usuarioSlice';
 // import NavBar from '~/pages/usuario/Index/NavBar';
 
-import logo from '../../../assets/logo.jpg';
+import logo from '~/assets/logo.jpg';
 
 export default function Auth() {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.usuario.token);
+  const token = useSelector(state => state.usuario.token);
   console.log('token', token);
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     event.preventDefault();
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -30,14 +30,14 @@ export default function Auth() {
     setValidated(true);
   };
 
-  const handleClickNew = (event) => {
+  const handleClickNew = event => {
     event.preventDefault();
     const form = event.currentTarget;
     console.log('RhandleClickNew', form);
     window.location.href = '/newmedico';
   };
 
-  const handleClickAgenda = (event) => {
+  const handleClickAgenda = event => {
     event.preventDefault();
     const form = event.currentTarget;
     console.log('RhandleClickNew', form);

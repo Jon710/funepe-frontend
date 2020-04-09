@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 // import { useDispatch } from 'react-redux';
 import { Card, Form, Button, Container } from 'react-bootstrap';
+// 2019import * as Yup from 'yup';
 
 // import logo from '~/assets/logo.svg';
-import logo from '../../../assets/logo.png';
+import logo from '~/assets/logo.png';
 
 // import { signUpRequest } from '~/store/modules/auth/doctor/actions';
-import NavBar from '../Index/NavBar';
+import NavBar from '~/pages/usuario/Index/NavBar';
 
 export default function SignUpMed() {
   // const dispatch = useDispatch();
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -31,7 +32,7 @@ export default function SignUpMed() {
     setValidated(true);
   };
 
-  const handleClickMed = (event) => {
+  const handleClickMed = event => {
     event.preventDefault();
     window.location.href = '/mlogin';
   };

@@ -2,8 +2,8 @@
 /* eslint-disable no-console */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import history from '../../../services/history';
-import api from '../../../services/api';
+import history from '~/services/history';
+import api from '~/services/api';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 
@@ -81,7 +81,7 @@ export default sliceProtocolo.reducer;
 
 /** *************THUNKS************** */
 
-export const getFirstRender = (usuario) => {
+export const getFirstRender = usuario => {
   console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
@@ -111,10 +111,11 @@ export const getFirstRender = (usuario) => {
       const { caixaentradas } = response.data;
       if (caixaentradas.length >= 0) {
         await dispatch(protocoloSuccess({ caixaentradas }));
-        const { protocolo } = {
-          ...getState().protocolo,
-          ...caixaentradas,
-        };
+        const { protocolo } = Object.assign(
+          {},
+          getState().protocolo,
+          caixaentradas
+        );
         return protocolo;
       }
       toast.info('Nenhum Registro Localizado!');
@@ -154,7 +155,7 @@ export const selectAllProtocolo = () => {
   };
 };
 
-export const addProtocolo = (payload) => {
+export const addProtocolo = payload => {
   console.log('addProtocolo: ', payload);
   return async (dispatch, getState) => {
     try {
@@ -189,7 +190,7 @@ export const addProtocolo = (payload) => {
   };
 };
 
-export const addDocumentoRequest = (payload) => {
+export const addDocumentoRequest = payload => {
   console.log('addDocumentoRequest: ', payload);
   return async (dispatch, getState) => {
     try {

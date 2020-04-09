@@ -1,24 +1,20 @@
+/* eslint-disable no-console */
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
-<<<<<<< HEAD
 import Notifications from '~/pages/usuario/Notifications';
 // import Paciente from '~/pages/usuario/Index/Paciente';
 import { signOutUser } from '~/redux/features/usuario/usuarioSlice';
-=======
-import Notifications from '../Notifications';
-import { signOutUser } from '../../../redux/features/usuario/usuarioSlide';
->>>>>>> cadastro
 
-import logo from '../../../assets/logo.jpg';
+import logo from '~/assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/vendor/fontawesome-free/css/all.min.css';
 import '../../../styles/css/resume.min.css';
 
 export default function NavBar() {
-  const { usuario } = useSelector((state) => state.usuario);
-  const { signIn } = useSelector((state) => state.usuario);
+  const { usuario } = useSelector(state => state.usuario);
+  const { signIn } = useSelector(state => state.usuario);
   console.log('Usuario NavBar');
 
   const dispatch = useDispatch();
@@ -46,7 +42,7 @@ export default function NavBar() {
         <a href="/perfilmedico">
           <span>
             {usuario.username !== undefined
-              ? `Dr. ${usuario.username}`
+              ? `Usuário: ${usuario.username}`
               : dataICM}
           </span>
         </a>
