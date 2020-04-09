@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { Modal, Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import history from '~/services/history';
-import api from '~/services/api';
-import DocumentoEdit from '~/pages/usuario/Modal/DocumentoEdit';
+import history from '../../../services/history';
+import api from '../../../services/api';
+import DocumentoEdit from './DocumentoEdit';
 
 export default function Despachos(props) {
   const { documento } = props;
@@ -21,11 +21,11 @@ export default function Despachos(props) {
     if (documento) {
       api
         .put('/agenda/situacao', documento)
-        .then(result => {
+        .then((result) => {
           console.log('success', result);
           history.push('/home');
         })
-        .catch(err => {
+        .catch((err) => {
           console.log('ERRO: ', err);
           toast.error(err.response.data.error);
         });

@@ -8,15 +8,15 @@ import { MdSupervisorAccount } from 'react-icons/md';
 import { addDays, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
-import { getFirstRender } from '~/redux/features/protocolo/protocoloSlide';
-import Documento from '~/pages/usuario/Modal/Documento';
-import Despachos from '~/pages/usuario/Modal/Despachos';
+import { getFirstRender } from '../../../redux/features/protocolo/protocoloSlide';
+import Documento from '../Modal/Documento';
+import Despachos from '../Modal/Despachos';
 
 export default function CaixaEntrada() {
   console.log('Function CaixaEntrada');
   const dispatch = useDispatch();
-  const { usuario } = useSelector(state => state.usuario);
-  const { documento } = useSelector(state => state.protocolo);
+  const { usuario } = useSelector((state) => state.usuario);
+  const { documento } = useSelector((state) => state.protocolo);
   console.log('Function CaixaEntrada-documento', documento.iddocumento);
   const [cxEntrada, setCxEntrada] = useState([]);
   const [count, setCount] = useState(0);
@@ -31,7 +31,7 @@ export default function CaixaEntrada() {
         const listProtocolo = await dispatch(getFirstRender(usuario));
         console.log('Protocolo CaixaEntrada', listProtocolo);
         if (listProtocolo) {
-          const protocolos = listProtocolo.map(protocolo => ({
+          const protocolos = listProtocolo.map((protocolo) => ({
             ...protocolo,
             dataFormatada: format(
               addDays(parseISO(protocolo.dataenvio), 1),
@@ -96,7 +96,7 @@ export default function CaixaEntrada() {
           </thead>
           <tbody>
             {cxEntrada !== undefined ? (
-              cxEntrada.map(a => (
+              cxEntrada.map((a) => (
                 <tr key={a.counter}>
                   <td>{a.counter}</td>
                   <td>{a.documento.nrdocumento}</td>

@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import history from '~/services/history';
-import api from '~/services/api';
+import history from '../../../services/history';
+import api from '../../../services/api';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 
@@ -89,7 +89,7 @@ export default sliceUsuario.reducer;
 
 export const getFirstRender = ({ payload }) => {
   console.log('Request in getFirstRender:', payload);
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch(signInRequest({ payload }));
     // redux-thunk
     try {
@@ -122,7 +122,7 @@ export const getFirstRender = ({ payload }) => {
 };
 
 export const signUp = ({ payload }) => {
-  return async dispatch => {
+  return async (dispatch) => {
     try {
       const { username, celular, senha, confirmPassword } = payload;
 
@@ -164,14 +164,17 @@ export const signOut = () => {
 };
 
 export const updateProfileRequest = ({ payload }) => {
-  return async dispatch => {
+  return async (dispatch) => {
     try {
       const { nome, username, celular, email, ...rest } = payload.data;
 
-      const profile = Object.assign(
-        { nome, username, celular, email },
-        rest.oldPassword ? rest : {}
-      );
+      const profile = {
+        nome,
+        username,
+        celular,
+        email,
+        ...(rest.oldPassword ? rest : {}),
+      };
 
       console.log('updateProfileRequest', profile);
 
