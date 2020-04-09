@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
 import Notifications from '~/pages/usuario/Notifications';
-import { signOutUser } from '~/redux/features/usuario/usuarioSlide';
+import { signOutUser } from '~/redux/features/usuario/usuarioSlice';
 // import Paciente from '~/pages/usuario/Index/Paciente';
 import logo from '~/assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
