@@ -1,4 +1,3 @@
-/* eslint-disable no-return-assign */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -11,6 +10,9 @@ import pt from 'date-fns/locale/pt';
 import { getFirstRender } from '~/redux/features/protocolo/protocoloSlide';
 import Documento from '~/pages/usuario/Modal/Documento';
 import Despachos from '~/pages/usuario/Modal/Despachos';
+import { getFirstRender } from '../../../redux/features/protocolo/protocoloSlide';
+import Documento from '../Modal/Documento';
+import Despachos from '../Modal/Despachos';
 
 export default function CaixaEntrada() {
   console.log('Function CaixaEntrada');
@@ -31,7 +33,7 @@ export default function CaixaEntrada() {
         const listProtocolo = await dispatch(getFirstRender(usuario));
         console.log('Protocolo CaixaEntrada', listProtocolo);
         if (listProtocolo) {
-          const protocolos = listProtocolo.map(protocolo => ({
+          const protocolos = listProtocolo.map((protocolo) => ({
             ...protocolo,
             dataFormatada: format(
               addDays(parseISO(protocolo.dataenvio), 1),
@@ -64,6 +66,7 @@ export default function CaixaEntrada() {
           >
             Protocolar Documento
           </button>
+
           {loading ? (
             <>
               <Spinner

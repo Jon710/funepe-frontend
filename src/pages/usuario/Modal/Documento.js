@@ -1,20 +1,40 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-console */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { Form, Col, Button } from 'react-bootstrap';
+import { Form, Col, Button, Card } from 'react-bootstrap';
+import { useDropzone } from 'react-dropzone';
+import { toast } from 'react-toastify';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import history from '~/services/history';
 import { addDocumentoRequest } from '~/redux/features/protocolo/protocoloSlide';
 
+import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
+
+import history from '~/services/history';
+import api from '~/services/api';
+// import Upload from './Upload';
+import { addDocumentoRequest } from '~/redux/features/protocolo/protocoloSlice';
+
+import history from '../../../services/history';
+import { addDocumentoRequest } from '../../../redux/features/protocolo/protocoloSlide';
+
+
 export default function Documento(props) {
   const { idDoc } = props;
   console.log(`Entrando no DocumentoAdd`);
   const dispatch = useDispatch();
+
   const { usuario } = useSelector(state => state.usuario);
+
+  const { usuario } = useSelector(state => state.usuario);
+  const { protocolo } = useSelector(state => state.protocolo);
+  console.log('PROTOCOLO SELECTOR: ', protocolo);
+  const { iddocumento } = useSelector(state => state.protocolo.documento);
+  console.log('DOCUMENTO SELECTOR: ', iddocumento);
 
   const [idtipodocumento, setIdTipoDoc] = useState('');
   const [idprioridade, setIdPrio] = useState('');
@@ -33,22 +53,24 @@ export default function Documento(props) {
 
   const [validated, setValidated] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [arquivos, setArquivos] = useState([]);
+  // const [idDocumento, setIdDocumento] = useState();
+  const formData = new FormData();
 
   function handleDtExpedicao(dtDocumento) {
     setDtExped(dtDocumento);
   }
 
   function handleAlert() {
-    console.log(`handleAlert`);
-    // event.preventDefault();
+    console.log('handleAlert', arquivos);
     setAlert(true);
   }
 
-  const handleCancel = () => {
+  const handleCancelDocuments = () => {
     setAlert(false);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmitDocuments = async () => {
     // event.preventDefault();
     // setAlert(true);
     try {
@@ -68,14 +90,94 @@ export default function Documento(props) {
         sigilo,
         status,
       };
-      await dispatch(addDocumentoRequest({ newDocumento }));
+      const documentoAdded = await dispatch(
+        addDocumentoRequest({ newDocumento })
+      );
+      // const { documento } = documentoAdded;
+      console.log('ADDED: ', documentoAdded);
+      console.log('ADDED: ', iddocumento);
+      // setIdDocumento(iddocumento);
+      await handleSubmitUpload(documentoAdded);
       // clear form data
       history.push('/home');
       setValidated(true);
+      setAlert(false);
     } catch (error) {
       console.error('ERRO: ', error);
     }
   };
+
+  /*  UPLOAD FILES SECTION */
+  const onDrop = useCallback(
+    acceptedFiles => {
+      setArquivos([...arquivos, ...acceptedFiles]);
+      console.log('arquivos', arquivos);
+    },
+    [arquivos]
+  );
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+  });
+
+  const removeFile = file => () => {
+    console.log('removeFile...');
+    const newFiles = [...arquivos];
+    newFiles.splice(newFiles.indexOf(file), 1);
+    console.log(newFiles);
+    setArquivos(newFiles);
+  };
+
+  const files = arquivos.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes{' '}
+      <DeleteForeverSharpIcon onClick={removeFile(file)} />
+    </li>
+  ));
+
+  const dropzoneStyle = {
+    width: '100%',
+    height: '20%',
+    border: '1px dashed grey',
+    background: 'lightGrey',
+  };
+
+  const handleSubmitUpload = async documentoAdded => {
+    console.log('handleSubmit Files documentoAdded', documentoAdded);
+    const { documento } = documentoAdded;
+    try {
+      console.log('User/Doc: ', usuario, documento.iddocumento, arquivos);
+
+      for (let i = 0; i < arquivos.length; i++) {
+        formData.append('arquivos', arquivos[i]);
+      }
+
+      const response = await api.post(
+        `documents/${documento.iddocumento}/arquivoanexo`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      const { arquivoanexo } = response.data;
+      if (arquivoanexo.length >= 0) {
+        // await dispatch(protocoloSuccess({ arquivoanexo }));
+        history.push('/home');
+        return;
+      }
+      // toast.info('Nenhum Registro Localizado!');
+      history.push('/home');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Protocolos do Usuário. selectAllProtocolo  ${error.message}`
+      );
+      // history.push('/');
+    }
+  };
+  /*  UPLOAD FILES */
 
   return (
     <>
@@ -157,6 +259,18 @@ export default function Documento(props) {
                 </Form.Row>
 
                 <Form.Row>
+                  <Form.Group as={Col} controlId="editDtExp">
+                    <Form.Label>Dt Expedição</Form.Label>
+                    <div>
+                      <DatePicker
+                        selected={dataexpedicao}
+                        onChange={handleDtExpedicao}
+                        // style={{ width: '100%' }}
+                        className="form-control"
+                        dateFormat="dd/MM/yyyy"
+                      />
+                    </div>
+                  </Form.Group>
                   <Form.Group as={Col} controlId="editExpedidor">
                     <Form.Label>Expedidor</Form.Label>
                     <Form.Control
@@ -167,14 +281,6 @@ export default function Documento(props) {
                 </Form.Row>
 
                 <Form.Row>
-                  <Form.Group as={Col} controlId="editDtExp">
-                    <Form.Label>Dt Expedição</Form.Label>
-                    <DatePicker
-                      selected={dataexpedicao}
-                      onChange={handleDtExpedicao}
-                      dateFormat="dd/MM/yyyy"
-                    />
-                  </Form.Group>
                   <Form.Group as={Col} controlId="editPrazo">
                     <Form.Label>Prazo(dias)</Form.Label>
                     <Form.Control
@@ -189,9 +295,6 @@ export default function Documento(props) {
                       onChange={e => setNrDocumento(e.target.value)}
                     />
                   </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
                   <Form.Group as={Col} controlId="editNrProtocolo">
                     <Form.Label>Nr de Protocolo</Form.Label>
                     <Form.Control
@@ -264,9 +367,6 @@ export default function Documento(props) {
                     />
                   </Form.Group>
                 </Form.Row>
-                <Button size="sm" variant="secondary" onClick={handleAlert}>
-                  Gravar
-                </Button>
 
                 {alert ? (
                   <>
@@ -277,11 +377,11 @@ export default function Documento(props) {
                       confirmBtnText="Sim"
                       cancelBtnText="Não"
                       confirmBtnBsStyle="primary"
-                      cancelBtnBsStyle="default"
+                      cancelBtnBsStyle="warning"
                       customIcon="https://raw.githubusercontent.com/djorg83/react-bootstrap-sweetalert/master/demo/assets/thumbs-up.jpg"
-                      title="Deseja Protocolor Novo Documento?"
-                      onConfirm={handleSubmit}
-                      onCancel={handleCancel}
+                      title="Deseja Protocolor Novo Documento com seus anexos?"
+                      onConfirm={handleSubmitDocuments}
+                      onCancel={handleCancelDocuments}
                     >
                       Protocolando...
                     </SweetAlert>
@@ -290,21 +390,78 @@ export default function Documento(props) {
                   ''
                 )}
 
-                {/* <Button type="submit">Submit form</Button> */}
+                <hr />
+
+                <Form.Row>
+                  <Form.Group as={Col} controlId="editArq">
+                    <Form.Label>Arquivos Anexos</Form.Label>
+                    {/* Upload Files */}
+                    <div>
+                      <Card>
+                        <section>
+                          <div
+                            {...getRootProps({ className: 'dropzone' })}
+                            style={dropzoneStyle}
+                          >
+                            <div align="center">
+                              <span>{files ? ' 📂 ' : ' 📁 '}</span>
+                              <i className="fa fa-cloud-upload" />
+                              <input {...getInputProps()} />
+                              <p>
+                                Arraste e solte arquivos aqui, ou clique para
+                                selecionar arquivos
+                              </p>
+                              <p />
+                            </div>
+                          </div>
+
+                          <div>
+                            {files.length > 0 ? (
+                              <div>
+                                <aside>
+                                  <h5>Arquivos</h5>
+                                  <ul>{files}</ul>
+                                </aside>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        </section>
+                      </Card>
+                      {/* <Button
+                        variant="success"
+                        // type="submit"
+                        size="lg"
+                        block
+                        onClick={handleSubmitUpload}
+                        p="2"
+                      >
+                        Anexar Arquivos
+                      </Button> */}
+                    </div>
+
+                    {/* Upload Files */}
+                  </Form.Group>
+                </Form.Row>
+                <Form.Row></Form.Row>
+                <Form.Row>
+                  <Form.Group as={Col} controlId="editArq">
+                    <Form.Label></Form.Label>
+                    <Button
+                      variant="success"
+                      size="lg"
+                      block
+                      onClick={handleAlert}
+                      p="2"
+                    >
+                      Protocolar Documento
+                    </Button>
+                  </Form.Group>
+                </Form.Row>
               </Form>
             </div>
-            <div className="modal-footer">
-              {/* <button
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" className="btn btn-primary">
-                Save changes
-              </button> */}
-            </div>
+            <div className="modal-footer" style={{ width: '100%' }} />
           </div>
         </div>
       </div>
