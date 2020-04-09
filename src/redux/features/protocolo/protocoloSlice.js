@@ -2,8 +2,8 @@
 /* eslint-disable no-console */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import history from '~/services/history';
-import api from '~/services/api';
+import history from '../../../services/history';
+import api from '../../../services/api';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 

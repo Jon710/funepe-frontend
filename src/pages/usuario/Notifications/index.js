@@ -7,7 +7,7 @@ import { parseISO, formatDistance } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { Container, Badge, Modal, Button } from 'react-bootstrap';
 
-import api from '~/services/api';
+import api from '../../../services/api';
 
 import { Notification } from './styles';
 

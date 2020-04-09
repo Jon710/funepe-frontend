@@ -9,9 +9,9 @@ import { MdSupervisorAccount } from 'react-icons/md';
 import { addDays, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 
-import { getFirstRender } from '~/redux/features/protocolo/protocoloSlice';
-import Documento from '~/pages/usuario/Modal/Documento';
-import Despachos from '~/pages/usuario/Modal/Despachos';
+import { getFirstRender } from '../../../redux/features/protocolo/protocoloSlice';
+import Documento from '../Modal/Documento';
+import Despachos from '../Modal/Despachos';
 
 export default function CaixaEntrada() {
   // console.log('Function CaixaEntrada');
