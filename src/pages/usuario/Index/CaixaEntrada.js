@@ -14,14 +14,13 @@ import Documento from '~/pages/usuario/Modal/Documento';
 import Despachos from '~/pages/usuario/Modal/Despachos';
 
 export default function CaixaEntrada() {
-  // console.log('Function CaixaEntrada');
   const dispatch = useDispatch();
   const { usuario } = useSelector(state => state.usuario);
   const { documento } = useSelector(state => state.protocolo);
-  // console.log('Function CaixaEntrada-documento', documento.iddocumento);
   const [cxEntrada, setCxEntrada] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [lastUpdate, setLastUpdate] = useState(Date.now());
   const [show, setShow] = useState(false);
 
@@ -30,12 +29,11 @@ export default function CaixaEntrada() {
   useEffect(() => {
     let c = 0;
     function loadDocumentos() {
-      console.log('Usuario CaixaEntrada', usuario);
+      // console.log('Usuario CaixaEntrada', usuario);
       setLoading(true);
       if (usuario.idusuario !== 0) {
-        // const listProtocolo = dispatch(getFirstRender(usuario));
         dispatch(getFirstRender(usuario)).then(response => {
-          console.log('Protocolo CaixaEntrada', response, lastUpdate);
+          // console.log('Protocolo CaixaEntrada', response, lastUpdate);
           if (response.length > 0) {
             const protocolos = response.map(protocolo => ({
               ...protocolo,
@@ -46,14 +44,11 @@ export default function CaixaEntrada() {
               ),
               counter: (c += 1),
             }));
-
-            // console.log('Instance of Protocolos: ', typeof response);
             setCxEntrada(protocolos);
             setCount(c);
             setLoading(false);
             setLastUpdate(Date.now());
             setShow(false);
-            // toast.warn('Protocolado!');
           }
         });
       } else {
@@ -95,9 +90,12 @@ export default function CaixaEntrada() {
             <tr>
               <th>#</th>
               <th>Documento</th>
-              <th>Usuário</th>
+              <th>Tipo</th>
               <th>Assunto</th>
+              <th>Expedidor</th>
+              <th>Destinatário</th>
               <th>Data</th>
+              <th>Status</th>
               <th>#</th>
             </tr>
           </thead>
@@ -107,11 +105,14 @@ export default function CaixaEntrada() {
                 <tr key={a.counter}>
                   <td>{a.counter}</td>
                   <td>{a.documento.nrdocumento}</td>
-                  <td>{a.usuario.username}</td>
+                  <td>{a.documento.tipoDocumento.abreviacao}</td>
                   <td>{a.documento.assunto}</td>
+                  <td>{a.documento.usuario.username}</td>
+                  <td>{a.usuario.username}</td>
                   <td>{a.dataFormatada}</td>
+                  <td>{a.status}</td>
                   <td>
-                    <Despachos documento={a} />
+                    <Despachos documento={a.documento} />
                   </td>
                 </tr>
               ))
@@ -121,10 +122,10 @@ export default function CaixaEntrada() {
           </tbody>
           <tfoot>
             <tr>
-              <td style={{ textAlign: 'right' }} colSpan="4">
+              <td style={{ textAlign: 'right' }} colSpan="8">
                 TOTAL DE DOCUMENTOS
               </td>
-              <td style={{ textAlign: 'left' }} colSpan="2">
+              <td style={{ textAlign: 'left' }} colSpan="1">
                 {count}
               </td>
             </tr>

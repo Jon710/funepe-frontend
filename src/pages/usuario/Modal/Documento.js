@@ -22,10 +22,6 @@ export default function Documento(props) {
   console.log(`Entrando no DocumentoAdd`);
   const dispatch = useDispatch();
   const { usuario } = useSelector(state => state.usuario);
-  // const { protocolo } = useSelector(state => state.protocolo);
-  // console.log('PROTOCOLO SELECTOR: ', protocolo);
-  // const { iddocumento } = useSelector(state => state.protocolo.documento);
-  // console.log('DOCUMENTO SELECTOR: ', iddocumento);
 
   const [idtipodocumento, setIdTipoDoc] = useState('1');
   const [idprioridade, setIdPrio] = useState('1');
@@ -82,7 +78,7 @@ export default function Documento(props) {
         status,
       };
       const documentoAdded = dispatch(addDocumentoRequest({ newDocumento }));
-      console.log('ADDED: ', documentoAdded);
+      // console.log('ADDED: ', documentoAdded);
       handleSubmitUpload(documentoAdded);
       // clear form data
       setValidated(true);
@@ -97,7 +93,7 @@ export default function Documento(props) {
   const onDrop = useCallback(
     acceptedFiles => {
       setArquivos([...arquivos, ...acceptedFiles]);
-      console.log('arquivos', arquivos);
+      // console.log('arquivos', arquivos);
     },
     [arquivos]
   );
@@ -107,10 +103,10 @@ export default function Documento(props) {
   });
 
   const removeFile = file => () => {
-    console.log('removeFile...');
+    // console.log('removeFile...');
     const newFiles = [...arquivos];
     newFiles.splice(newFiles.indexOf(file), 1);
-    console.log(newFiles);
+    // console.log(newFiles);
     setArquivos(newFiles);
   };
 
@@ -129,14 +125,14 @@ export default function Documento(props) {
   };
 
   const handleSubmitUpload = documentoAdded => {
-    console.log('handleSubmit Files documentoAdded', documentoAdded);
+    // console.log('handleSubmit Files documentoAdded', documentoAdded);
     // eslint-disable-next-line no-shadow
     // const { documento } = documentoAdded;
     documentoAdded.then(response => {
       try {
-        console.log('User/Doc: ', response);
+        // console.log('User/Doc: ', response);
         const { iddocumento } = response.documento;
-        console.log('User/Doc - iddocumento: ', iddocumento);
+        // console.log('User/Doc - iddocumento: ', iddocumento);
 
         for (let i = 0; i < arquivos.length; i++) {
           formData.append('arquivos', arquivos[i]);
@@ -180,6 +176,7 @@ export default function Documento(props) {
                     type="radio"
                     inline
                     label="Interno"
+                    checked
                     name="rdDoc"
                     id="rd01"
                     value={1}
@@ -204,7 +201,9 @@ export default function Documento(props) {
                   value={idtipodocumento}
                   onChange={e => setIdTipoDoc(e.target.value)}
                 >
-                  <option value="1">Ofício</option>
+                  <option checked value="1">
+                    Ofício
+                  </option>
                   <option value="2">Portaria</option>
                   <option value="3">Requisição</option>
                   <option value="4">Projeto</option>
@@ -218,8 +217,14 @@ export default function Documento(props) {
                   value={status}
                   onChange={e => setStatus(e.target.value)}
                 >
-                  <option value="1">Enviado</option>
-                  <option value="2">Recebido</option>
+                  <option checked value="1">
+                    Enviado
+                  </option>
+                  <option value="2">Despachado</option>
+                  <option value="3">Lido</option>
+                  <option value="4">Recebido</option>
+                  <option value="5">Arquivado</option>
+                  <option value="6">Pendente</option>
                 </Form.Control>
               </Form.Group>
             </Form.Row>
@@ -295,19 +300,69 @@ export default function Documento(props) {
             <Form.Row>
               <Form.Group as={Col} controlId="editPrioridade">
                 <Form.Label>Proridade</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={idprioridade}
-                  onChange={e => setIdPrio(e.target.value)}
-                />
+                <Form.Group controlId="editPrioridades">
+                  <Form.Check
+                    type="radio"
+                    inline
+                    label="Normal"
+                    checked
+                    name="rdPrio"
+                    id="rdPrio01"
+                    value={1}
+                    onChange={e => setIdPrio(e.target.value)}
+                  />
+                  <Form.Check
+                    type="radio"
+                    inline
+                    label="Urgente"
+                    name="rdPrio"
+                    id="rdPrio02"
+                    value={2}
+                    onChange={e => setIdPrio(e.target.value)}
+                  />
+                  <Form.Check
+                    type="radio"
+                    inline
+                    label="Urgentíssimo"
+                    name="rdPrio"
+                    id="rdPrio03"
+                    value={3}
+                    onChange={e => setIdPrio(e.target.value)}
+                  />
+                </Form.Group>
               </Form.Group>
               <Form.Group as={Col} controlId="editSigilo">
                 <Form.Label>Sigilo</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={sigilo}
-                  onChange={e => setSigilo(e.target.value)}
-                />
+                <Form.Group controlId="editSigilos">
+                  <Form.Check
+                    type="radio"
+                    inline
+                    label="Ostensivo"
+                    checked
+                    name="rdSigilo"
+                    id="rdSigilo01"
+                    value={1}
+                    onChange={e => setSigilo(e.target.value)}
+                  />
+                  <Form.Check
+                    type="radio"
+                    inline
+                    label="Reservado"
+                    name="rdSigilo"
+                    id="rdSigilo02"
+                    value={2}
+                    onChange={e => setSigilo(e.target.value)}
+                  />
+                  <Form.Check
+                    type="radio"
+                    inline
+                    label="Secreto"
+                    name="rdSigilo"
+                    id="rdSigilo03"
+                    value={3}
+                    onChange={e => setSigilo(e.target.value)}
+                  />
+                </Form.Group>
               </Form.Group>
             </Form.Row>
 
@@ -420,282 +475,6 @@ export default function Documento(props) {
           </Form.Row>
         </Modal.Footer>
       </Modal>
-
-      {/* <div
-        className="modal fade"
-        id={idDoc}
-        // show={!alert}
-        tabIndex="-1"
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-xl" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h3 className="modal-title" id="exampleModalLabel">
-                Protocolo de Documento
-              </h3>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <Form noValidate validated={validated}>
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editInterno">
-                    <Form.Label>Protocolo</Form.Label>
-                    <Form.Group controlId="editIntExt">
-                      <Form.Check
-                        type="radio"
-                        inline
-                        label="Interno"
-                        name="rdDoc"
-                        id="rd01"
-                        value={1}
-                        onChange={e => setOrigem(e.target.value)}
-                      />
-                      <Form.Check
-                        type="radio"
-                        inline
-                        label="Externo"
-                        name="rdDoc"
-                        id="rd02"
-                        value={2}
-                        onChange={e => setOrigem(e.target.value)}
-                      />
-                    </Form.Group>
-                  </Form.Group>
-
-                  <Form.Group as={Col} controlId="editTipoDoc">
-                    <Form.Label>Tipo de Documento</Form.Label>
-                    <Form.Control
-                      as="select"
-                      value={idtipodocumento}
-                      onChange={e => setIdTipoDoc(e.target.value)}
-                    >
-                      <option value="1">Ofício</option>
-                      <option value="2">Portaria</option>
-                      <option value="3">Requisição</option>
-                      <option value="4">Projeto</option>
-                    </Form.Control>
-                  </Form.Group>
-
-                  <Form.Group as={Col} controlId="editStatus">
-                    <Form.Label>Status</Form.Label>
-                    <Form.Control
-                      as="select"
-                      value={status}
-                      onChange={e => setStatus(e.target.value)}
-                    >
-                      <option value="1">Enviado</option>
-                      <option value="2">Recebido</option>
-                    </Form.Control>
-                  </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editDtExp">
-                    <Form.Label>Dt Expedição</Form.Label>
-                    <div>
-                      <DatePicker
-                        selected={dataexpedicao}
-                        onChange={handleDtExpedicao}
-                        // style={{ width: '100%' }}
-                        className="form-control"
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="editExpedidor">
-                    <Form.Label>Expedidor</Form.Label>
-                    <Form.Control
-                      value={idexpedidor}
-                      onChange={e => setIdExped(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editPrazo">
-                    <Form.Label>Prazo(dias)</Form.Label>
-                    <Form.Control
-                      value={prazo}
-                      onChange={e => setPrazo(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="editNrDoc">
-                    <Form.Label>Nr Documento</Form.Label>
-                    <Form.Control
-                      value={nrdocumento}
-                      onChange={e => setNrDocumento(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="editNrProtocolo">
-                    <Form.Label>Nr de Protocolo</Form.Label>
-                    <Form.Control
-                      value={nrprotocolo}
-                      onChange={e => setNrProtocolo(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editNrProtocolo">
-                    <Form.Label>Documento</Form.Label>
-                    <Form.Control
-                      value={documento}
-                      onChange={e => setDocumento(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editAssunto">
-                    <Form.Label>Assunto</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows="3"
-                      value={assunto}
-                      onChange={e => setAssunto(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editPrioridade">
-                    <Form.Label>Proridade</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={idprioridade}
-                      onChange={e => setIdPrio(e.target.value)}
-                    />
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="editSigilo">
-                    <Form.Label>Sigilo</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={sigilo}
-                      onChange={e => setSigilo(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editRfr">
-                    <Form.Label>Referência</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={referencia}
-                      onChange={e => setReferencia(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form.Row>
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editObs">
-                    <Form.Label>Observação</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows="3"
-                      value={observacao}
-                      onChange={e => setObservacao(e.target.value)}
-                    />
-                  </Form.Group>
-                </Form.Row>
-
-                {alert ? (
-                  <>
-                    <SweetAlert
-                      custom
-                      showCancel
-                      showCloseButton
-                      confirmBtnText="Sim"
-                      cancelBtnText="Não"
-                      confirmBtnBsStyle="primary"
-                      cancelBtnBsStyle="warning"
-                      customIcon="https://raw.githubusercontent.com/djorg83/react-bootstrap-sweetalert/master/demo/assets/thumbs-up.jpg"
-                      title="Deseja Protocolor Novo Documento com seus anexos?"
-                      onConfirm={handleSubmitDocuments}
-                      onCancel={handleCancelDocuments}
-                    >
-
-                    </SweetAlert>
-                  </>
-                ) : (
-                  ''
-                )}
-
-                <hr />
-
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editArq">
-                    <Form.Label>Arquivos Anexos</Form.Label>
-
-                    <div>
-                      <Card>
-                        <section>
-                          <div
-                            {...getRootProps({ className: 'dropzone' })}
-                            style={dropzoneStyle}
-                          >
-                            <div align="center">
-                              <span>{files ? ' 📂 ' : ' 📁 '}</span>
-                              <i className="fa fa-cloud-upload" />
-                              <input {...getInputProps()} />
-                              <p>
-                                Arraste e solte arquivos aqui, ou clique para
-                                selecionar arquivos
-                              </p>
-                              <p />
-                            </div>
-                          </div>
-
-                          <div>
-                            {files.length > 0 ? (
-                              <div>
-                                <aside>
-                                  <h5>Arquivos</h5>
-                                  <ul>{files}</ul>
-                                </aside>
-                              </div>
-                            ) : (
-                              <div />
-                            )}
-                          </div>
-                        </section>
-                      </Card>
-                    </div>
-
-
-                  </Form.Group>
-                </Form.Row>
-                <Form.Row></Form.Row>
-                <Form.Row>
-                  <Form.Group as={Col} controlId="editArq">
-                    <Form.Label></Form.Label>
-                    <Button
-                      variant="success"
-                      size="lg"
-                      block
-                      onClick={handleAlert}
-                      p="2"
-                    >
-                      Protocolar Documento
-                    </Button>
-                  </Form.Group>
-                </Form.Row>
-              </Form>
-            </div>
-            <div className="modal-footer" style={{ width: '100%' }} />
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }

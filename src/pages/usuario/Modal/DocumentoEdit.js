@@ -15,7 +15,7 @@ export default function DocumentoEdit(props) {
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = event => {
-    console.log('handleSubmit DocumentoEdit');
+    // console.log('handleSubmit DocumentoEdit');
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();

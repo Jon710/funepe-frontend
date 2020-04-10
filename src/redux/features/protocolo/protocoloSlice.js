@@ -82,7 +82,7 @@ export default sliceProtocolo.reducer;
 /** *************THUNKS************** */
 
 export const getFirstRender = usuario => {
-  console.log('Protocolo getFirstRender:', usuario);
+  // console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
     // redux-thunk
@@ -175,7 +175,7 @@ export const addProtocolo = payload => {
       );
       console.log('PROTOCOLADO: ', response.data);
       dispatch(selectAllProtocolo());
-      toast.success('Protocolo atualizado com sucesso!');
+      toast.success('Protocolo inserido com sucesso!');
       return response.data;
     } catch (error) {
       toast.error(
@@ -203,7 +203,7 @@ export const addDocumentoRequest = payload => {
       );
       console.log('ADD DOCUMENTO: ', response.data);
       await dispatch(addDocumentoSuccess(response.data));
-      toast.success('Documento inserido com sucesso!');
+      // toast.success('Documento inserido com sucesso!');
       await dispatch(addProtocolo(response.data));
       return response.data;
     } catch (error) {

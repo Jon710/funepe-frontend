@@ -88,7 +88,7 @@ export default sliceUsuario.reducer;
 /** *************THUNKS************** */
 
 export const getFirstRender = ({ payload }) => {
-  console.log('Request in getFirstRender:', payload);
+  // console.log('Request in getFirstRender:', payload);
   return async dispatch => {
     dispatch(signInRequest({ payload }));
     // redux-thunk
@@ -102,7 +102,7 @@ export const getFirstRender = ({ payload }) => {
         username,
         senha,
       });
-      console.log('signInCall getFirstRender', response.data);
+      // console.log('signInCall getFirstRender', response.data);
       const { token, user } = response.data;
       if (token) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
