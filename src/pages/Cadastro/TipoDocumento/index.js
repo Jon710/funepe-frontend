@@ -2,6 +2,6 @@ import React from 'react';
 
 // import { Container } from './styles';
 
-export default function Cadastro() {
-  return <div>teste</div>;
+export default function TipoDocumento() {
+  return <div />;
 }

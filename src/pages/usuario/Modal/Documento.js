@@ -14,8 +14,8 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
-import api from '~/services/api';
-import { addDocumentoRequest } from '~/redux/features/protocolo/protocoloSlice';
+import api from '../../../services/api';
+import { addDocumentoRequest } from '../../../redux/features/protocolo/protocoloSlice';
 
 export default function Documento(props) {
   const { show } = props;

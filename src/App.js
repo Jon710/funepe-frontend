@@ -8,7 +8,7 @@ import { Router } from 'react-router-dom';
 // CUSTOM configureStore WITH REDUX-PERSIST & REDUX TOOLKIT
 import configureStore from './redux/configure-store';
 import Routes from './routes';
-import NavBar from '~/pages/usuario/Index/NavBar';
+import NavBar from './pages/usuario/Index/NavBar';
 import customHistory from './services/history';
 
 import GlobalStyle from './styles/globals';

@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import { Modal, Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import history from '~/services/history';
-import api from '~/services/api';
-import DocumentoEdit from '~/pages/usuario/Modal/DocumentoEdit';
+import history from '../../../services/history';
+import api from '../../../services/api';
+import DocumentoEdit from './DocumentoEdit';
 
 export default function Despachos(props) {
   const { usuario } = useSelector(state => state.usuario);

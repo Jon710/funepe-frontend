@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Form, Button, Container } from 'react-bootstrap';
 
-import logo from '~/assets/logo.png';
-import NavBar from '~/pages/usuario/Index/NavBar';
+import logo from '../../../assets/logo.png';
+import NavBar from '../Index/NavBar';
 
 // import {
 //   signOutMed,

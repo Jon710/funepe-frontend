@@ -3,11 +3,11 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
-import Notifications from '~/pages/usuario/Notifications';
+import Notifications from '../Notifications';
 // import Paciente from '~/pages/usuario/Index/Paciente';
-import { signOutUser } from '~/redux/features/usuario/usuarioSlice';
+import { signOutUser } from '../../../redux/features/usuario/usuarioSlice';
 
-import logo from '~/assets/logo.jpg';
+import logo from '../../../assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/vendor/fontawesome-free/css/all.min.css';
 import '../../../styles/css/resume.min.css';

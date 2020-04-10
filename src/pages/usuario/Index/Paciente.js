@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 // import { Container, Content } from 'react-bootstrap';
 // import logo from '~/assets/logo.png';
 // import NavBar from './NavBar';
-import api from '~/services/api';
+import api from '../../../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/css/resume.min.css';
 

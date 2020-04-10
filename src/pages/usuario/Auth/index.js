@@ -6,7 +6,7 @@ import { Form, Button, Card, Container } from 'react-bootstrap';
 import { getFirstRender } from '../../../redux/features/usuario/usuarioSlice';
 // import NavBar from '~/pages/usuario/Index/NavBar';
 
-import logo from '~/assets/logo.jpg';
+import logo from '../../../assets/logo.jpg';
 
 export default function Auth() {
   const dispatch = useDispatch();
