@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-// import { useDispatch } from 'react-redux';
 import { Card, Form, Button, Container } from 'react-bootstrap';
 
-// import logo from '~/assets/logo.svg';
 import logo from '../../../assets/logo.png';
-
-// import { signUpRequest } from '~/store/modules/auth/doctor/actions';
 import NavBar from '../Index/NavBar';
 
 export default function SignUpMed() {
@@ -20,7 +16,6 @@ export default function SignUpMed() {
     } else {
       event.preventDefault();
       const cpf = event.target.elements.formBasicCPF.value;
-      // const nome = 'DR. FABIO'; // event.target.elements.formBasicNome.value;
       const senha = event.target.elements.formBasicSenha.value;
       const confirmPassword = event.target.elements.formBasicConfirmSenha.value;
       // eslint-disable-next-line no-console

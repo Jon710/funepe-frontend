@@ -7,6 +7,7 @@ import Notifications from '../Notifications';
 // import Paciente from '~/pages/usuario/Index/Paciente';
 import { signOutUser } from '../../../redux/features/usuario/usuarioSlice';
 
+// import Index from '../../Cadastro/Index';
 import logo from '../../../assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/vendor/fontawesome-free/css/all.min.css';
@@ -24,14 +25,6 @@ export default function NavBar() {
     console.log('Usuario Saiu.');
     dispatch(signOutUser());
   }
-
-  // function handleArquivados() {
-  //   return (
-  //     <>
-  //       <Paciente />
-  //     </>
-  //   );
-  // }
 
   return (
     <nav
@@ -92,9 +85,6 @@ export default function NavBar() {
             </a>
           </li>
           <li className="nav-item">
-            {/* <a className="nav-link" href="#a">
-              Arquivados
-            </a> */}
             <Nav.Link href="/frmpac">Arquivados</Nav.Link>
           </li>
           <li className="nav-item dropdown">
@@ -118,6 +108,9 @@ export default function NavBar() {
               </a>
               <a className="dropdown-item" href="#a">
                 Tipos de Documentos
+              </a>
+              <a className="dropdown-item" href="/cadastros">
+                Cadastros
               </a>
             </div>
           </li>
