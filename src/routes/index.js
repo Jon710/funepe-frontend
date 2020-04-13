@@ -1,5 +1,7 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import { Redirect } from 'react-router';
+import { useSelector } from 'react-redux';
 
 import CaixaEntrada from '../pages/usuario/Index/CaixaEntrada';
 import SignUpMed from '../pages/usuario/SignUpMed';
@@ -16,21 +18,29 @@ import PaginaInicial from '../pages/Cadastro/PaginaInicial';
 import Auth from '../pages/usuario/Auth';
 
 export default function Routes() {
+  const { token } = useSelector(state => state.usuario);
+
   return (
     <Switch>
       <Route path="/" exact component={Auth} />
       <Route path="/newmedico" component={SignUpMed} />
 
-      <Route path="/home" component={CaixaEntrada} />
-      <Route path="/agenda" component={Content} />
-      <Route path="/perfilmedico" component={PerfilMedico} />
-      <Route path="/frmhome" component={Home} />
-      <Route path="/frmpac" component={Paciente} />
-      <Route path="/frmagenda" component={Agenda} />
-      <Route path="/frmatv" component={Atividade} />
-      <Route path="/frmmed" component={Medico} />
+      {token ? (
+        <>
+          <Route path="/home" component={CaixaEntrada} />
+          <Route path="/agenda" component={Content} />
+          <Route path="/perfilmedico" component={PerfilMedico} />
+          <Route path="/frmhome" component={Home} />
+          <Route path="/frmpac" component={Paciente} />
+          <Route path="/frmagenda" component={Agenda} />
+          <Route path="/frmatv" component={Atividade} />
+          <Route path="/frmmed" component={Medico} />
 
-      <Route path="/cadastros" component={PaginaInicial} />
+          <Route path="/cadastros" component={PaginaInicial} />
+        </>
+      ) : (
+        <Redirect to="/" />
+      )}
     </Switch>
   );
 }

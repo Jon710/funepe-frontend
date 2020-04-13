@@ -29,6 +29,7 @@
     "react-number-format": "^4.0.8",
     "react-perfect-scrollbar": "^1.5.3",
     "react-redux": "^7.1.0",
+    "react-router": "^5.1.2",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
     "react-spinner-material": "^1.1.1",
