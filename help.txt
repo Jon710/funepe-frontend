@@ -106,39 +106,13 @@ ESTILIZAR O DASHBOARD
 2. yarn add react-number-format <https://www.npmjs.com/package/react-number-format>
 3. yarn add bootstrap
 
-
 DEPLOY
 https://facebook.github.io/create-react-app/docs/deployment
-The last command shown above will serve your static site on the port 3000. 
+The last command shown above will serve your static site on the port 3000.
 Like many of serve’s internal settings, the port can be adjusted using the -l or --listen flags:
 
-
-npm run build
-npm install -g serve
-serve -s build -l 3000
-
-
-      <Badge onClick={handleToggleVisible} hasUnread={hasUnread}>
-        <MdNotifications color="darkgreen" size={20} />
-      </Badge>
-
-      <NotificationList visible={visible}>
-        <Scroll>
-          {notifications.map(notification => (
-            <Notification key={notification._id} unread={!notification.read}>
-              <p>{notification.content}</p>
-              <time>{notification.timeDistance}</time>
-              {!notification.read && (
-                <button
-                  type="button"
-                  onClick={() => handleMarkAsRead(notification._id)}
-                >
-                  Marcar como lida
-                </button>
-              )}
-            </Notification>
-          ))}
-        </Scroll>
-      </NotificationList>
+Fluxo Redux: meu componente dispara uma action -> a action avisa um reducer -> o reducer fazer
+as alterações que precisa -> e depois o redux avisa todos componentes que precisam da nova
+informação para que eles atualizem.
 
 
