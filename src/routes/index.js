@@ -18,12 +18,10 @@ export default function Routes() {
   return (
     <Switch>
       <Route path="/" exact component={Auth} />
-      {/* <Route path="/mlogin" component={Auth} isPrivate /> */}
       <Route path="/newmedico" component={SignUpMed} />
 
       <Route path="/home" component={CaixaEntrada} />
       <Route path="/agenda" component={Content} />
-      {/* <Route path="/dashboard" component={Dashboard} /> */}
       <Route path="/perfilmedico" component={PerfilMedico} />
       <Route path="/frmhome" component={Home} />
       <Route path="/frmpac" component={Paciente} />

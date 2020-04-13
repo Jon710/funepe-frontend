@@ -11,9 +11,9 @@ import DocumentoEdit from './DocumentoEdit';
 
 export default function Despachos(props) {
   const { usuario } = useSelector(state => state.usuario);
-  const { documento } = props;
+  const { caixa } = props;
   const [show, setShow] = useState(false);
-  const [doc, setDoc] = useState();
+  const [caixaDoc, setCaixaDoc] = useState(caixa);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -24,22 +24,20 @@ export default function Despachos(props) {
     // <option value="4">Recebido</option>
     // <option value="5">Arquivado</option>
     // <option value="6">Pendente</option>
-    const newdocumento = {
+    const updateCaixa = {
       status: situacao,
-      iddocumento: documento.iddocumento,
+      idcaixaentrada: caixa.idcaixaentrada,
     };
-    // console.log('Documento STATUS', newdocumento, usuario);
-    if (newdocumento) {
+    if (updateCaixa) {
       api
         .put(
-          `usuarios/${usuario.idusuario}/documents/${newdocumento.iddocumento}`,
-          newdocumento
+          `usuarios/${usuario.idusuario}/caixaentrada/${updateCaixa.idcaixaentrada}`,
+          updateCaixa
         )
         .then(result => {
-          // console.log('success', result);
-          const { document } = result.data;
-          // console.log('success', document);
-          setDoc(document);
+          const { caixaentrada } = result.data;
+          setCaixaDoc(caixaentrada);
+          toast.success('Status atualizado com sucesso!');
           history.push('/home');
         })
         .catch(err => {
@@ -59,13 +57,13 @@ export default function Despachos(props) {
         id="dropdown-item-button"
         title="Menu"
       >
-        <Dropdown.Item as="button" onClick={() => alterarStatus('2')}>
+        <Dropdown.Item as="button" onClick={() => alterarStatus('Despachado')}>
           Despachar Documento
         </Dropdown.Item>
-        <Dropdown.Item as="button" onClick={() => alterarStatus('6')}>
+        <Dropdown.Item as="button" onClick={() => alterarStatus('Pendente')}>
           Pender Documento
         </Dropdown.Item>
-        <Dropdown.Item as="button" onClick={() => alterarStatus('5')}>
+        <Dropdown.Item as="button" onClick={() => alterarStatus('Arquivado')}>
           Arquivar Documento
         </Dropdown.Item>
 
@@ -86,7 +84,9 @@ export default function Despachos(props) {
           <Modal.Title>Documento</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <DocumentoEdit documento={doc} />
+          {/* DOCUMENTO EDIT */}
+          <DocumentoEdit documento={caixaDoc.documento} />
+          {/* DOCUMENTO EDIT */}
         </Modal.Body>
         <Modal.Footer>
           <Button size="sm" variant="secondary" onClick={handleClose}>
@@ -103,8 +103,8 @@ export default function Despachos(props) {
 
 Despachos.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  documento: PropTypes.any,
+  caixa: PropTypes.any,
 };
 Despachos.defaultProps = {
-  documento: null,
+  caixa: null,
 };

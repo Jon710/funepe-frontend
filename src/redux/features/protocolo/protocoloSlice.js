@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable consistent-return */
 /* eslint-disable no-console */
 import { createSlice } from '@reduxjs/toolkit';
@@ -15,13 +16,23 @@ export const sliceProtocolo = createSlice({
     loading: false,
     protocolo: {},
     documento: {},
+    tipoDocumentos: {},
+    prioridades: {},
   },
   reducers: {
     protocoloSuccess: (state, action) => {
       console.log('protocoloSuccess Reducer/Action', action.payload);
-      const { caixaentradas } = action.payload;
+      const { caixaentradas, prioridades, types } = action.payload;
       state.loading = false;
-      state.protocolo = caixaentradas;
+      if (caixaentradas !== undefined) {
+        state.protocolo = caixaentradas;
+      }
+      if (prioridades !== undefined) {
+        state.prioridades = prioridades;
+      }
+      if (types !== undefined) {
+        state.tipoDocumentos = types;
+      }
     },
     protocoloRequest: (state, action) => {
       console.log('protocoloRequest Reducer/Action', action.payload);
@@ -110,6 +121,8 @@ export const getFirstRender = usuario => {
       );
       const { caixaentradas } = response.data;
       if (caixaentradas.length >= 0) {
+        dispatch(selectAllPrioridade());
+        dispatch(selectAllTipoDocumentos());
         await dispatch(protocoloSuccess({ caixaentradas }));
         const { protocolo } = Object.assign(
           {},
@@ -156,7 +169,7 @@ export const selectAllProtocolo = () => {
 };
 
 export const addProtocolo = payload => {
-  console.log('addProtocolo: ', payload);
+  // console.log('addProtocolo: ', payload);
   return async (dispatch, getState) => {
     try {
       const { documento } = payload;
@@ -164,7 +177,7 @@ export const addProtocolo = payload => {
       const caixaentrada = {
         iddocumento: documento.iddocumento,
         iddestinatario: documento.idexpedidor,
-        status: 'E',
+        status: 'Despachado',
         dataenvio: documento.dataexpedicao,
         statusprazo: 1,
       };
@@ -173,7 +186,7 @@ export const addProtocolo = payload => {
         `usuarios/${usuario.idusuario}/caixaentrada/`,
         caixaentrada
       );
-      console.log('PROTOCOLADO: ', response.data);
+      // console.log('PROTOCOLADO: ', response.data);
       dispatch(selectAllProtocolo());
       toast.success('Protocolo inserido com sucesso!');
       return response.data;
@@ -191,7 +204,7 @@ export const addProtocolo = payload => {
 };
 
 export const addDocumentoRequest = payload => {
-  console.log('addDocumentoRequest: ', payload);
+  // console.log('addDocumentoRequest: ', payload);
   return async (dispatch, getState) => {
     try {
       const { newDocumento } = payload;
@@ -201,7 +214,7 @@ export const addDocumentoRequest = payload => {
         `usuarios/${usuario.idusuario}/documents/`,
         newDocumento
       );
-      console.log('ADD DOCUMENTO: ', response.data);
+      // console.log('ADD DOCUMENTO: ', response.data);
       await dispatch(addDocumentoSuccess(response.data));
       // toast.success('Documento inserido com sucesso!');
       await dispatch(addProtocolo(response.data));
@@ -212,6 +225,50 @@ export const addDocumentoRequest = payload => {
         `ERRO ao adicionar Novo documento - addDocumentoRequest  ${error.response.data.error.message}`
       );
       dispatch(updateFailure());
+    }
+  };
+};
+
+export const selectAllPrioridade = () => {
+  return async dispatch => {
+    // redux-thunk
+    try {
+      const response = await api.get(`prioridade/`);
+      const { prioridades } = response.data;
+      if (prioridades.length >= 0) {
+        await dispatch(protocoloSuccess({ prioridades }));
+        history.push('/home');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/home');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Prioridade (selectAllPrioridade)!  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllTipoDocumentos = () => {
+  return async dispatch => {
+    // redux-thunk
+    try {
+      const response = await api.get(`types/`);
+      const { types } = response.data;
+      if (types.length >= 0) {
+        await dispatch(protocoloSuccess({ types }));
+        history.push('/home');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/home');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Tipo de Documentos (selectAllTipoDocumentos)!  ${error.message}`
+      );
     }
   };
 };

@@ -3,9 +3,8 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-console */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
 import { Form, Col, Button, Card, Modal } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
@@ -16,19 +15,19 @@ import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
 import api from '../../../services/api';
 import { addDocumentoRequest } from '../../../redux/features/protocolo/protocoloSlice';
+import ModalContext from '../../../redux/features/context/modal';
 
-export default function Documento(props) {
-  const { show } = props;
-  console.log(`Entrando no DocumentoAdd`);
+export default function Documento() {
   const dispatch = useDispatch();
   const { usuario } = useSelector(state => state.usuario);
+  const { prioridades, tipoDocumentos } = useSelector(state => state.protocolo);
+  console.log(`Entrando no DocumentoAdd`);
 
-  const [idtipodocumento, setIdTipoDoc] = useState('1');
-  const [idprioridade, setIdPrio] = useState('1');
+  const [idtipodocumento, setIdTipoDoc] = useState(1);
+  const [idprioridade, setIdPrio] = useState(1);
   const [idexpedidor, setIdExped] = useState(usuario.idusuario);
   const [nrprotocolo, setNrProtocolo] = useState('2020');
   const [nrdocumento, setNrDocumento] = useState('150');
-  const [documento, setDocumento] = useState('1');
   const [assunto, setAssunto] = useState('Oficio Alerta COVID');
   const [dataexpedicao, setDtExped] = useState(new Date());
   const [prazo, setPrazo] = useState('10');
@@ -41,14 +40,16 @@ export default function Documento(props) {
   const [validated, setValidated] = useState(false);
   const [alert, setAlert] = useState(false);
   const [arquivos, setArquivos] = useState([]);
-  const [lastUpdate, setLastUpdate] = useState(Date.now());
   const formData = new FormData();
-  const [showModal, setShowModal] = useState(false);
+  const [context, setContext] = useContext(ModalContext);
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    console.log('handleAlert', arquivos, showModal, lastUpdate);
+  const handleProtocolar = () => {
+    console.log('handleProtocolar');
     setAlert(true);
+  };
+  const handleCloseModal = () => {
+    setAlert(false);
+    setContext(false);
   };
 
   function handleDtExpedicao(dtDocumento) {
@@ -61,13 +62,13 @@ export default function Documento(props) {
 
   const handleSubmitDocuments = () => {
     try {
+      setAlert(true);
       const newDocumento = {
         idtipodocumento,
         idprioridade,
         idexpedidor,
         nrprotocolo,
         nrdocumento,
-        documento,
         assunto,
         dataexpedicao,
         prazo,
@@ -78,22 +79,24 @@ export default function Documento(props) {
         status,
       };
       const documentoAdded = dispatch(addDocumentoRequest({ newDocumento }));
-      // console.log('ADDED: ', documentoAdded);
-      handleSubmitUpload(documentoAdded);
-      // clear form data
-      setValidated(true);
-      setAlert(false);
-      setLastUpdate(Date.now());
+      if (documentoAdded.length > 0) {
+        handleSubmitUpload(documentoAdded);
+        // clear form data
+        setValidated(true);
+      } else {
+        toast.info(`Nenhum arquivo foi selecionado para anexar!`);
+        setValidated(true);
+        handleCloseModal();
+      }
     } catch (error) {
       console.error('ERRO: ', error);
     }
   };
 
-  /*  UPLOAD FILES SECTION */
+  /* BEGIN UPLOAD FILES SECTION */
   const onDrop = useCallback(
     acceptedFiles => {
       setArquivos([...arquivos, ...acceptedFiles]);
-      // console.log('arquivos', arquivos);
     },
     [arquivos]
   );
@@ -103,10 +106,8 @@ export default function Documento(props) {
   });
 
   const removeFile = file => () => {
-    // console.log('removeFile...');
     const newFiles = [...arquivos];
     newFiles.splice(newFiles.indexOf(file), 1);
-    // console.log(newFiles);
     setArquivos(newFiles);
   };
 
@@ -125,15 +126,10 @@ export default function Documento(props) {
   };
 
   const handleSubmitUpload = documentoAdded => {
-    // console.log('handleSubmit Files documentoAdded', documentoAdded);
     // eslint-disable-next-line no-shadow
-    // const { documento } = documentoAdded;
     documentoAdded.then(response => {
       try {
-        // console.log('User/Doc: ', response);
         const { iddocumento } = response.documento;
-        // console.log('User/Doc - iddocumento: ', iddocumento);
-
         for (let i = 0; i < arquivos.length; i++) {
           formData.append('arquivos', arquivos[i]);
         }
@@ -143,7 +139,6 @@ export default function Documento(props) {
             'Content-Type': 'multipart/form-data',
           },
         });
-        setAlert(false);
         handleCloseModal();
       } catch (error) {
         toast.error(
@@ -152,13 +147,17 @@ export default function Documento(props) {
       }
     });
   };
-  /*  UPLOAD FILES */
+
+  function handleToggle() {
+    setContext(false);
+  }
+  /*  END UPLOAD FILES SECTION */
 
   return (
     <>
       <Modal
-        show={show}
-        onHide={handleCloseModal}
+        show={context}
+        onHide={handleToggle}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -169,16 +168,17 @@ export default function Documento(props) {
         <Modal.Body>
           <Form noValidate validated={validated}>
             <Form.Row>
-              <Form.Group as={Col} controlId="editInterno">
+              <Form.Group as={Col}>
                 <Form.Label>Protocolo</Form.Label>
-                <Form.Group controlId="editIntExt">
+                <Form.Group>
                   <Form.Check
                     type="radio"
                     inline
                     label="Interno"
-                    checked
+                    selected
                     name="rdDoc"
                     id="rd01"
+                    defaultChecked={1}
                     value={1}
                     onChange={e => setOrigem(e.target.value)}
                   />
@@ -198,15 +198,16 @@ export default function Documento(props) {
                 <Form.Label>Tipo de Documento</Form.Label>
                 <Form.Control
                   as="select"
-                  value={idtipodocumento}
+                  value={1}
                   onChange={e => setIdTipoDoc(e.target.value)}
                 >
-                  <option checked value="1">
-                    Ofício
-                  </option>
-                  <option value="2">Portaria</option>
-                  <option value="3">Requisição</option>
-                  <option value="4">Projeto</option>
+                  {tipoDocumentos.length > 0
+                    ? tipoDocumentos.map(tipo => (
+                        <option key={tipo.idtipo} value={tipo.idtipo}>
+                          {tipo.descricao}
+                        </option>
+                      ))
+                    : ''}
                 </Form.Control>
               </Form.Group>
 
@@ -214,12 +215,10 @@ export default function Documento(props) {
                 <Form.Label>Status</Form.Label>
                 <Form.Control
                   as="select"
-                  value={status}
+                  value="1"
                   onChange={e => setStatus(e.target.value)}
                 >
-                  <option checked value="1">
-                    Enviado
-                  </option>
+                  <option value="1">Enviado</option>
                   <option value="2">Despachado</option>
                   <option value="3">Lido</option>
                   <option value="4">Recebido</option>
@@ -276,16 +275,6 @@ export default function Documento(props) {
             </Form.Row>
 
             <Form.Row>
-              <Form.Group as={Col} controlId="editNrProtocolo">
-                <Form.Label>Documento</Form.Label>
-                <Form.Control
-                  value={documento}
-                  onChange={e => setDocumento(e.target.value)}
-                />
-              </Form.Group>
-            </Form.Row>
-
-            <Form.Row>
               <Form.Group as={Col} controlId="editAssunto">
                 <Form.Label>Assunto</Form.Label>
                 <Form.Control
@@ -298,47 +287,47 @@ export default function Documento(props) {
             </Form.Row>
 
             <Form.Row>
-              <Form.Group as={Col} controlId="editPrioridade">
+              <Form.Group as={Col}>
                 <Form.Label>Proridade</Form.Label>
                 <Form.Group controlId="editPrioridades">
-                  <Form.Check
-                    type="radio"
-                    inline
-                    label="Normal"
-                    checked
-                    name="rdPrio"
-                    id="rdPrio01"
-                    value={1}
-                    onChange={e => setIdPrio(e.target.value)}
-                  />
-                  <Form.Check
-                    type="radio"
-                    inline
-                    label="Urgente"
-                    name="rdPrio"
-                    id="rdPrio02"
-                    value={2}
-                    onChange={e => setIdPrio(e.target.value)}
-                  />
-                  <Form.Check
-                    type="radio"
-                    inline
-                    label="Urgentíssimo"
-                    name="rdPrio"
-                    id="rdPrio03"
-                    value={3}
-                    onChange={e => setIdPrio(e.target.value)}
-                  />
+                  {prioridades.length > 0
+                    ? prioridades.map(prioridade =>
+                        prioridade.idprioridade === 1 ? (
+                          <Form.Check
+                            type="radio"
+                            inline
+                            defaultChecked
+                            value={prioridade.idprioridade}
+                            label={prioridade.tipo}
+                            key={prioridade.idprioridade}
+                            name="rdPrio"
+                            id={`rdPrio${prioridade.idprioridade}`}
+                            onChange={e => setIdPrio(e.target.value)}
+                          />
+                        ) : (
+                          <Form.Check
+                            type="radio"
+                            inline
+                            value={prioridade.idprioridade}
+                            label={prioridade.tipo}
+                            key={prioridade.idprioridade}
+                            name="rdPrio"
+                            id={`rdPrio${prioridade.idprioridade}`}
+                            onChange={e => setIdPrio(e.target.value)}
+                          />
+                        )
+                      )
+                    : 'PRIO'}
                 </Form.Group>
               </Form.Group>
-              <Form.Group as={Col} controlId="editSigilo">
+              <Form.Group as={Col}>
                 <Form.Label>Sigilo</Form.Label>
-                <Form.Group controlId="editSigilos">
+                <Form.Group controlId="editSigilo">
                   <Form.Check
                     type="radio"
                     inline
+                    defaultChecked
                     label="Ostensivo"
-                    checked
                     name="rdSigilo"
                     id="rdSigilo01"
                     value={1}
@@ -460,16 +449,29 @@ export default function Documento(props) {
         </Modal.Body>
         <Modal.Footer>
           <Form.Row>
+            <Form.Label></Form.Label>
             <Form.Group as={Col} controlId="editArq">
               <Form.Label></Form.Label>
               <Button
                 variant="success"
                 size="lg"
                 block
-                onClick={handleCloseModal}
+                onClick={handleProtocolar}
                 p="2"
               >
                 Protocolar Documento
+              </Button>
+            </Form.Group>
+            <Form.Group as={Col} controlId="editArq">
+              <Form.Label></Form.Label>
+              <Button
+                variant="warning"
+                size="lg"
+                block
+                onClick={handleCloseModal}
+                p="2"
+              >
+                Fechar
               </Button>
             </Form.Group>
           </Form.Row>
@@ -478,9 +480,3 @@ export default function Documento(props) {
     </>
   );
 }
-Documento.propTypes = {
-  show: PropTypes.any,
-};
-Documento.defaultProps = {
-  show: null,
-};
