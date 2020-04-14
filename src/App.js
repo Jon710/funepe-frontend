@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
@@ -18,7 +17,6 @@ const [store, persistor] = configureStore();
 
 function App() {
   const [context, setContext] = useState(false);
-  console.log('Starting App', store);
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>

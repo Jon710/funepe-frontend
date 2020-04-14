@@ -1,6 +1,5 @@
 /* eslint-disable no-alert */
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Form, Button, Card } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
@@ -9,8 +8,6 @@ import api from '../../../services/api';
 export default function Funcao() {
   const [funcao, setFuncao] = useState('');
   const [abreviatura, setAbreviatura] = useState('');
-  const { usuario, token } = useSelector(state => state.usuario);
-  console.log(usuario, token);
 
   const history = useHistory();
 
