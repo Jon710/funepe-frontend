@@ -1,29 +1,24 @@
-/* eslint-disable no-console */
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
 import Notifications from '../Notifications';
-// import Paciente from '~/pages/usuario/Index/Paciente';
-import { signOutUser } from '../../../redux/features/usuario/usuarioSlice';
+import { signOut } from '../../../store/modules/auth/actions';
 
-// import Index from '../../Cadastro/Index';
 import logo from '../../../assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/vendor/fontawesome-free/css/all.min.css';
 import '../../../styles/css/resume.min.css';
 
 export default function NavBar() {
-  const { usuario } = useSelector(state => state.usuario);
-  const { signIn } = useSelector(state => state.usuario);
-  console.log('Usuario NavBar');
+  const user = useSelector(state => state.auth.user);
+  const signed = useSelector(state => state.auth.signed);
 
   const dispatch = useDispatch();
   const dataICM = new Date().toDateString();
 
   function handleSignOut() {
-    console.log('Usuario Saiu.');
-    dispatch(signOutUser());
+    dispatch(signOut());
   }
 
   return (
@@ -34,14 +29,14 @@ export default function NavBar() {
       <div className="nav-link js-scroll-trigger bg-light text-success font-weight-bold mt-5 d-none d-lg-block">
         <a href="/perfilmedico">
           <span>
-            {usuario.username !== undefined
-              ? `Usuário: ${usuario.username}`
+            {user.username !== undefined
+              ? `Usuário: ${user.username}`
               : dataICM}
           </span>
         </a>
       </div>
       <div className="p-1 d-none d-lg-block">
-        {signIn ? <Notifications /> : <div>Notify</div>}
+        {signed ? <Notifications /> : <h4>Notify</h4>}
       </div>
 
       <a className="navbar-brand js-scroll-trigger" href="/">

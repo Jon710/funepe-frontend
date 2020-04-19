@@ -2,7 +2,6 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable no-plusplus */
 /* eslint-disable no-return-assign */
-/* eslint-disable no-console */
 import React, { useState, useCallback, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, Col, Button, Card, Modal } from 'react-bootstrap';
@@ -14,8 +13,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
 import api from '../../../services/api';
-import { addDocumentoRequest } from '../../../redux/features/protocolo/protocoloSlice';
-import ModalContext from '../../../redux/features/context/modal';
+import { addDocumentoRequest } from '../../../store/modules/protocolo/actions';
+// import ModalContext from '../../../redux/features/context/modal';
 
 export default function Documento() {
   const dispatch = useDispatch();
@@ -41,7 +40,7 @@ export default function Documento() {
   const [alert, setAlert] = useState(false);
   const [arquivos, setArquivos] = useState([]);
   const formData = new FormData();
-  const [context, setContext] = useContext(ModalContext);
+  // const [context, setContext] = useContext(ModalContext);
 
   const handleProtocolar = () => {
     console.log('handleProtocolar');
@@ -49,7 +48,7 @@ export default function Documento() {
   };
   const handleCloseModal = () => {
     setAlert(false);
-    setContext(false);
+    // setContext(false);
   };
 
   function handleDtExpedicao(dtDocumento) {
@@ -81,7 +80,6 @@ export default function Documento() {
       const documentoAdded = dispatch(addDocumentoRequest({ newDocumento }));
       if (documentoAdded.length > 0) {
         handleSubmitUpload(documentoAdded);
-        // clear form data
         setValidated(true);
       } else {
         toast.info(`Nenhum arquivo foi selecionado para anexar!`);
@@ -148,16 +146,16 @@ export default function Documento() {
     });
   };
 
-  function handleToggle() {
-    setContext(false);
-  }
+  // function handleToggle() {
+  //   setContext(false);
+  // }
   /*  END UPLOAD FILES SECTION */
 
   return (
     <>
       <Modal
-        show={context}
-        onHide={handleToggle}
+        // show={context}
+        // onHide={handleToggle}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -235,7 +233,6 @@ export default function Documento() {
                   <DatePicker
                     selected={dataexpedicao}
                     onChange={handleDtExpedicao}
-                    // style={{ width: '100%' }}
                     className="form-control"
                     dateFormat="dd/MM/yyyy"
                   />

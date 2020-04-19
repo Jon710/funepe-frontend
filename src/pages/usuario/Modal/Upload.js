@@ -8,8 +8,8 @@ import { useDropzone } from 'react-dropzone';
 import { Card, Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
-import history from '~/services/history';
-import api from '~/services/api';
+import history from '../../../services/history';
+import api from '../../../services/api';
 
 export default function Upload(props) {
   const [arquivos, setArquivos] = useState([]);
@@ -60,11 +60,8 @@ export default function Upload(props) {
   };
 
   const handleSubmit = async () => {
-    console.log('handleSubmit Files', arquivos);
     sendBackData(arquivos);
     try {
-      console.log('User/Doc: ', usuario, documento, arquivos);
-
       for (let i = 0; i < arquivos.length; i++) {
         formData.append('arquivos', arquivos[i]);
       }
@@ -76,7 +73,6 @@ export default function Upload(props) {
       });
       const { arquivoanexo } = response.data;
       if (arquivoanexo.length >= 0) {
-        // await dispatch(protocoloSuccess({ arquivoanexo }));
         history.push('/home');
         return;
       }
@@ -87,7 +83,6 @@ export default function Upload(props) {
       toast.error(
         `ERRO: Falha na busca de Protocolos do Usuário. selectAllProtocolo  ${error.message}`
       );
-      // history.push('/');
     }
   };
 
@@ -125,14 +120,7 @@ export default function Upload(props) {
           </div>
         </section>
       </Card>
-      <Button
-        variant="success"
-        // type="submit"
-        size="lg"
-        block
-        onClick={handleSubmit}
-        p="2"
-      >
+      <Button variant="success" size="lg" block onClick={handleSubmit} p="2">
         Anexar Arquivos
       </Button>
     </div>

@@ -1,33 +1,28 @@
-import React, { useState } from 'react';
-import { Provider } from 'react-redux';
+import React from 'react';
 import { PersistGate } from 'redux-persist/integration/react';
-import { ToastContainer } from 'react-toastify';
+import { Provider } from 'react-redux';
 import { Router } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import GlobalStyle from './styles/globals';
 
-// CUSTOM configureStore WITH REDUX-PERSIST & REDUX TOOLKIT
-import configureStore from './redux/configure-store';
 import Routes from './routes';
 import NavBar from './pages/usuario/Index/NavBar';
-import customHistory from './services/history';
+import history from './services/history';
 
-import GlobalStyle from './styles/globals';
-import ModalContext from './redux/features/context/modal';
-
-const [store, persistor] = configureStore();
+import { store, persistor } from './store';
 
 function App() {
-  const [context, setContext] = useState(false);
+  console.log('Entrou no app.js');
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
-        <ModalContext.Provider value={[context, setContext]}>
-          <Router history={customHistory}>
-            <GlobalStyle />
-            <NavBar />
-            <Routes />
-            <ToastContainer position="top-center" autoClose={2000} />
-          </Router>
-        </ModalContext.Provider>
+        <Router history={history}>
+          <GlobalStyle />
+          <NavBar />
+          <Routes />
+
+          <ToastContainer position="top-center" autoClose={2000} />
+        </Router>
       </PersistGate>
     </Provider>
   );

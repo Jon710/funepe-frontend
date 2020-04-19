@@ -1,6 +1,3 @@
-1. COnfigurar o ambiente e colocar no ar o projeto 03 relativo ao API NODE
-https://github.com/infinitered/reactotron/releases
-2. Criar applicacao web projeto09
 3. yarn add react-router-dom
 4. Criar uma pasta 'pages' e 'routes/index.js' e 'services/history.js'
 5. Instalar o history 'yarn add history'
@@ -12,30 +9,11 @@ Dashboard e Profile, depois usar snppet rnc nos quatro index.js
       <Routes />;
     </Router>
 9. Criar corpo do history.js
-10. Instalar reactotron 'yarn add reactotron-react-js'
 ROTAS PRIVADAS
 1.  yarn add react-router-dom E yarn add reactotron-react-js
-2. yarn add prop-types
-LAYOUTS DAS PAGINAS
-1. yarn add styled-components
-2. CRIAR PASTA _LAYOUTS
-ESTILOS GLOBAIS
-1. downaload font https://fonts.google.com/specimen/Roboto
-2. @import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
-ROOT IMPORT
-1. Instalar 'yarn add customize-cra react-app-rewired -D'
-2. Criar o arquivo config-overrides.js na raiz do projeto - esse arquivo será
-aberto pelo rewired - com isso poderemos usar o '~' para referenciar a pasta SRC
-3. Instalar o 'yarn add babel-plugin-root-import -D '
-4. No packge.json trocar o scripts por 'react-app-rewired
-5. Instalar o 'yarn add eslint-import-resolver-babel-plugin-root-import -D' e criar
-no .eslintrc o 'settings'
 ESTILZAR AUTH
 1. yarn add polished E configurar os estilos styles.js e baixar o LOGO
 fazer isso para LogIn e LogUp
-2. instalar yarn add @rocketseat/unform
-VALIDACOES
-1. Instalar 'yarn add yup' - bilbioteca para fazer validacoes de campos
 CONFIGURAR O STORE
 1. Auth do usuario será feito pelo redux - token jwt que precisa ser enviado,
 tem de estar em um lugar que todos tenhm acesso na applicacao
@@ -58,20 +36,11 @@ AUTENTICACAO
 1. Comecar definindo as ACTIONS que serao utilizadas.
 2. Depois implementar o sagas.js importando - import { takeLatest, call, put, all }
 3. Importar  AXIOS 'yarn add axios'
-4. ver aula novamente.
 ARMAZENAR PERFIL
 1. criar o MODULES 'user' semelhante ao modules 'auth'
 PERSISTINDO NO BD DO BROWSER
 1. Importar o 'yarn add redux-persist' para persistir os dados da autenticacao e do usuario
 no BD do BROWSER
-EXIBINDO TOASTS
-1. Instalar o Toastify 'yarn add react-toastify' para exibir aquelas pequenas msg toast
-que aparecem do lado.
-2. Importar no APP.js <ToastContainer autoClose={3000} />
-3. No estilo global.js - import 'react-toastify/dist/ReactToastify.css';
-4. No SAGAS.js do modeule AUTH importar - import { toast } from 'react-toastify';
-e no local do console.tron.error (console.tron.error('Usuario nao é prestador');)
-trocar por [toast.error('Usuario nao é prestador');]
 CADASTRO NA APLICACAO
 1. Criar no ACTIONS.js signupRequest
 2. Importar no arquivo index.js do SignUp o - import { useDispatch } from 'react-redux';
@@ -101,18 +70,13 @@ export function signOut() {
 }
 3. VOlto no PROFILE novamente e importar a action SIGN_OUT, e crio a funcao
 function handleSignOut() para o onClick() do botao Sair do GoBarber.
-ESTILIZAR O DASHBOARD
-1. yarn add date-fns-tz para trabalhar com Time Zone
-2. yarn add react-number-format <https://www.npmjs.com/package/react-number-format>
-3. yarn add bootstrap
-
-DEPLOY
-https://facebook.github.io/create-react-app/docs/deployment
-The last command shown above will serve your static site on the port 3000.
-Like many of serve’s internal settings, the port can be adjusted using the -l or --listen flags:
 
 Fluxo Redux: meu componente dispara uma action -> a action avisa um reducer -> o reducer faz
 as alterações que precisa -> e depois o redux avisa todos componentes que precisam da nova
 informação para que eles atualizem.
 
+COM SAGAS
+A action disparada pro redux é a REQUEST. A REQUEST não é ouvida pelo reducer,
+ apenas pelo saga q é quem faz a chamada (call) a API.
+Então, qndo o saga terminar, ele dispara a action SUCCESS. E é a SUCCESS q é ouvida pelo reducer.
 
