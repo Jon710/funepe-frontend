@@ -13,7 +13,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
 import api from '../../../services/api';
-import { addDocumentoRequest } from '../../../store/modules/protocolo/actions';
+import { addDocumentoRequest } from '../../../redux/features/protocolo/protocoloSlice';
 // import ModalContext from '../../../redux/features/context/modal';
 
 export default function Documento() {

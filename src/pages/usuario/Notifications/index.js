@@ -21,26 +21,26 @@ export default function Notifications() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  useEffect(() => {
-    let c = 0;
-    async function loadNotification() {
-      const response = await api.get(`medico/notify/${usuario.codMed}`);
-      const data = response.data.map(notification => ({
-        ...notification,
-        timeDistance: formatDistance(
-          parseISO(notification.createdAt),
-          new Date(),
-          { addSuffix: true, locale: pt }
-        ),
-        counter: notification.read === false ? (c += 1) : 0,
-      }));
+  // useEffect(() => {
+  //   let c = 0;
+  //   async function loadNotification() {
+  //     const response = await api.get(`medico/notify/${usuario.codMed}`);
+  //     const data = response.data.map(notification => ({
+  //       ...notification,
+  //       timeDistance: formatDistance(
+  //         parseISO(notification.createdAt),
+  //         new Date(),
+  //         { addSuffix: true, locale: pt }
+  //       ),
+  //       counter: notification.read === false ? (c += 1) : 0,
+  //     }));
 
-      setNotifications(data);
-      setCount(c);
-    }
+  //     setNotifications(data);
+  //     setCount(c);
+  //   }
 
-    loadNotification();
-  }, [usuario.codMed, count]);
+  //   loadNotification();
+  // }, [usuario.codMed, count]);
 
   async function handleMarkAsRead(id) {
     await api.put(`medico/notify/update/${id}`);
