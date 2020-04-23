@@ -1,6 +1,10 @@
 import React from 'react';
 import { Tabs, Tab, Figure } from 'react-bootstrap';
 import Funcao from './Funcao/index';
+import Grupo from './Grupo/index';
+import TipoDocumento from './TipoDocumento/index';
+import DespachoPadrao from './DespachoPadrao/index';
+import Usuario from './Usuario/index';
 
 import protocolo from '../../assets/protocolo.png';
 
@@ -30,16 +34,16 @@ export default function PaginaInicial() {
           </div>
         </Tab>
         <Tab eventKey="despachopadrao" title="Despacho Padrão">
-          {/* <DespachoPadrao /> */}
+          <DespachoPadrao />
         </Tab>
         <Tab eventKey="grupo" title="Grupo">
-          {/* <Grupo /> */}
+          <Grupo />
         </Tab>
         <Tab eventKey="tipodocumento" title="Tipo de Documento">
-          {/* <TipoDocumento /> */}
+          <TipoDocumento />
         </Tab>
-        <Tab eventKey="usuariogrupo" title="Usuário Grupo">
-          {/* <UsuarioGrupo /> */}
+        <Tab eventKey="usuario" title="Usuário">
+          <Usuario />
         </Tab>
       </Tabs>
     </div>

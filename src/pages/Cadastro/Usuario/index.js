@@ -5,11 +5,11 @@ import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
 import api from '../../../services/api';
 
-export default function TipoDocumento() {
-  const [descricao, setDescricao] = useState('');
-  const [abreviacao, setAbreviacao] = useState('');
-  const [listaTipo, setListaTipo] = useState([]);
-  const [, setNewTipo] = useState();
+export default function Usuario() {
+  const [username, setUsername] = useState('');
+  const [senha, setSenha] = useState('');
+  const [listaUsuario, setListaUsuario] = useState([]);
+  const [, setNewUsuario] = useState();
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -17,39 +17,39 @@ export default function TipoDocumento() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const novoTipo = {
-      descricao,
-      abreviacao,
+    const novoUsuario = {
+      username,
+      senha,
     };
 
     try {
-      const response = await api.post('types', novoTipo);
+      const response = await api.post('usuarios', novoUsuario);
 
-      const { types } = response.data;
-      setNewTipo(types);
+      const { usuarios } = response.data;
+      setNewUsuario(usuarios);
 
-      toast.success('Tipo de documento cadastrada com sucesso!');
+      toast.success('Usuário cadastrado com sucesso!');
       history.push('/cadastros');
     } catch (err) {
-      toast.error('Erro ao cadastrar novo tipo de documento.');
+      toast.error('Erro ao cadastrar novo usuário.');
     }
   }
 
-  async function handleTiposCadastrados(e) {
+  async function handleUsuariosCadastrados(e) {
     e.preventDefault();
-    const response = await api.get('types');
-    const { types } = response.data;
-    setListaTipo(types);
+    const response = await api.get('usuarios');
+    const { users } = response.data;
+    setListaUsuario(users);
     setShow(true);
   }
 
-  async function handleDelete(idtipo, e) {
+  async function handleDelete(idusuario, e) {
     try {
-      await api.delete(`types/${idtipo}`);
-      toast.success('Tipo de documento deletado com sucesso.');
-      handleTiposCadastrados(e);
+      await api.delete(`usuarios/${idusuario}`);
+      toast.success('Usuário deletado.');
+      handleUsuariosCadastrados(e);
     } catch (err) {
-      toast.error('Erro ao deletar tipo de documento.');
+      toast.error('Erro ao deletar usuário.');
     }
   }
 
@@ -59,46 +59,46 @@ export default function TipoDocumento() {
         <Card className="m-2" style={{ width: '30rem' }}>
           <Card.Body>
             <Form>
-              <Form.Group controlId="novoTipoForm">
-                <Form.Label>Novo tipo de documento</Form.Label>
+              <Form.Group controlId="novoUserForm">
+                <Form.Label>Novo usuário</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Descrição"
-                  value={descricao}
-                  onChange={e => setDescricao(e.target.value)}
+                  placeholder="Nome de usuário"
+                  value={username}
+                  onChange={e => setUsername(e.target.value)}
                 />
               </Form.Group>
-              <Form.Group controlId="abreviacaoForm">
-                <Form.Label>Abreviação</Form.Label>
+              <Form.Group controlId="senhaForm">
+                <Form.Label>Senha</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Abreviação"
-                  value={abreviacao}
-                  onChange={e => setAbreviacao(e.target.value)}
+                  placeholder="Senha"
+                  value={senha}
+                  onChange={e => setSenha(e.target.value)}
                 />
               </Form.Group>
               <div className="text-center p-1">
                 <Button
                   variant="primary"
                   type="submit"
-                  onClick={handleTiposCadastrados}
+                  onClick={handleUsuariosCadastrados}
                   show={show}
                 >
-                  Tipos de documento cadastrados
+                  Usuários cadastrados
                 </Button>
               </div>
               <div className="text-center p-1">
                 <Button variant="success" type="submit" onClick={handleSubmit}>
-                  Cadastrar novo tipo de documento
+                  Cadastrar novo usuário
                 </Button>
               </div>
               <Modal show={show} onHide={handleClose}>
                 <Modal.Body>
-                  {listaTipo.map(f => (
-                    <li key={f.idtipo}>
-                      {f.descricao}
+                  {listaUsuario.map(f => (
+                    <li key={f.idusuario}>
+                      {f.username}
                       <DeleteForeverSharpIcon
-                        onClick={e => handleDelete(f.idtipo, e)}
+                        onClick={e => handleDelete(f.idusuario, e)}
                       />
                       <hr />
                     </li>
