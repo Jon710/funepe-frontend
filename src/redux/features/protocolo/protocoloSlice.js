@@ -22,9 +22,6 @@ export const sliceProtocolo = createSlice({
   },
   reducers: {
     protocoloSuccess: (state, action) => {
-<<<<<<< HEAD
-      const { caixaentradas, prioridades, types } = action.payload;
-=======
       // console.log('protocoloSuccess Reducer/Action', action.payload);
       const {
         caixaentradas,
@@ -35,7 +32,6 @@ export const sliceProtocolo = createSlice({
         roles,
         groups,
       } = action.payload;
->>>>>>> protocolo
       state.loading = false;
       if (caixaentradas !== undefined) {
         state.protocolo = caixaentradas;
@@ -111,11 +107,6 @@ export default sliceProtocolo.reducer;
 export const getFirstRender = usuario => {
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
-<<<<<<< HEAD
-
-=======
-    // redux-thunk
->>>>>>> protocolo
     try {
       if (!usuario.idusuario) {
         toast.error('ID do Usuário é inválido.');
@@ -127,11 +118,6 @@ export const getFirstRender = usuario => {
         }`;
       } else {
         toast.error('Token é inválido. Logar no sistema novamente!');
-<<<<<<< HEAD
-
-=======
-        console.log('Token é inválido. Logar no sistema novamente!');
->>>>>>> protocolo
         await dispatch(updateFailure());
         history.push('/');
         return;
