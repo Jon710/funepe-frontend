@@ -1,11 +1,14 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable consistent-return */
+/* eslint-disable no-console */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import history from '../../../services/history';
 import api from '../../../services/api';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
+
+/** *************STATE SLICE************** */
 
 export const sliceProtocolo = createSlice({
   name: 'protocolo',
@@ -56,33 +59,46 @@ export const sliceProtocolo = createSlice({
       }
     },
     protocoloRequest: (state, action) => {
+      console.log('protocoloRequest Reducer/Action', action.payload);
       const { caixaentradas } = action.payload;
       state.loading = true;
       state.protocolo = caixaentradas;
     },
-    protocoloFailure: state => {
+    protocoloFailure: (state, action) => {
+      console.log('FAILURE', action.payload);
       state.loading = false;
       state.protocolo = {};
     },
     updateProtocoloRequest: (state, action) => {
+      console.log('updateProtocoloRequest Reducer/Action', action);
       const { caixaentradas } = action.payload;
       state.loading = false;
       state.protocolo = caixaentradas;
     },
     updateProtocoloSuccess: (state, action) => {
+      console.log('updateProtocoloSuccess Reducer/Action', action);
       const { caixaentradas } = action.payload;
       state.loading = false;
       state.protocolo = caixaentradas;
     },
-    updateFailure: state => {
+    updateFailure: (state, action) => {
+      console.log('updateFAILURE', action.payload);
       state.loading = false;
       state.protocolo = {};
       state.documento = {};
     },
     addDocumentoSuccess(state, action) {
-      const { documento } = action.payload;
-      state.loading = false;
-      state.documento = documento;
+      console.log('addDocumentoSuccess Reducer/Action', action);
+      const { documento, documentoEdit } = action.payload;
+      if (documento !== undefined) {
+        state.loading = false;
+        state.documento = documento;
+      }
+      if (documentoEdit !== undefined) {
+        state.loading = false;
+        state.documento = documentoEdit;
+      }
+      // immer is running under the hood so we can write this without mutating state.
     },
   },
 });
@@ -102,24 +118,18 @@ export const {
 
 export default sliceProtocolo.reducer;
 
+// API REQUEST ACTIONS HANDLED WITH REDUX-THUNK MIDDLEWARE BUILT INTO REDUX TOOLKIT -->
+
 /** *************THUNKS************** */
 
 export const getFirstRender = usuario => {
+  console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
+    // redux-thunk
     try {
       if (!usuario.idusuario) {
         toast.error('ID do Usuário é inválido.');
-        return;
-      }
-      if (getState().usuario.token) {
-        api.defaults.headers.Authorization = `Bearer ${
-          getState().usuario.token
-        }`;
-      } else {
-        toast.error('Token é inválido. Logar no sistema novamente!');
-        await dispatch(updateFailure());
-        history.push('/');
         return;
       }
       const response = await api.get(
@@ -175,6 +185,7 @@ export const getUploadedFiles = iddocumento => {
 
 export const selectAllProtocolo = () => {
   return async (dispatch, getState) => {
+    // redux-thunk
     try {
       const { usuario } = getState().usuario;
       const response = await api.get(
@@ -199,6 +210,7 @@ export const selectAllProtocolo = () => {
 };
 
 export const addProtocolo = payload => {
+  // console.log('addProtocolo: ', payload);
   return async (dispatch, getState) => {
     try {
       const { documento } = payload;
@@ -215,7 +227,7 @@ export const addProtocolo = payload => {
         `usuarios/${usuario.idusuario}/caixaentrada/`,
         caixaentrada
       );
-
+      // console.log('PROTOCOLADO: ', response.data);
       dispatch(selectAllProtocolo());
       toast.success('Protocolo inserido com sucesso!');
       return response.data;
@@ -223,13 +235,17 @@ export const addProtocolo = payload => {
       toast.error(
         `ERRO ao Protocolar Documento - addProtocolo ${error.message}`
       );
-
+      console.log(
+        'ERRO ao Protocolar Documento - addProtocolo: ',
+        error.message
+      );
       dispatch(updateFailure());
     }
   };
 };
 
 export const addDocumentoRequest = payload => {
+  // console.log('addDocumentoRequest: ', payload);
   return async (dispatch, getState) => {
     try {
       const { newDocumento } = payload;
@@ -239,11 +255,13 @@ export const addDocumentoRequest = payload => {
         `usuarios/${usuario.idusuario}/documents/`,
         newDocumento
       );
+      // console.log('ADD DOCUMENTO: ', response.data);
       await dispatch(addDocumentoSuccess(response.data));
       // toast.success('Documento inserido com sucesso!');
       await dispatch(addProtocolo(response.data));
       return response.data;
     } catch (error) {
+      console.log('ERROR: ', error.response.data.error.message);
       toast.error(
         `ERRO ao adicionar Novo documento - addDocumentoRequest  ${error.response.data.error.message}`
       );
@@ -254,6 +272,7 @@ export const addDocumentoRequest = payload => {
 
 export const selectAllPrioridade = () => {
   return async dispatch => {
+    // redux-thunk
     try {
       const response = await api.get(`prioridade/`);
       const { prioridades } = response.data;
@@ -275,6 +294,7 @@ export const selectAllPrioridade = () => {
 
 export const selectAllTipoDocumentos = () => {
   return async dispatch => {
+    // redux-thunk
     try {
       const response = await api.get(`types/`);
       const { types } = response.data;

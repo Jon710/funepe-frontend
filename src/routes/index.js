@@ -1,8 +1,8 @@
 import React from 'react';
-import { Switch, BrowserRouter } from 'react-router-dom';
-import Route from './Route';
+import { Switch, Route } from 'react-router-dom';
+import { Redirect } from 'react-router';
+import { useSelector } from 'react-redux';
 
-import CaixaEntrada from '../pages/usuario/Index/CaixaEntrada';
 import SignUpMed from '../pages/usuario/SignUpMed';
 import Protocolo from '../pages/usuario/Index/Protocolo';
 import PerfilMedico from '../pages/usuario/PerfilMedico';
@@ -17,23 +17,29 @@ import PaginaInicial from '../pages/Cadastro/PaginaInicial';
 import Auth from '../pages/usuario/Auth';
 
 export default function Routes() {
+  const { signed } = useSelector(state => state.auth);
+
   return (
-    <BrowserRouter>
-      <Switch>
-        <Route path="/" exact component={Auth} />
-        <Route path="/newmedico" component={SignUpMed} />
+    <Switch>
+      <Route path="/" exact component={Auth} />
+      <Route path="/newmedico" component={SignUpMed} />
 
-        <Route path="/home" component={CaixaEntrada} isPrivate />
-        <Route path="/agenda" component={Content} />
-        <Route path="/perfilmedico" component={PerfilMedico} />
-        <Route path="/frmhome" component={Home} />
-        <Route path="/frmpac" component={Paciente} />
-        <Route path="/frmagenda" component={Agenda} />
-        <Route path="/frmatv" component={Atividade} />
-        <Route path="/frmmed" component={Medico} />
+      {signed ? (
+        <>
+          <Route path="/home" component={Protocolo} />
+          <Route path="/agenda" component={Content} />
+          <Route path="/perfilmedico" component={PerfilMedico} />
+          <Route path="/frmhome" component={Home} />
+          <Route path="/frmpac" component={Paciente} />
+          <Route path="/frmagenda" component={Agenda} />
+          <Route path="/frmatv" component={Atividade} />
+          <Route path="/frmmed" component={Medico} />
 
-        <Route path="/cadastros" component={PaginaInicial} isPrivate />
-      </Switch>
-    </BrowserRouter>
+          <Route path="/cadastros" component={PaginaInicial} />
+        </>
+      ) : (
+        <Redirect to="/" />
+      )}
+    </Switch>
   );
 }

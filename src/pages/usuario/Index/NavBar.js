@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
-import Notifications from '../Notifications';
+// import Notifications from '../Notifications';
 import { signOut } from '../../../store/modules/auth/actions';
 
 import logo from '../../../assets/logo.jpg';
@@ -12,7 +12,7 @@ import '../../../styles/css/resume.min.css';
 
 export default function NavBar() {
   const user = useSelector(state => state.auth.user);
-  const signed = useSelector(state => state.auth.signed);
+  // const signed = useSelector(state => state.auth.signed);
 
   const dispatch = useDispatch();
   const dataICM = new Date().toDateString();
@@ -36,7 +36,7 @@ export default function NavBar() {
         </a>
       </div>
       <div className="p-1 d-none d-lg-block">
-        {signed ? <Notifications /> : <h4>Notify</h4>}
+        {/* {signed ? <Notifications /> : <h4>Notify</h4>} */}
       </div>
 
       <a className="navbar-brand js-scroll-trigger" href="/">
