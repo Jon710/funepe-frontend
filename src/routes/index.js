@@ -4,7 +4,7 @@ import Route from './Route';
 
 import CaixaEntrada from '../pages/usuario/Index/CaixaEntrada';
 import SignUpMed from '../pages/usuario/SignUpMed';
-// import Dashboard from '~/pages/usuario/Dashboard';
+import Protocolo from '../pages/usuario/Index/Protocolo';
 import PerfilMedico from '../pages/usuario/PerfilMedico';
 import Content from '../pages/usuario/Index/Content';
 import Home from '../pages/usuario/Index/Home';
