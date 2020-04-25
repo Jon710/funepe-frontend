@@ -2,16 +2,14 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, Button, Card, Container } from 'react-bootstrap';
-
+import LinearProgress from '@material-ui/core/LinearProgress';
 import { getFirstRender } from '../../../redux/features/usuario/usuarioSlice';
-// import NavBar from '~/pages/usuario/Index/NavBar';
 
 import logo from '../../../assets/logo.jpg';
 
 export default function Auth() {
+  const { loading } = useSelector(state => state.usuario);
   const dispatch = useDispatch();
-  const token = useSelector(state => state.usuario.token);
-  console.log('token', token);
   const [validated, setValidated] = useState(false);
 
   const handleSubmit = event => {
@@ -46,11 +44,6 @@ export default function Auth() {
 
   return (
     <Container>
-      {/* {validated ? (
-        <div className="p-3">Validated Doctor</div>
-      ) : (
-        <div className="p-3">No Validated Doctor</div>
-      )} */}
       <div className="row justify-content-md-center p-5">
         <div className="col-lg-auto">
           <Card className="m-2">
@@ -58,8 +51,9 @@ export default function Auth() {
               <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <div className="p-3">
                   <div className="text-center">
+                    {loading ? <LinearProgress /> : ''}
                     <img
-                      className="img-fluid rounded center-block hoverable mx-2 mb-2"
+                      className="intro-banner-vdo-play-btn pinkBg img-fluid rounded center-block hoverable mx-2 mb-2"
                       src={logo}
                       alt="logo"
                       width={100}

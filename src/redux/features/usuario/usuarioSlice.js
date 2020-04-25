@@ -106,16 +106,34 @@ export const getFirstRender = ({ payload }) => {
       const { token, user } = response.data;
       if (token) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
-        // const users = await api.get('usuarios/');
-        // console.log('USER: ', users);
         dispatch(signInSuccess({ token, user }));
+        // dispatch(setToken(token));
+        // dispatch({
+        //   type: 'persist/REHYDRATE',
+        //   payload: `Bearer ${token}`,
+        // });
+        console.log('API: ', api);
         history.push('/home');
         return;
       }
     } catch (error) {
-      toast.error(
-        `ERRO: Falha na atualização do Usuário, verifique seus dados.  ${error}`
-      );
+      console.log('error', error.message);
+
+      if (!error.response) {
+        console.log(
+          `ERRO: Falha na Conexão com o Servidor de Banco de Dados!  ${error}`
+        );
+        toast.error(
+          `ERRO: Falha na Conexão com o Servidor de Banco de Dados!.  ${error}`
+        );
+      } else {
+        console.log(
+          `ERRO: Falha na Autenticação do Usuário, verifique seus dados.  ${error.response.data.message}`
+        );
+        toast.error(
+          `ERRO: Falha na Autenticação do Usuário, verifique seus dados.  ${error.response.data.message}`
+        );
+      }
       dispatch(signOutUser());
     }
   };
@@ -147,13 +165,14 @@ export const signUp = ({ payload }) => {
   };
 };
 
-export const setToken = ({ payload }) => {
-  console.log('setToken...');
-  if (!payload) return;
+export const setToken = token => {
+  console.log('setToken...', token);
+  if (!token) return;
 
-  const { token } = payload.usuario;
+  // const { token } = payload.usuario;
 
   if (token) {
+    console.log('setToken.1..', token);
     api.defaults.headers.Authorization = `Bearer ${token}`;
   }
 };

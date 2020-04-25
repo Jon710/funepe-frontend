@@ -16,13 +16,25 @@ export const sliceProtocolo = createSlice({
     loading: false,
     protocolo: {},
     documento: {},
+    arquivos: [],
     tipoDocumentos: {},
     prioridades: {},
+    usuarios: {},
+    grupos: {},
+    funcoes: {},
   },
   reducers: {
     protocoloSuccess: (state, action) => {
-      console.log('protocoloSuccess Reducer/Action', action.payload);
-      const { caixaentradas, prioridades, types } = action.payload;
+      // console.log('protocoloSuccess Reducer/Action', action.payload);
+      const {
+        caixaentradas,
+        prioridades,
+        types,
+        arquivosanexo,
+        users,
+        roles,
+        groups,
+      } = action.payload;
       state.loading = false;
       if (caixaentradas !== undefined) {
         state.protocolo = caixaentradas;
@@ -32,6 +44,18 @@ export const sliceProtocolo = createSlice({
       }
       if (types !== undefined) {
         state.tipoDocumentos = types;
+      }
+      if (arquivosanexo !== undefined) {
+        state.arquivos = arquivosanexo;
+      }
+      if (users !== undefined) {
+        state.usuarios = users;
+      }
+      if (groups !== undefined) {
+        state.grupos = groups;
+      }
+      if (roles !== undefined) {
+        state.funcoes = roles;
       }
     },
     protocoloRequest: (state, action) => {
@@ -65,9 +89,15 @@ export const sliceProtocolo = createSlice({
     },
     addDocumentoSuccess(state, action) {
       console.log('addDocumentoSuccess Reducer/Action', action);
-      const { documento } = action.payload;
-      state.loading = false;
-      state.documento = documento;
+      const { documento, documentoEdit } = action.payload;
+      if (documento !== undefined) {
+        state.loading = false;
+        state.documento = documento;
+      }
+      if (documentoEdit !== undefined) {
+        state.loading = false;
+        state.documento = documentoEdit;
+      }
       // immer is running under the hood so we can write this without mutating state.
     },
   },
@@ -98,9 +128,6 @@ export const getFirstRender = usuario => {
     dispatch(protocoloRequest({ usuario }));
     // redux-thunk
     try {
-      console.log('Protocolo getFirstRender1:', usuario.idusuario);
-      console.log('Protocolo getFirstRender2:', getState().usuario.token);
-
       if (!usuario.idusuario) {
         toast.error('ID do Usuário é inválido.');
         return;
@@ -111,7 +138,7 @@ export const getFirstRender = usuario => {
         }`;
       } else {
         toast.error('Token é inválido. Logar no sistema novamente!');
-        console.error('Token é inválido. Logar no sistema novamente!');
+        console.log('Token é inválido. Logar no sistema novamente!');
         await dispatch(updateFailure());
         history.push('/');
         return;
@@ -123,6 +150,9 @@ export const getFirstRender = usuario => {
       if (caixaentradas.length >= 0) {
         dispatch(selectAllPrioridade());
         dispatch(selectAllTipoDocumentos());
+        dispatch(selectAllUsuarios());
+        dispatch(selectAllGrupos());
+        dispatch(selectAllFuncoes());
         await dispatch(protocoloSuccess({ caixaentradas }));
         const { protocolo } = Object.assign(
           {},
@@ -136,6 +166,28 @@ export const getFirstRender = usuario => {
     } catch (error) {
       toast.error(
         `ERRO: Falha na busca de Protocolos do Usuário. getFirstRender.  ${error.message}`
+      );
+      // history.push('/');
+    }
+  };
+};
+
+export const getUploadedFiles = iddocumento => {
+  return async dispatch => {
+    // redux-thunk
+    try {
+      const response = await api.get(`documents/${iddocumento}/arquivoanexo/`);
+      const { arquivosanexo } = response.data;
+      if (arquivosanexo) {
+        if (arquivosanexo.length >= 0) {
+          await dispatch(protocoloSuccess({ arquivosanexo }));
+          history.push('/home');
+          return arquivosanexo;
+        }
+      }
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Anexos. getUploadedFiles()  ${error.message}`
       );
       // history.push('/');
     }
@@ -268,6 +320,72 @@ export const selectAllTipoDocumentos = () => {
     } catch (error) {
       toast.error(
         `ERRO: Falha na busca de Tipo de Documentos (selectAllTipoDocumentos)!  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllUsuarios = () => {
+  return async dispatch => {
+    // redux-thunk
+    try {
+      const response = await api.get(`usuarios/`);
+      const { users } = response.data;
+      if (users.length >= 0) {
+        await dispatch(protocoloSuccess({ users }));
+        history.push('/home');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/home');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Tipo de Usuarios (selectAllUsuarios)!  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllGrupos = () => {
+  return async dispatch => {
+    // redux-thunk
+    try {
+      const response = await api.get(`groups/`);
+      const { groups } = response.data;
+      if (groups.length >= 0) {
+        await dispatch(protocoloSuccess({ groups }));
+        history.push('/home');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/home');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Grupos (selectAllGrupos)!  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllFuncoes = () => {
+  return async dispatch => {
+    // redux-thunk
+    try {
+      const response = await api.get(`roles/`);
+      const { roles } = response.data;
+      if (roles.length >= 0) {
+        await dispatch(protocoloSuccess({ roles }));
+        history.push('/home');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/home');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Funcoes (selectAllFuncoes)!  ${error.message}`
       );
     }
   };

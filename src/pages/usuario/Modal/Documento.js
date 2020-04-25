@@ -3,9 +3,9 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-console */
-import React, { useState, useCallback, useContext } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, Col, Button, Card, Modal } from 'react-bootstrap';
+import { Form, Col, Button, Card, Modal, ProgressBar } from 'react-bootstrap';
 import { useDropzone } from 'react-dropzone';
 import { toast } from 'react-toastify';
 import SweetAlert from 'react-bootstrap-sweetalert';
@@ -15,19 +15,25 @@ import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 
 import api from '../../../services/api';
 import { addDocumentoRequest } from '../../../redux/features/protocolo/protocoloSlice';
-import ModalContext from '../../../redux/features/context/modal';
+import {
+  modalClose,
+  progressBar,
+} from '../../../redux/features/context/contextSlice';
 
 export default function Documento() {
   const dispatch = useDispatch();
   const { usuario } = useSelector(state => state.usuario);
-  const { prioridades, tipoDocumentos } = useSelector(state => state.protocolo);
-  console.log(`Entrando no DocumentoAdd`);
+  const { documento, prioridades, tipoDocumentos } = useSelector(
+    state => state.protocolo
+  );
+  const { showModal } = useSelector(state => state.contexto);
+  console.log(`Entrando no DocumentoAdd`, documento);
 
   const [idtipodocumento, setIdTipoDoc] = useState(1);
   const [idprioridade, setIdPrio] = useState(1);
   const [idexpedidor, setIdExped] = useState(usuario.idusuario);
-  const [nrprotocolo, setNrProtocolo] = useState('2020');
-  const [nrdocumento, setNrDocumento] = useState('150');
+  const [nrprotocolo, setNrProtocolo] = useState(documento.iddocumento);
+  const [nrdocumento, setNrDocumento] = useState(documento.iddocumento);
   const [assunto, setAssunto] = useState('Oficio Alerta COVID');
   const [dataexpedicao, setDtExped] = useState(new Date());
   const [prazo, setPrazo] = useState('10');
@@ -41,15 +47,13 @@ export default function Documento() {
   const [alert, setAlert] = useState(false);
   const [arquivos, setArquivos] = useState([]);
   const formData = new FormData();
-  const [context, setContext] = useContext(ModalContext);
 
   const handleProtocolar = () => {
-    console.log('handleProtocolar');
     setAlert(true);
   };
   const handleCloseModal = () => {
     setAlert(false);
-    setContext(false);
+    dispatch(modalClose());
   };
 
   function handleDtExpedicao(dtDocumento) {
@@ -62,6 +66,7 @@ export default function Documento() {
 
   const handleSubmitDocuments = () => {
     try {
+      console.log('documentoAdded');
       setAlert(true);
       const newDocumento = {
         idtipodocumento,
@@ -78,16 +83,53 @@ export default function Documento() {
         sigilo,
         status,
       };
-      const documentoAdded = dispatch(addDocumentoRequest({ newDocumento }));
-      if (documentoAdded.length > 0) {
-        handleSubmitUpload(documentoAdded);
-        // clear form data
-        setValidated(true);
-      } else {
-        toast.info(`Nenhum arquivo foi selecionado para anexar!`);
-        setValidated(true);
-        handleCloseModal();
-      }
+      const documentoAdded = dispatch(
+        addDocumentoRequest({ newDocumento })
+      ).then(response => {
+        try {
+          console.log('arquivos', arquivos);
+          if (arquivos.length > 0) {
+            const { iddocumento } = response.documento;
+            for (let i = 0; i < arquivos.length; i++) {
+              formData.append('arquivos', arquivos[i]);
+            }
+
+            api.post(`documents/${iddocumento}/arquivoanexo`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+              onUploadProgress: progressEvent => {
+                console.log('onUlpoadingggggggggg');
+                dispatch(
+                  progressBar(
+                    // eslint-disable-next-line radix
+                    parseInt(
+                      Math.round(
+                        (progressEvent.loaded * 100) / progressEvent.total,
+                        10
+                      )
+                    )
+                  )
+                );
+
+                // Clear percentage
+                // setTimeout(() => dispatch(progressBar(0), 1000));
+              },
+            });
+            handleCloseModal();
+          } else {
+            handleCloseModal();
+          }
+        } catch (error) {
+          toast.error(
+            `ERRO: Documento.js - handleSubmitUpload()  ${error.message}`
+          );
+        }
+      });
+      console.log('documentoAddeddocumentoAdded: ', documentoAdded);
+      // handleSubmitUpload(documentoAdded);
+      // clear form data
+      setValidated(true);
     } catch (error) {
       console.error('ERRO: ', error);
     }
@@ -125,39 +167,11 @@ export default function Documento() {
     background: 'lightGrey',
   };
 
-  const handleSubmitUpload = documentoAdded => {
-    // eslint-disable-next-line no-shadow
-    documentoAdded.then(response => {
-      try {
-        const { iddocumento } = response.documento;
-        for (let i = 0; i < arquivos.length; i++) {
-          formData.append('arquivos', arquivos[i]);
-        }
-
-        api.post(`documents/${iddocumento}/arquivoanexo`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        handleCloseModal();
-      } catch (error) {
-        toast.error(
-          `ERRO: Documento.js - handleSubmitUpload()  ${error.message}`
-        );
-      }
-    });
-  };
-
-  function handleToggle() {
-    setContext(false);
-  }
-  /*  END UPLOAD FILES SECTION */
-
   return (
     <>
       <Modal
-        show={context}
-        onHide={handleToggle}
+        show={showModal}
+        onHide={() => dispatch(modalClose())}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
@@ -268,7 +282,7 @@ export default function Documento() {
               <Form.Group as={Col} controlId="editNrProtocolo">
                 <Form.Label>Nr de Protocolo</Form.Label>
                 <Form.Control
-                  value={nrprotocolo}
+                  value={documento.iddocumento}
                   onChange={e => setNrProtocolo(e.target.value)}
                 />
               </Form.Group>
@@ -444,12 +458,14 @@ export default function Documento() {
                 {/* Upload Files */}
               </Form.Group>
             </Form.Row>
-            <Form.Row></Form.Row>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Form.Row>
             <Form.Label></Form.Label>
+            <Form.Group as={Col} controlId="editArq">
+              <ProgressBar animated now={45} />
+            </Form.Group>
             <Form.Group as={Col} controlId="editArq">
               <Form.Label></Form.Label>
               <Button

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-console */
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -11,22 +11,24 @@ import {
   Button,
   Card,
   Accordion,
+  ProgressBar,
 } from 'react-bootstrap';
 
 import { MdSupervisorAccount } from 'react-icons/md';
 import { addDays, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
 import { getFirstRender } from '../../../redux/features/protocolo/protocoloSlice';
-import ModalContext from '../../../redux/features/context/modal';
+import { modalOpen } from '../../../redux/features/context/contextSlice';
+// import ModalContext from '../../../redux/features/context/modal';
 import Despachos from '../Modal/Despachos';
 import Documento from '../Modal/Documento';
+import TableProtocolo from './TableProtocolo';
 
 export default function CaixaEntrada() {
   const dispatch = useDispatch();
   const { usuario } = useSelector(state => state.usuario);
   const { documento } = useSelector(state => state.protocolo);
-  const [context, setContext] = useContext(ModalContext);
-  console.log('SHOW: ', context);
+  const { showModal, uploadPercentage } = useSelector(state => state.contexto);
 
   const [cxEntrada, setCxEntrada] = useState([]);
   const [count, setCount] = useState(0);
@@ -35,7 +37,6 @@ export default function CaixaEntrada() {
   useEffect(() => {
     let c = 0;
     function loadDocumentos() {
-      // console.log('Usuario CaixaEntrada', usuario);
       setLoading(true);
       if (usuario.idusuario !== 0) {
         dispatch(getFirstRender(usuario)).then(response => {
@@ -65,10 +66,9 @@ export default function CaixaEntrada() {
     <Container fluid>
       <div className="container-fluid">
         <div>
-          <Button variant="primary" onClick={() => setContext(true)}>
+          <Button variant="primary" onClick={() => dispatch(modalOpen())}>
             Protocolar Documento
           </Button>
-
           {loading ? (
             <>
               <Spinner
@@ -83,9 +83,16 @@ export default function CaixaEntrada() {
           ) : (
             <>
               <MdSupervisorAccount size={50} variant="primary" />
-              <Documento show={context} idDoc="idDocumento" />
+              <Documento show={showModal} idDoc="idDocumento" />
             </>
           )}
+        </div>
+        <div>
+          <ProgressBar
+            animated
+            now={uploadPercentage}
+            label={`${uploadPercentage}%`}
+          />
         </div>
 
         <Table striped bordered hover size="sm" variant="primary">
@@ -145,6 +152,7 @@ export default function CaixaEntrada() {
               </Accordion.Collapse>
             </Card>
           </Accordion>
+          <TableProtocolo />
         </div>
       </div>
       {/*

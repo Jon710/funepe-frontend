@@ -1,32 +1,26 @@
-/* eslint-disable no-return-assign */
-/* eslint-disable no-console */
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import PropTypes from 'prop-types';
-import { Modal, Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import { DropdownButton, Dropdown } from 'react-bootstrap';
+
 import history from '../../../services/history';
 import api from '../../../services/api';
-import DocumentoEdit from './DocumentoEdit';
+import {
+  modalOpen,
+  despachoModalOpen,
+} from '../../../redux/features/context/contextSlice';
 
-export default function Despachos(props) {
+export default function Despachos() {
+  const dispatch = useDispatch();
   const { usuario } = useSelector(state => state.usuario);
-  const { caixa } = props;
-  const [show, setShow] = useState(false);
-  const [caixaDoc, setCaixaDoc] = useState(caixa);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const { documento } = useSelector(state => state.protocolo);
+  const [loading, setLoading] = React.useState(true);
+  // console.log('Despachos-caixaDoc: ', loading);
 
   function alterarStatus(situacao) {
-    // <option value="1">Protocolado</option>
-    // <option value="2">Despachado</option>
-    // <option value="3">Lido</option>
-    // <option value="4">Recebido</option>
-    // <option value="5">Arquivado</option>
-    // <option value="6">Pendente</option>
     const updateCaixa = {
       status: situacao,
-      idcaixaentrada: caixa.idcaixaentrada,
+      idcaixaentrada: documento.idcaixaentrada,
     };
     if (updateCaixa) {
       api
@@ -34,10 +28,8 @@ export default function Despachos(props) {
           `usuarios/${usuario.idusuario}/caixaentrada/${updateCaixa.idcaixaentrada}`,
           updateCaixa
         )
-        .then(result => {
-          const { caixaentrada } = result.data;
-          setCaixaDoc(caixaentrada);
-          toast.success('Status atualizado com sucesso!');
+        .then(() => {
+          setLoading(false);
           history.push('/home');
         })
         .catch(err => {
@@ -57,7 +49,10 @@ export default function Despachos(props) {
         id="dropdown-item-button"
         title="Menu"
       >
-        <Dropdown.Item as="button" onClick={() => alterarStatus('Despachado')}>
+        <Dropdown.Item
+          as="button"
+          onClick={() => dispatch(despachoModalOpen())}
+        >
           Despachar Documento
         </Dropdown.Item>
         <Dropdown.Item as="button" onClick={() => alterarStatus('Pendente')}>
@@ -68,43 +63,10 @@ export default function Despachos(props) {
         </Dropdown.Item>
 
         <Dropdown.Divider />
-        <Dropdown.Item as="button" onClick={() => handleShow('Modal Paciente')}>
+        <Dropdown.Item as="button" onClick={() => dispatch(modalOpen())}>
           Visualizar Documento
         </Dropdown.Item>
       </DropdownButton>
-      {/* MODAL DOCUMENTO */}
-      <Modal
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        show={show}
-        onHide={handleClose}
-      >
-        <Modal.Header closeButton size="sm">
-          <Modal.Title>Documento</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* DOCUMENTO EDIT */}
-          <DocumentoEdit documento={caixaDoc.documento} />
-          {/* DOCUMENTO EDIT */}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button size="sm" variant="secondary" onClick={handleClose}>
-            Fechar
-          </Button>
-          <Button size="sm" variant="primary" onClick={handleClose}>
-            Salvar
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 }
-
-Despachos.propTypes = {
-  // eslint-disable-next-line react/forbid-prop-types
-  caixa: PropTypes.any,
-};
-Despachos.defaultProps = {
-  caixa: null,
-};
