@@ -35,7 +35,7 @@ export default function Auth() {
                   </div>
                   <Form.Group controlId="formUsername">
                     <Form.Label>Nome de usuário</Form.Label>
-                    <Form.Control required type="text" placeholder="Seu CPF" />
+                    <Form.Control required type="text" placeholder="Usuário" />
                     <Form.Control.Feedback type="invalid">
                       Digite seu usuário.
                     </Form.Control.Feedback>
@@ -53,18 +53,13 @@ export default function Auth() {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <div className="text-center p-1">
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" block>
                       Acessar
                     </Button>
                   </div>
                   <div className="text-center p-1">
                     <Button variant="warning" block>
                       Primeiro Acesso?
-                    </Button>
-                  </div>
-                  <div className="text-center p-1">
-                    <Button variant="success" block>
-                      Agenda
                     </Button>
                   </div>
                 </div>

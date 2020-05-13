@@ -1,6 +1,5 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable consistent-return */
-/* eslint-disable no-console */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import history from '../../../services/history';
@@ -9,7 +8,6 @@ import api from '../../../services/api';
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 
 /** *************STATE SLICE************** */
-
 export const sliceProtocolo = createSlice({
   name: 'protocolo',
   initialState: {
@@ -25,7 +23,6 @@ export const sliceProtocolo = createSlice({
   },
   reducers: {
     protocoloSuccess: (state, action) => {
-      // console.log('protocoloSuccess Reducer/Action', action.payload);
       const {
         caixaentradas,
         prioridades,
@@ -36,6 +33,7 @@ export const sliceProtocolo = createSlice({
         groups,
       } = action.payload;
       state.loading = false;
+      console.log(action.payload);
       if (caixaentradas !== undefined) {
         state.protocolo = caixaentradas;
       }
@@ -52,7 +50,9 @@ export const sliceProtocolo = createSlice({
         state.usuarios = users;
       }
       if (groups !== undefined) {
+        console.log(groups);
         state.grupos = groups;
+        console.log('2', state.grupos);
       }
       if (roles !== undefined) {
         state.funcoes = roles;
@@ -98,7 +98,6 @@ export const sliceProtocolo = createSlice({
         state.loading = false;
         state.documento = documentoEdit;
       }
-      // immer is running under the hood so we can write this without mutating state.
     },
   },
 });
@@ -121,12 +120,10 @@ export default sliceProtocolo.reducer;
 // API REQUEST ACTIONS HANDLED WITH REDUX-THUNK MIDDLEWARE BUILT INTO REDUX TOOLKIT -->
 
 /** *************THUNKS************** */
-
 export const getFirstRender = usuario => {
   console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
-    // redux-thunk
     try {
       if (!usuario.idusuario) {
         toast.error('ID do Usuário é inválido.');
@@ -156,14 +153,12 @@ export const getFirstRender = usuario => {
       toast.error(
         `ERRO: Falha na busca de Protocolos do Usuário. getFirstRender.  ${error.message}`
       );
-      // history.push('/');
     }
   };
 };
 
 export const getUploadedFiles = iddocumento => {
   return async dispatch => {
-    // redux-thunk
     try {
       const response = await api.get(`documents/${iddocumento}/arquivoanexo/`);
       const { arquivosanexo } = response.data;
@@ -178,14 +173,12 @@ export const getUploadedFiles = iddocumento => {
       toast.error(
         `ERRO: Falha na busca de Anexos. getUploadedFiles()  ${error.message}`
       );
-      // history.push('/');
     }
   };
 };
 
 export const selectAllProtocolo = () => {
   return async (dispatch, getState) => {
-    // redux-thunk
     try {
       const { usuario } = getState().usuario;
       const response = await api.get(
@@ -204,13 +197,11 @@ export const selectAllProtocolo = () => {
       toast.error(
         `ERRO: Falha na busca de Protocolos do Usuário. selectAllProtocolo  ${error.message}`
       );
-      // history.push('/');
     }
   };
 };
 
 export const addProtocolo = payload => {
-  // console.log('addProtocolo: ', payload);
   return async (dispatch, getState) => {
     try {
       const { documento } = payload;
@@ -222,12 +213,10 @@ export const addProtocolo = payload => {
         dataenvio: documento.dataexpedicao,
         statusprazo: 1,
       };
-      console.log('addProtocoloCxEntrada', caixaentrada);
       const response = await api.post(
         `usuarios/${usuario.idusuario}/caixaentrada/`,
         caixaentrada
       );
-      // console.log('PROTOCOLADO: ', response.data);
       dispatch(selectAllProtocolo());
       toast.success('Protocolo inserido com sucesso!');
       return response.data;
@@ -235,17 +224,12 @@ export const addProtocolo = payload => {
       toast.error(
         `ERRO ao Protocolar Documento - addProtocolo ${error.message}`
       );
-      console.log(
-        'ERRO ao Protocolar Documento - addProtocolo: ',
-        error.message
-      );
       dispatch(updateFailure());
     }
   };
 };
 
 export const addDocumentoRequest = payload => {
-  // console.log('addDocumentoRequest: ', payload);
   return async (dispatch, getState) => {
     try {
       const { newDocumento } = payload;
@@ -255,13 +239,10 @@ export const addDocumentoRequest = payload => {
         `usuarios/${usuario.idusuario}/documents/`,
         newDocumento
       );
-      // console.log('ADD DOCUMENTO: ', response.data);
       await dispatch(addDocumentoSuccess(response.data));
-      // toast.success('Documento inserido com sucesso!');
       await dispatch(addProtocolo(response.data));
       return response.data;
     } catch (error) {
-      console.log('ERROR: ', error.response.data.error.message);
       toast.error(
         `ERRO ao adicionar Novo documento - addDocumentoRequest  ${error.response.data.error.message}`
       );
@@ -272,7 +253,6 @@ export const addDocumentoRequest = payload => {
 
 export const selectAllPrioridade = () => {
   return async dispatch => {
-    // redux-thunk
     try {
       const response = await api.get(`prioridade/`);
       const { prioridades } = response.data;
@@ -294,7 +274,6 @@ export const selectAllPrioridade = () => {
 
 export const selectAllTipoDocumentos = () => {
   return async dispatch => {
-    // redux-thunk
     try {
       const response = await api.get(`types/`);
       const { types } = response.data;
@@ -316,7 +295,6 @@ export const selectAllTipoDocumentos = () => {
 
 export const selectAllUsuarios = () => {
   return async dispatch => {
-    // redux-thunk
     try {
       const response = await api.get(`usuarios/`);
       const { users } = response.data;
@@ -338,10 +316,10 @@ export const selectAllUsuarios = () => {
 
 export const selectAllGrupos = () => {
   return async dispatch => {
-    // redux-thunk
     try {
       const response = await api.get(`groups/`);
       const { groups } = response.data;
+      console.log(groups);
       if (groups.length >= 0) {
         await dispatch(protocoloSuccess({ groups }));
         history.push('/home');
@@ -360,7 +338,6 @@ export const selectAllGrupos = () => {
 
 export const selectAllFuncoes = () => {
   return async dispatch => {
-    // redux-thunk
     try {
       const response = await api.get(`roles/`);
       const { roles } = response.data;

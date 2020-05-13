@@ -16,14 +16,12 @@ import {
   Spinner,
   ListGroupItem,
   ListGroup,
-  Modal,
 } from 'react-bootstrap';
-import { MdSupervisorAccount, MdFileDownload } from 'react-icons/md';
+import { MdFileDownload } from 'react-icons/md';
 
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-// import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import { addDays, parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -32,10 +30,7 @@ import {
   getUploadedFiles,
   addDocumentoSuccess,
 } from '../../../redux/features/protocolo/protocoloSlice';
-import {
-  modalOpen,
-  despachoModalOpen,
-} from '../../../redux/features/context/contextSlice';
+import { modalOpen } from '../../../redux/features/context/contextSlice';
 
 import Documento from '../Modal/Documento';
 import Despachos from '../Modal/Despachos';
@@ -71,7 +66,6 @@ const SpinnerLine = () => (
 export default function Protocolo() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  // console.log(user);
   const { arquivos } = useSelector(state => state.protocolo);
   const { showModal, uploadPercentage, despachoModal } = useSelector(
     state => state.contexto
@@ -174,8 +168,7 @@ export default function Protocolo() {
     mode: 'checkbox',
     clickToSelect: true,
     clickToExpand: true,
-    onSelect: (row, isSelect, rowIndex, e) => {
-      // console.log('cxEntrada.onSelect', cxEntrada[rowIndex]);
+    onSelect: rowIndex => {
       const documentoEdit = Object.assign(
         {},
         cxEntrada[rowIndex],
@@ -213,7 +206,6 @@ export default function Protocolo() {
   const expandRow = {
     showExpandColumn: true,
     onlyOneExpanding: true,
-    // parentClassName: 'parent-expand-foo',
     renderer: row =>
       arquivos.length > 0 ? (
         <Card>
@@ -238,7 +230,6 @@ export default function Protocolo() {
     onExpand: (row, isExpand, rowIndex, e) => {
       dispatch(getUploadedFiles(row.iddocumento));
     },
-    // expandHeaderColumnRenderer:
   };
 
   useEffect(() => {
