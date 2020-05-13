@@ -57,18 +57,13 @@ export default function Auth() {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <div className="text-center p-1">
-                    <Button variant="primary" type="submit">
+                    <Button variant="primary" type="submit" block>
                       Acessar
                     </Button>
                   </div>
                   <div className="text-center p-1">
                     <Button variant="warning" block>
                       Primeiro Acesso?
-                    </Button>
-                  </div>
-                  <div className="text-center p-1">
-                    <Button variant="success" block>
-                      Agenda
                     </Button>
                   </div>
                 </div>
