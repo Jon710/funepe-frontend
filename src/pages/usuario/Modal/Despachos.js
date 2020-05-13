@@ -7,6 +7,7 @@ import history from '../../../services/history';
 import api from '../../../services/api';
 import {
   modalOpen,
+  anotacaoModalOpen,
   despachoModalOpen,
 } from '../../../redux/features/context/contextSlice';
 
@@ -63,6 +64,12 @@ export default function Despachos() {
         </Dropdown.Item>
 
         <Dropdown.Divider />
+        <Dropdown.Item
+          as="button"
+          onClick={() => dispatch(anotacaoModalOpen())}
+        >
+          Visualizar Anotação
+        </Dropdown.Item>
         <Dropdown.Item as="button" onClick={() => dispatch(modalOpen())}>
           Visualizar Documento
         </Dropdown.Item>

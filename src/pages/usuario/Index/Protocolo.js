@@ -40,6 +40,7 @@ import {
 import Documento from '../Modal/Documento';
 import Despachos from '../Modal/Despachos';
 import Despacho from '../Modal/Despacho';
+import Anotacao from '../Modal/Anotacao';
 
 const CaptionElement = () => (
   <h3
@@ -73,9 +74,12 @@ export default function Protocolo() {
   const { user } = useSelector(state => state.auth);
   // console.log(user);
   const { arquivos } = useSelector(state => state.protocolo);
-  const { showModal, uploadPercentage, despachoModal } = useSelector(
-    state => state.contexto
-  );
+  const {
+    showModal,
+    uploadPercentage,
+    despachoModal,
+    anotacaoModal,
+  } = useSelector(state => state.contexto);
   const [cxEntrada, setCxEntrada] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
@@ -322,14 +326,23 @@ export default function Protocolo() {
               <></>
             )}
 
+            {anotacaoModal ? (
+              <>
+                <Anotacao />
+              </>
+            ) : (
+              <></>
+            )}
+
             <BootstrapTable
               {...props.baseProps}
               bootstrap4
               // striped
               // bordered
               hover
-              responsive
-              size="sm"
+              // responsive
+              // size="md"
+              table-responsive-sm
               keyField="idcaixaentrada"
               data={cxEntrada}
               caption={<CaptionElement />}

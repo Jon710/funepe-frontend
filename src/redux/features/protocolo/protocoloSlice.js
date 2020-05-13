@@ -59,7 +59,7 @@ export const sliceProtocolo = createSlice({
       }
     },
     protocoloRequest: (state, action) => {
-      console.log('protocoloRequest Reducer/Action', action.payload);
+      // console.log('protocoloRequest Reducer/Action', action.payload);
       const { caixaentradas } = action.payload;
       state.loading = true;
       state.protocolo = caixaentradas;
@@ -123,7 +123,7 @@ export default sliceProtocolo.reducer;
 /** *************THUNKS************** */
 
 export const getFirstRender = usuario => {
-  console.log('Protocolo getFirstRender:', usuario);
+  // console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
     // redux-thunk
@@ -187,9 +187,9 @@ export const selectAllProtocolo = () => {
   return async (dispatch, getState) => {
     // redux-thunk
     try {
-      const { usuario } = getState().usuario;
+      const { user } = getState().auth;
       const response = await api.get(
-        `usuarios/${usuario.idusuario}/caixaentrada/`
+        `usuarios/${user.idusuario}/caixaentrada/`
       );
       const { caixaentradas } = response.data;
       if (caixaentradas.length >= 0) {
@@ -209,12 +209,83 @@ export const selectAllProtocolo = () => {
   };
 };
 
+export const selecionarAnotacao = payload => {
+  // console.log('selecionarAnotacao-payload: ', payload);
+  return async dispatch => {
+    try {
+      const idDocumento = payload;
+      const response = await api.get(`documents/${idDocumento}/despachos/`);
+      dispatch(selectAllProtocolo());
+      return response.data;
+    } catch (error) {
+      toast.error(
+        `ERRO ao Selecionar Anotação - selecionarAnotacao ${error.message}`
+      );
+      console.log(
+        'ERRO ao Selecionar Anotação - selecionarAnotacao: ',
+        error.message
+      );
+      dispatch(updateFailure());
+    }
+  };
+};
+
+export const inserirAnotacao = payload => {
+  // console.log('inserirAnotacao-payload: ', payload);
+  return async dispatch => {
+    try {
+      const anotacaoDespacho = payload;
+      const response = await api.post(
+        `documents/${anotacaoDespacho.iddocumento}/despachos/`,
+        anotacaoDespacho
+      );
+      dispatch(selectAllProtocolo());
+      return response.data;
+    } catch (error) {
+      toast.error(
+        `ERRO ao despachar Documento - despacharProtocolo ${error.message}`
+      );
+      console.log(
+        'ERRO ao despachar Documento - despacharProtocolo: ',
+        error.message
+      );
+      dispatch(updateFailure());
+    }
+  };
+};
+
+export const encaminharDocumento = payload => {
+  console.log('encaminharDocumento-payload: ', payload);
+  return async dispatch => {
+    try {
+      const docDespachado = payload;
+      console.log('encaminharDocumento-CxEntrada', docDespachado);
+      const response = await api.post(
+        `usuarios/${docDespachado.iddestinatario}/caixaentrada/`,
+        docDespachado
+      );
+      dispatch(selectAllProtocolo());
+      toast.success('Documento despachado com sucesso!');
+      return response.data;
+    } catch (error) {
+      toast.error(
+        `ERRO ao despachar Documento - despacharProtocolo ${error.message}`
+      );
+      console.log(
+        'ERRO ao despachar Documento - despacharProtocolo: ',
+        error.message
+      );
+      dispatch(updateFailure());
+    }
+  };
+};
+
 export const addProtocolo = payload => {
   // console.log('addProtocolo: ', payload);
   return async (dispatch, getState) => {
     try {
       const { documento } = payload;
-      const { usuario } = getState().usuario;
+      const { user } = getState().auth;
       const caixaentrada = {
         iddocumento: documento.iddocumento,
         iddestinatario: documento.idexpedidor,
@@ -224,7 +295,7 @@ export const addProtocolo = payload => {
       };
       console.log('addProtocoloCxEntrada', caixaentrada);
       const response = await api.post(
-        `usuarios/${usuario.idusuario}/caixaentrada/`,
+        `usuarios/${user.idusuario}/caixaentrada/`,
         caixaentrada
       );
       // console.log('PROTOCOLADO: ', response.data);
@@ -245,14 +316,14 @@ export const addProtocolo = payload => {
 };
 
 export const addDocumentoRequest = payload => {
-  // console.log('addDocumentoRequest: ', payload);
+  console.log('addDocumentoRequest: ', payload);
   return async (dispatch, getState) => {
     try {
       const { newDocumento } = payload;
-      const { usuario } = getState().usuario;
+      const { user } = getState().auth;
 
       const response = await api.post(
-        `usuarios/${usuario.idusuario}/documents/`,
+        `usuarios/${user.idusuario}/documents/`,
         newDocumento
       );
       // console.log('ADD DOCUMENTO: ', response.data);

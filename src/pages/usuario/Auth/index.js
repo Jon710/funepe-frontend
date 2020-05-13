@@ -35,9 +35,13 @@ export default function Auth() {
                   </div>
                   <Form.Group controlId="formUsername">
                     <Form.Label>Nome de usuário</Form.Label>
-                    <Form.Control required type="text" placeholder="Seu CPF" />
+                    <Form.Control
+                      required
+                      type="text"
+                      placeholder="Nome de Usuário"
+                    />
                     <Form.Control.Feedback type="invalid">
-                      Digite seu usuário.
+                      Digite seu nome de usuário.
                     </Form.Control.Feedback>
                   </Form.Group>
 

@@ -1,13 +1,21 @@
+/* eslint-disable func-names */
 /* eslint-disable no-console */
 import React from 'react';
 import { Modal, Button, Form, Container, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { despachoModalClose } from '../../../redux/features/context/contextSlice';
+// import history from '../../../services/history';
+// import api from '../../../services/api';
+import {
+  encaminharDocumento,
+  inserirAnotacao,
+} from '../../../redux/features/protocolo/protocoloSlice';
 
 export default function Despacho() {
   const dispatch = useDispatch();
+  const { user } = useSelector(state => state.auth);
   const { despachoModal } = useSelector(state => state.contexto);
-  const { grupos, usuarios } = useSelector(state => state.protocolo);
+  const { grupos, usuarios, documento } = useSelector(state => state.protocolo);
   const [idGrupo, setIdGrupo] = React.useState([]);
   const [idUsuario, setIdUsuario] = React.useState([]);
   const [anotacao, setAnotacao] = React.useState(
@@ -17,22 +25,45 @@ export default function Despacho() {
 
   function onChangeUsuario(e) {
     const val = e.target.value;
-    console.log('val: ', val);
-    const usuarios1 = idUsuario.concat(val);
-    console.log('users: ', usuarios1);
-    setIdUsuario(usuarios1);
     const combined = [...idUsuario, ...val];
-    console.log('combined: ', combined);
     const merged = combined.filter(
       (item, index) => combined.indexOf(item) === index
     );
-    console.log('merged: ', merged);
     setIdUsuario(merged);
+    console.log('setIdUsuario: ', merged);
   }
 
   function onChangeGrupo(e) {
     const val = e.target.value;
-    setIdGrupo([...idGrupo, val]);
+    const combined = [...idGrupo, ...val];
+    const merged = combined.filter(
+      (item, index) => combined.indexOf(item) === index
+    );
+    setIdGrupo(merged);
+    console.log('setIdGrupo: ', merged);
+  }
+
+  function handleDespachar() {
+    if (idUsuario.length > 0) {
+      idUsuario.forEach(function(id) {
+        const docDespachado = {
+          iddocumento: documento.iddocumento,
+          iddestinatario: id,
+          status: 'Remetido',
+          dataenvio: documento.dataexpedicao,
+          statusprazo: 1,
+        };
+        dispatch(encaminharDocumento(docDespachado));
+        const anotacaoDespacho = {
+          iddocumento: documento.iddocumento,
+          idusuario: user.idusuario,
+          descricao: anotacao,
+          tipo: 1,
+          prazo: 1,
+        };
+        dispatch(inserirAnotacao(anotacaoDespacho));
+      });
+    }
   }
 
   const handleClose = () => dispatch(despachoModalClose());
@@ -112,7 +143,7 @@ export default function Despacho() {
             <Button variant="secondary" onClick={handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={handleDespachar}>
               Save Changes
             </Button>
           </Modal.Footer>

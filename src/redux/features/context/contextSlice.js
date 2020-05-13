@@ -11,6 +11,7 @@ export const sliceContext = createSlice({
     showModal: false,
     editModal: false,
     despachoModal: false,
+    anotacaoModal: false,
     uploadPercentage: 0,
   },
   reducers: {
@@ -32,6 +33,12 @@ export const sliceContext = createSlice({
     despachoModalOpen: (state, action) => {
       state.despachoModal = true;
     },
+    anotacaoModalClose: (state, action) => {
+      state.anotacaoModal = false;
+    },
+    anotacaoModalOpen: (state, action) => {
+      state.anotacaoModal = true;
+    },
     progressBar: (state, action) => {
       state.uploadPercentage = action.payload;
     },
@@ -47,6 +54,8 @@ export const {
   editModalClose,
   despachoModalOpen,
   despachoModalClose,
+  anotacaoModalOpen,
+  anotacaoModalClose,
   progressBar,
 } = sliceContext.actions;
 

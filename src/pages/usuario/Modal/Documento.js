@@ -32,8 +32,8 @@ export default function Documento() {
   const [idtipodocumento, setIdTipoDoc] = useState(1);
   const [idprioridade, setIdPrio] = useState(1);
   const [idexpedidor, setIdExped] = useState(user.idusuario);
-  const [nrprotocolo, setNrProtocolo] = useState(documento.iddocumento);
-  const [nrdocumento, setNrDocumento] = useState(documento.iddocumento);
+  const [nrprotocolo, setNrProtocolo] = useState(1234);
+  const [nrdocumento, setNrDocumento] = useState(1234);
   const [assunto, setAssunto] = useState('Oficio Alerta COVID');
   const [dataexpedicao, setDtExped] = useState(new Date());
   const [prazo, setPrazo] = useState('10');
@@ -126,7 +126,7 @@ export default function Documento() {
           );
         }
       });
-      console.log('documentoAddeddocumentoAdded: ', documentoAdded);
+      console.log('documentoAddeddocumentoAdded: ', documentoAdded, documento);
       // handleSubmitUpload(documentoAdded);
       // clear form data
       setValidated(true);
@@ -282,7 +282,7 @@ export default function Documento() {
               <Form.Group as={Col} controlId="editNrProtocolo">
                 <Form.Label>Nr de Protocolo</Form.Label>
                 <Form.Control
-                  value={documento.iddocumento}
+                  value={nrprotocolo}
                   onChange={e => setNrProtocolo(e.target.value)}
                 />
               </Form.Group>
