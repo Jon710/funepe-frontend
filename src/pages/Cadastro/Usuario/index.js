@@ -41,10 +41,8 @@ export default function Usuario() {
 
     try {
       const response = await api.post('usuarios', novoUsuario);
-
       const { usuarios } = response.data;
       setNewUsuario(usuarios);
-
       toast.success('Usuário cadastrado com sucesso!');
       history.push('/cadastros');
     } catch (err) {

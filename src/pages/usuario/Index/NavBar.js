@@ -2,9 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Nav } from 'react-bootstrap';
 
-// import Notifications from '../Notifications';
 import { signOut } from '../../../store/modules/auth/actions';
-
 import logo from '../../../assets/logo.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../../../styles/vendor/fontawesome-free/css/all.min.css';
@@ -12,8 +10,6 @@ import '../../../styles/css/resume.min.css';
 
 export default function NavBar() {
   const user = useSelector(state => state.auth.user);
-  // const signed = useSelector(state => state.auth.signed);
-
   const dispatch = useDispatch();
   const dataICM = new Date().toDateString();
 
@@ -30,7 +26,7 @@ export default function NavBar() {
         <a href="/perfilmedico">
           <span>
             {user.username !== undefined
-              ? `Usuário: ${user.username}`
+              ? `Usuário: ${user.username.uppercase()}`
               : dataICM}
           </span>
         </a>
