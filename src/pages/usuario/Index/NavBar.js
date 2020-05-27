@@ -26,7 +26,7 @@ export default function NavBar() {
         <a href="/perfilmedico">
           <span>
             {user.username !== undefined
-              ? `Usuário: ${user.username.uppercase()}`
+              ? `Usuário: ${user.username.toUpperCase()}`
               : dataICM}
           </span>
         </a>
