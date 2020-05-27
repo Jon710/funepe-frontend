@@ -23,9 +23,7 @@ import {
 export default function Documento() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { documento, prioridades, tipoDocumentos } = useSelector(
-    state => state.protocolo
-  );
+  const { prioridades, tipoDocumentos } = useSelector(state => state.protocolo);
   const { showModal } = useSelector(state => state.contexto);
   // console.log(`Entrando no DocumentoAdd`, documento);
 
@@ -67,7 +65,7 @@ export default function Documento() {
   const handleSubmitDocuments = () => {
     try {
       console.log('documentoAdded');
-      setAlert(true);
+      setAlert(false);
       const newDocumento = {
         idtipodocumento,
         idprioridade,
@@ -83,11 +81,9 @@ export default function Documento() {
         sigilo,
         status,
       };
-      const documentoAdded = dispatch(
-        addDocumentoRequest({ newDocumento })
-      ).then(response => {
+      dispatch(addDocumentoRequest({ newDocumento })).then(response => {
         try {
-          console.log('arquivos', arquivos);
+          console.log('arquivos', arquivos.length);
           if (arquivos.length > 0) {
             const { iddocumento } = response.documento;
             for (let i = 0; i < arquivos.length; i++) {
@@ -126,7 +122,7 @@ export default function Documento() {
           );
         }
       });
-      console.log('documentoAddeddocumentoAdded: ', documentoAdded, documento);
+      // console.log('documentoAddeddocumentoAdded: ', documentoAdded, documento);
       // handleSubmitUpload(documentoAdded);
       // clear form data
       setValidated(true);

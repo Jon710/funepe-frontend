@@ -19,6 +19,7 @@ export const sliceProtocolo = createSlice({
     prioridades: {},
     usuarios: {},
     grupos: {},
+    usuariosgrupo: {},
     funcoes: {},
   },
   reducers: {
@@ -31,9 +32,10 @@ export const sliceProtocolo = createSlice({
         users,
         roles,
         groups,
+        usuariosgrupo,
       } = action.payload;
       state.loading = false;
-      console.log(action.payload);
+      // console.log(action.payload);
       if (caixaentradas !== undefined) {
         state.protocolo = caixaentradas;
       }
@@ -50,9 +52,10 @@ export const sliceProtocolo = createSlice({
         state.usuarios = users;
       }
       if (groups !== undefined) {
-        console.log(groups);
         state.grupos = groups;
-        console.log('2', state.grupos);
+      }
+      if (usuariosgrupo !== undefined) {
+        state.usuariosgrupo = usuariosgrupo;
       }
       if (roles !== undefined) {
         state.funcoes = roles;
@@ -137,6 +140,7 @@ export const getFirstRender = usuario => {
         dispatch(selectAllPrioridade());
         dispatch(selectAllTipoDocumentos());
         dispatch(selectAllUsuarios());
+        dispatch(selectAllUsuariosGrupo());
         dispatch(selectAllGrupos());
         dispatch(selectAllFuncoes());
         await dispatch(protocoloSuccess({ caixaentradas }));
@@ -386,12 +390,33 @@ export const selectAllUsuarios = () => {
   };
 };
 
+export const selectAllUsuariosGrupo = () => {
+  return async dispatch => {
+    try {
+      const response = await api.get(`usuariogrupo/`);
+      const { usuariosgrupo } = response.data;
+      if (usuariosgrupo.length >= 0) {
+        await dispatch(protocoloSuccess({ usuariosgrupo }));
+        history.push('/home');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/home');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de UsuarioGrupo (selectAllUsuariosGrupo)!  ${error.message}`
+      );
+    }
+  };
+};
+
 export const selectAllGrupos = () => {
   return async dispatch => {
     try {
       const response = await api.get(`groups/`);
       const { groups } = response.data;
-      console.log(groups);
+      // console.log(groups);
       if (groups.length >= 0) {
         await dispatch(protocoloSuccess({ groups }));
         history.push('/home');

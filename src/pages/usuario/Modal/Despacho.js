@@ -15,23 +15,15 @@ export default function Despacho() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { despachoModal } = useSelector(state => state.contexto);
-  const { grupos, usuarios, documento } = useSelector(state => state.protocolo);
+  const { grupos, usuarios, usuariosgrupo, documento } = useSelector(
+    state => state.protocolo
+  );
   const [idGrupo, setIdGrupo] = React.useState([]);
   const [idUsuario, setIdUsuario] = React.useState([]);
   const [anotacao, setAnotacao] = React.useState(
     'Tomar providências necessárias.'
   );
-  console.log(idGrupo, idUsuario, anotacao);
-
-  function onChangeUsuario(e) {
-    const val = e.target.value;
-    const combined = [...idUsuario, ...val];
-    const merged = combined.filter(
-      (item, index) => combined.indexOf(item) === index
-    );
-    setIdUsuario(merged);
-    console.log('setIdUsuario: ', merged);
-  }
+  console.log(idGrupo, idUsuario, anotacao, usuariosgrupo);
 
   function onChangeGrupo(e) {
     const val = e.target.value;
@@ -41,6 +33,35 @@ export default function Despacho() {
     );
     setIdGrupo(merged);
     console.log('setIdGrupo: ', merged);
+
+    // const usuariosGrupo = usuariosgrupo.filter(function(uGrupo) {
+    //   console.log(uGrupo.idgrupo);
+    //   return uGrupo.idgrupo === val;
+    // });
+    // console.log('usuariosGrupo: ', usuariosGrupo, val);
+    const usersGroup = [];
+    for (let i = 0; i < usuariosgrupo.length; i++) {
+      if (usuariosgrupo[i].population > 3000000) {
+        usersGroup.push(usuariosgrupo[i]);
+      }
+    }
+    console.log(usersGroup);
+
+    const usuariosGrupo = usuariosgrupo.filter(home => {
+      console.log(home.idgrupo);
+      return home.idgrupo === val;
+    });
+    console.log(usuariosGrupo);
+  }
+
+  function onChangeUsuario(e) {
+    const val = e.target.value;
+    const combined = [...idUsuario, ...val];
+    const merged = combined.filter(
+      (item, index) => combined.indexOf(item) === index
+    );
+    setIdUsuario(merged);
+    console.log('setIdUsuario: ', merged);
   }
 
   function handleDespachar() {

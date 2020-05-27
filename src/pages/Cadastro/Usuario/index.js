@@ -7,9 +7,12 @@ import { useHistory } from 'react-router-dom';
 import api from '../../../services/api';
 
 export default function Usuario() {
-  const [idfuncao, setIdFuncao] = useState('');
+  const [idfuncao, setIdFuncao] = useState(1);
   const [username, setUsername] = useState('');
   const [senha, setSenha] = useState('');
+  const [nome, setNome] = useState('');
+  const [admin, setAdmin] = useState(false);
+  const [cpf, setCPF] = useState('');
   const [listaUsuario, setListaUsuario] = useState([]);
   const [, setNewUsuario] = useState();
   const [show, setShow] = useState(false);
@@ -22,9 +25,18 @@ export default function Usuario() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setAdmin(false);
     const novoUsuario = {
+      idFuncao: idfuncao,
       username,
       senha,
+      md5: senha,
+      fullname: nome,
+      admin,
+      tipouser: 1,
+      status: 'A',
+      sistema: 'S',
+      cpfusuario: cpf,
     };
 
     try {
@@ -69,9 +81,27 @@ export default function Usuario() {
                   <Form.Label>ID Função</Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder="ex: 10"
+                    placeholder="Função"
                     value={idfuncao}
                     onChange={e => setIdFuncao(e.target.value)}
+                  />
+                </Form.Group>
+                <Form.Group controlId="novoNomeForm">
+                  <Form.Label>Nome Completo</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Nome Completo"
+                    value={nome}
+                    onChange={e => setNome(e.target.value)}
+                  />
+                </Form.Group>
+                <Form.Group controlId="novoCPFForm">
+                  <Form.Label>CPF</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="CPF"
+                    value={cpf}
+                    onChange={e => setCPF(e.target.value)}
                   />
                 </Form.Group>
                 <Form.Group controlId="novoUserForm">

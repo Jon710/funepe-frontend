@@ -77,6 +77,7 @@ export default function Protocolo() {
   const [cxEntrada, setCxEntrada] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
+  const [atualiza, setAtualiza] = React.useState(false);
 
   const columns = [
     {
@@ -173,12 +174,8 @@ export default function Protocolo() {
     clickToSelect: true,
     clickToExpand: true,
     onSelect: rowIndex => {
-      const documentoEdit = Object.assign(
-        {},
-        cxEntrada[rowIndex],
-        cxEntrada[rowIndex].documento
-      );
-      dispatch(addDocumentoSuccess({ documentoEdit }));
+      const { documento } = rowIndex;
+      dispatch(addDocumentoSuccess({ documento }));
     },
     onExpand: (row, isExpand, rowIndex, e) => {
       // console.log(row.id);
@@ -218,9 +215,7 @@ export default function Protocolo() {
             <ListGroup className="list-group-flush">
               {arquivos.map(file => (
                 <ListGroupItem key={file.idarquivoanexo}>
-                  <Card.Link
-                    href={`http://10.0.0.24:3333/anexo/${file.patharquivo}`}
-                  >
+                  <Card.Link href={`${file.patharquivo}`}>
                     <MdFileDownload /> {file.tipo} - {file.patharquivo}
                   </Card.Link>
                 </ListGroupItem>
@@ -261,7 +256,7 @@ export default function Protocolo() {
       }
     }
     loadDocumentos();
-  }, [count]);
+  }, [count, showModal]);
 
   return (
     <Container>
