@@ -15,6 +15,7 @@ import Atividade from '../pages/usuario/Index/Atividade';
 import PaginaInicial from '../pages/Cadastro/PaginaInicial';
 
 import Auth from '../pages/usuario/Auth';
+import Usuario from '../pages/Cadastro/Usuario';
 
 export default function Routes() {
   const { signed } = useSelector(state => state.auth);
@@ -36,6 +37,7 @@ export default function Routes() {
           <Route path="/frmmed" component={Medico} />
 
           <Route path="/cadastros" component={PaginaInicial} />
+          <Route path="/usuario" component={Usuario} />
         </>
       ) : (
         <Redirect to="/" />

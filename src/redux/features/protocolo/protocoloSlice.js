@@ -135,12 +135,12 @@ export const getFirstRender = usuario => {
       const response = await api.get(
         `usuarios/${usuario.idusuario}/caixaentrada/`
       );
+      // console.log(response.data);
       const { caixaentradas } = response.data;
       if (caixaentradas.length >= 0) {
         dispatch(selectAllPrioridade());
         dispatch(selectAllTipoDocumentos());
         dispatch(selectAllUsuarios());
-        dispatch(selectAllUsuariosGrupo());
         dispatch(selectAllGrupos());
         dispatch(selectAllFuncoes());
         await dispatch(protocoloSuccess({ caixaentradas }));
@@ -261,7 +261,7 @@ export const encaminharDocumento = payload => {
         docDespachado
       );
       dispatch(selectAllProtocolo());
-      toast.success('Documento despachado com sucesso!');
+      // toast.success('Documento despachado com sucesso!');
       return response.data;
     } catch (error) {
       toast.error(
@@ -283,6 +283,7 @@ export const addProtocolo = payload => {
       const { user } = getState().auth;
       const caixaentrada = {
         iddocumento: documento.iddocumento,
+        idusuario: user.idusuario,
         iddestinatario: documento.idexpedidor,
         status: 'Despachado',
         dataenvio: documento.dataexpedicao,
@@ -390,15 +391,16 @@ export const selectAllUsuarios = () => {
   };
 };
 
-export const selectAllUsuariosGrupo = () => {
+export const selectAllUsuariosGrupo = payload => {
   return async dispatch => {
     try {
-      const response = await api.get(`usuariogrupo/`);
+      const idGrupo = payload;
+      const response = await api.get(`grupo/${idGrupo}/usuariogrupo/`);
       const { usuariosgrupo } = response.data;
       if (usuariosgrupo.length >= 0) {
         await dispatch(protocoloSuccess({ usuariosgrupo }));
         history.push('/home');
-        return;
+        return usuariosgrupo;
       }
       toast.info('Nenhum Registro Localizado!');
       history.push('/home');
@@ -416,7 +418,6 @@ export const selectAllGrupos = () => {
     try {
       const response = await api.get(`groups/`);
       const { groups } = response.data;
-      // console.log(groups);
       if (groups.length >= 0) {
         await dispatch(protocoloSuccess({ groups }));
         history.push('/home');

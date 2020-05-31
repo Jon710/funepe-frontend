@@ -1,14 +1,14 @@
-/* eslint-disable func-names */
-/* eslint-disable no-console */
 import React from 'react';
 import { Modal, Button, Form, Container, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import Select from 'react-select';
+import { toast } from 'react-toastify';
+
 import { despachoModalClose } from '../../../redux/features/context/contextSlice';
-// import history from '../../../services/history';
-// import api from '../../../services/api';
 import {
   encaminharDocumento,
   inserirAnotacao,
+  selectAllUsuariosGrupo,
 } from '../../../redux/features/protocolo/protocoloSlice';
 
 export default function Despacho() {
@@ -23,53 +23,86 @@ export default function Despacho() {
   const [anotacao, setAnotacao] = React.useState(
     'Tomar providências necessárias.'
   );
-  console.log(idGrupo, idUsuario, anotacao, usuariosgrupo);
+  const [valueUsuario, setValueUsuario] = React.useState([]);
+  const [valueGrupo, setValueGrupo] = React.useState([]);
+  console.log(idGrupo, idUsuario, anotacao, usuariosgrupo, valueGrupo);
 
-  function onChangeGrupo(e) {
-    const val = e.target.value;
-    const combined = [...idGrupo, ...val];
-    const merged = combined.filter(
-      (item, index) => combined.indexOf(item) === index
-    );
-    setIdGrupo(merged);
-    console.log('setIdGrupo: ', merged);
+  const colourStyles = {
+    option: provided => ({
+      ...provided,
+      borderBottom: '1px dotted pink',
+      color: 'blue',
+    }),
+    placeholder: defaultStyles => {
+      return {
+        ...defaultStyles,
+        color: 'black',
+      };
+    },
+    multiValueLabel: styles => ({
+      ...styles,
+      color: 'black',
+    }),
+  };
 
-    // const usuariosGrupo = usuariosgrupo.filter(function(uGrupo) {
-    //   console.log(uGrupo.idgrupo);
-    //   return uGrupo.idgrupo === val;
-    // });
-    // console.log('usuariosGrupo: ', usuariosGrupo, val);
-    const usersGroup = [];
-    for (let i = 0; i < usuariosgrupo.length; i++) {
-      if (usuariosgrupo[i].population > 3000000) {
-        usersGroup.push(usuariosgrupo[i]);
+  React.useEffect(() => {
+    const arrayUsuarios = [];
+    const arrayGrupos = [];
+    async function loadUsuarios() {
+      if (usuarios.length > 0) {
+        usuarios.forEach(usuario => {
+          arrayUsuarios.push({
+            value: usuario.idusuario,
+            label: usuario.username,
+          });
+        });
       }
+      setIdUsuario(arrayUsuarios);
     }
-    console.log(usersGroup);
+    async function loadGrupos() {
+      if (grupos.length > 0) {
+        grupos.forEach(grupo => {
+          arrayGrupos.push({
+            value: grupo.idgrupo,
+            label: grupo.descricaogrupo,
+          });
+        });
+      }
+      setIdGrupo(arrayGrupos);
+    }
+    loadUsuarios();
+    loadGrupos();
+  }, [usuarios, grupos]);
 
-    const usuariosGrupo = usuariosgrupo.filter(home => {
-      console.log(home.idgrupo);
-      return home.idgrupo === val;
+  function onChangeUsuarios(selectedOption) {
+    setValueUsuario(selectedOption);
+  }
+
+  function onChangeGrupo(selectedOption) {
+    setValueGrupo(selectedOption);
+    dispatch(selectAllUsuariosGrupo(selectedOption.value)).then(response => {
+      console.log('grupoUsers', response);
+      const arrayUsuarios = [];
+      if (response.length > 0) {
+        response.forEach(usuario => {
+          if (usuario.idgrupo === selectedOption.value)
+            arrayUsuarios.push({
+              value: usuario.idusuario,
+              label: usuario.usuario.username,
+            });
+        });
+      }
+      setIdUsuario(arrayUsuarios);
     });
-    console.log(usuariosGrupo);
   }
 
-  function onChangeUsuario(e) {
-    const val = e.target.value;
-    const combined = [...idUsuario, ...val];
-    const merged = combined.filter(
-      (item, index) => combined.indexOf(item) === index
-    );
-    setIdUsuario(merged);
-    console.log('setIdUsuario: ', merged);
-  }
-
-  function handleDespachar() {
-    if (idUsuario.length > 0) {
-      idUsuario.forEach(function(id) {
+  async function handleDespachar() {
+    if (valueUsuario.length > 0) {
+      valueUsuario.forEach(usuario => {
         const docDespachado = {
           iddocumento: documento.iddocumento,
-          iddestinatario: id,
+          idusuario: user.idusuario,
+          iddestinatario: usuario.value,
           status: 'Remetido',
           dataenvio: documento.dataexpedicao,
           statusprazo: 1,
@@ -84,10 +117,12 @@ export default function Despacho() {
         };
         dispatch(inserirAnotacao(anotacaoDespacho));
       });
+      toast.success('Documento despachado com sucesso!');
     }
   }
 
   const handleClose = () => dispatch(despachoModalClose());
+
   return (
     <Container>
       <Form>
@@ -107,41 +142,43 @@ export default function Despacho() {
                   <Form.Row>
                     <Form.Group as={Col} controlId="editPrazo">
                       <Form.Label>Grupos:</Form.Label>
-                      <Form.Control
-                        as="select"
-                        multiple
-                        value={idGrupo}
-                        onChange={onChangeGrupo}
-                      >
-                        {grupos.length > 0
-                          ? grupos.map(grupo => (
-                              <option key={grupo.idgrupo} value={grupo.idgrupo}>
-                                {grupo.descricaogrupo}
-                              </option>
-                            ))
-                          : ''}
-                      </Form.Control>
+                      <Select
+                        isSearchable
+                        styles={colourStyles}
+                        options={idGrupo}
+                        onChange={selectedOption =>
+                          onChangeGrupo(selectedOption)
+                        }
+                        placeholder="Selecione um Grupo"
+                        theme={theme => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            neutral50: '#1A1A1A', // Placeholder color
+                          },
+                        })}
+                      />
                     </Form.Group>
 
-                    <Form.Group as={Col} controlId="editNrProtocolo">
+                    <Form.Group as={Col} controlId="formUsuario">
                       <Form.Label>Usuários:</Form.Label>
-                      <Form.Control
-                        as="select"
-                        multiple
-                        value={idUsuario}
-                        onChange={onChangeUsuario}
-                      >
-                        {usuarios.length > 0
-                          ? usuarios.map(usuario => (
-                              <option
-                                key={usuario.idusuario}
-                                value={usuario.idusuario}
-                              >
-                                {usuario.username}
-                              </option>
-                            ))
-                          : ''}
-                      </Form.Control>
+                      <Select
+                        isMulti
+                        isSearchable
+                        styles={colourStyles}
+                        options={idUsuario}
+                        onChange={selectedOption =>
+                          onChangeUsuarios(selectedOption)
+                        }
+                        placeholder="Selecione Usuários"
+                        theme={theme => ({
+                          ...theme,
+                          colors: {
+                            ...theme.colors,
+                            neutral50: '#1A1A1A', // Placeholder color
+                          },
+                        })}
+                      />
                     </Form.Group>
                   </Form.Row>
                   <Form.Row>

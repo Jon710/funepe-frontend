@@ -119,13 +119,13 @@ export default function Protocolo() {
       headerAlign: 'center',
     },
     {
-      dataField: 'documento.usuario.username',
+      dataField: 'nomeExpedidor',
       text: 'Exped',
       align: 'center',
       headerAlign: 'center',
     },
     {
-      dataField: 'usuario.username',
+      dataField: 'nomeDestinatario',
       text: 'Destin',
       align: 'center',
       headerAlign: 'center',
@@ -245,6 +245,8 @@ export default function Protocolo() {
                 'dd/MM/yyyy',
                 { locale: pt }
               ),
+              nomeExpedidor: protocolo.usuario.username.toUpperCase(),
+              nomeDestinatario: protocolo.destinatario.username.toUpperCase(),
 
               counter: (c += 1),
             }));

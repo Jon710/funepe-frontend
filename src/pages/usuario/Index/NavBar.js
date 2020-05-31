@@ -23,7 +23,7 @@ export default function NavBar() {
       id="sideNav"
     >
       <div className="nav-link js-scroll-trigger bg-light text-success font-weight-bold mt-5 d-none d-lg-block">
-        <a href="/perfilmedico">
+        <a href="/">
           <span>
             {user.username !== undefined
               ? `Usuário: ${user.username.toUpperCase()}`
@@ -76,7 +76,7 @@ export default function NavBar() {
             </a>
           </li>
           <li className="nav-item">
-            <Nav.Link href="/frmpac">Arquivados</Nav.Link>
+            <Nav.Link href="/docarq">Arquivados</Nav.Link>
           </li>
           <li className="nav-item dropdown">
             <a
@@ -91,7 +91,7 @@ export default function NavBar() {
               Configurações
             </a>
             <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a className="dropdown-item" href="#a">
+              <a className="dropdown-item" href="/usuario">
                 Usuários
               </a>
               <a className="dropdown-item" href="#a">
