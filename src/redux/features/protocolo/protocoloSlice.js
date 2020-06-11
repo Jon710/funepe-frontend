@@ -152,7 +152,7 @@ export const getFirstRender = usuario => {
         return protocolo;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
     } catch (error) {
       toast.error(
         `ERRO: Falha na busca de Protocolos do Usuário. getFirstRender.  ${error.message}`
@@ -169,7 +169,7 @@ export const getUploadedFiles = iddocumento => {
       if (arquivosanexo) {
         if (arquivosanexo.length >= 0) {
           await dispatch(protocoloSuccess({ arquivosanexo }));
-          history.push('/home');
+          history.push('/protocolo');
           return arquivosanexo;
         }
       }
@@ -191,11 +191,11 @@ export const selectAllProtocolo = () => {
       const { caixaentradas } = response.data;
       if (caixaentradas.length >= 0) {
         await dispatch(protocoloSuccess({ caixaentradas }));
-        history.push('/home');
+        history.push('/protocolo');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(
@@ -335,11 +335,11 @@ export const selectAllPrioridade = () => {
       const { prioridades } = response.data;
       if (prioridades.length >= 0) {
         await dispatch(protocoloSuccess({ prioridades }));
-        history.push('/home');
+        history.push('/protocolo');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(
@@ -356,11 +356,11 @@ export const selectAllTipoDocumentos = () => {
       const { types } = response.data;
       if (types.length >= 0) {
         await dispatch(protocoloSuccess({ types }));
-        history.push('/home');
+        history.push('/protocolo');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(
@@ -377,11 +377,11 @@ export const selectAllUsuarios = () => {
       const { users } = response.data;
       if (users.length >= 0) {
         await dispatch(protocoloSuccess({ users }));
-        history.push('/home');
+        history.push('/protocolo');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(
@@ -399,11 +399,11 @@ export const selectAllUsuariosGrupo = payload => {
       const { usuariosgrupo } = response.data;
       if (usuariosgrupo.length >= 0) {
         await dispatch(protocoloSuccess({ usuariosgrupo }));
-        history.push('/home');
+        history.push('/protocolo');
         return usuariosgrupo;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(
@@ -420,11 +420,11 @@ export const selectAllGrupos = () => {
       const { groups } = response.data;
       if (groups.length >= 0) {
         await dispatch(protocoloSuccess({ groups }));
-        history.push('/home');
+        history.push('/protocolo');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(
@@ -441,11 +441,11 @@ export const selectAllFuncoes = () => {
       const { roles } = response.data;
       if (roles.length >= 0) {
         await dispatch(protocoloSuccess({ roles }));
-        history.push('/home');
+        history.push('protocolo');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/home');
+      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(

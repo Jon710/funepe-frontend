@@ -25,24 +25,6 @@ export function* signIn({ payload }) {
   }
 }
 
-// export function* signUp({ payload }) {
-//   try {
-//     const { name, email, password } = payload;
-
-//     yield call(api.post, 'users', {
-//       name,
-//       email,
-//       password,
-//     });
-
-//     history.push('/');
-//   } catch (err) {
-//     toast.error('Falha no cadastro, verifique seus dados.');
-
-//     yield put(signFailure());
-//   }
-// }
-
 export function setToken({ payload }) {
   if (!payload) return;
 

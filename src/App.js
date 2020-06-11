@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import GlobalStyle from './styles/globals';
 
 import Routes from './routes';
-import NavBar from './pages/usuario/Index/NavBar';
+// import NavBar from './pages/home/NavBar';
 import history from './services/history';
 
 import { store, persistor } from './store';
@@ -18,9 +18,8 @@ function App() {
       <PersistGate persistor={persistor}>
         <Router history={history}>
           <GlobalStyle />
-          <NavBar />
+          {/* <NavBar /> */}
           <Routes />
-
           <ToastContainer position="top-center" autoClose={2000} />
         </Router>
       </PersistGate>

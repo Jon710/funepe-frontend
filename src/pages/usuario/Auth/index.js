@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Form, Button, Card, Container } from 'react-bootstrap';
 import { signInRequest } from '../../../store/modules/auth/actions';
 
-import logo from '../../../assets/logo.jpg';
+import logo from '../../../assets/logo-funepe.jpg';
 
 export default function Auth() {
   const dispatch = useDispatch();

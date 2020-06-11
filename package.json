@@ -16,6 +16,7 @@
     "history": "^4.9.0",
     "immer": "^6.0.3",
     "material-ui": "^0.20.2",
+    "moment": "^2.26.0",
     "polished": "^3.4.1",
     "prop-types": "^15.7.2",
     "react": "^16.8.6",

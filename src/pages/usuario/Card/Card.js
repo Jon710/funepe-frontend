@@ -6,8 +6,8 @@ import { Card } from 'react-bootstrap';
 
 import logo from '~/assets/logo.png';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../../styles/vendor/fontawesome-free/css/all.min.css';
-import '../../styles/css/resume.min.css';
+// import '../../styles/vendor/fontawesome-free/css/all.min.css';
+// import '../../styles/css/resume.min.css';
 
 export default function NavBar() {
   return (
