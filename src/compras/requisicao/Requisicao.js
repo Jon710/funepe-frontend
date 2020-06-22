@@ -1,16 +1,7 @@
 /* eslint-disable no-return-assign */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  Container,
-  Form,
-  Col,
-  Button,
-  Card,
-  Accordion,
-  // Modal,
-  // ProgressBar,
-} from 'react-bootstrap';
+import { Container, Form, Col, Button, Card, Accordion } from 'react-bootstrap';
 // import { useDropzone } from 'react-dropzone';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -28,21 +19,20 @@ export default function Requisicao() {
   const { user } = useSelector(state => state.auth);
   // const { requisicoes } = useSelector(state => state.compras);
   // const { showModal } = useSelector(state => state.contexto);
-  // console.log(`Entrando no DocumentoAdd`, documento);
 
-  const [idtipodocumento, setIdTipoDoc] = useState(1);
-  const [idprioridade, setIdPrio] = useState(1);
-  const [idexpedidor, setIdExped] = useState(user.idusuario);
-  const [nrprotocolo, setNrProtocolo] = useState(1234);
-  const [nrdocumento, setNrDocumento] = useState(1234);
-  const [assunto, setAssunto] = useState('Oficio Alerta COVID');
+  const [idtipodocumento, setIdTipoDoc] = useState();
+  const [idprioridade, setIdPrio] = useState();
+  const [idexpedidor, setIdExped] = useState();
+  const [nrprotocolo, setNrProtocolo] = useState();
+  const [nrdocumento, setNrDocumento] = useState();
+  const [assunto, setAssunto] = useState();
   const [dataexpedicao, setDtExped] = useState(new Date());
-  const [prazo, setPrazo] = useState('10');
-  const [referencia, setReferencia] = useState('SN');
-  const [observacao, setObservacao] = useState('Teste envio arquivo');
-  const [origem, setOrigem] = useState('1');
-  const [sigilo, setSigilo] = useState('1');
-  const [status, setStatus] = useState('1');
+  const [prazo, setPrazo] = useState();
+  const [referencia, setReferencia] = useState();
+  const [observacao, setObservacao] = useState();
+  const [origem, setOrigem] = useState();
+  const [sigilo, setSigilo] = useState();
+  const [status, setStatus] = useState();
 
   const [requisicoes, setRequisicoes] = useState([]);
   const [validated, setValidated] = useState(false);

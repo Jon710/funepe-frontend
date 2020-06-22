@@ -7,7 +7,6 @@ import api from '../../../services/api';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 
-/** *************STATE SLICE************** */
 export const sliceCompras = createSlice({
   name: 'compras',
   initialState: {
@@ -31,6 +30,7 @@ export const sliceCompras = createSlice({
         requisicoes,
         orcamentos,
         produtos,
+        empresas,
         fornecedores,
         departamentos,
         marcas,
@@ -42,7 +42,6 @@ export const sliceCompras = createSlice({
         users,
       } = action.payload;
       state.loading = false;
-      // console.log('requisicaoSuccess', action.payload);
       if (requisicoes !== undefined) {
         state.requisicoes = requisicoes;
       }
@@ -51,6 +50,9 @@ export const sliceCompras = createSlice({
       }
       if (users !== undefined) {
         state.usuarios = users;
+      }
+      if (empresas !== undefined) {
+        state.empresas = empresas;
       }
       if (produtos !== undefined) {
         state.produtos = produtos;
@@ -160,6 +162,7 @@ export const getFirstRender = usuario => {
         dispatch(selectAllTipoEmpresas());
         dispatch(selectAllTipoFornecedores());
         dispatch(selectAllTipoTelefones());
+        dispatch(selectAllEmpresas());
         return requisicoes;
       }
       toast.info('Nenhum Registro Localizado!');
@@ -180,11 +183,9 @@ export const selectAllProdutos = () => {
       const { produtos } = response.data;
       if (produtos.length >= 0) {
         await dispatch(requisicaoSuccess({ produtos }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -202,11 +203,9 @@ export const selectAllFornecedores = () => {
       const { fornecedores } = response.data;
       if (fornecedores.length >= 0) {
         await dispatch(requisicaoSuccess({ fornecedores }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -220,15 +219,12 @@ export const selectAllDepartamentos = () => {
   return async dispatch => {
     try {
       const response = await api.get(`departamento/`);
-      console.log(response.data);
       const { departamentos } = response.data;
       if (departamentos.length >= 0) {
         await dispatch(requisicaoSuccess({ departamentos }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -238,19 +234,36 @@ export const selectAllDepartamentos = () => {
   };
 };
 
+export const selectAllEmpresas = () => {
+  return async dispatch => {
+    try {
+      const response = await api.get(`empresa/`);
+      const { empresas } = response.data;
+      console.log(empresas);
+      if (empresas.length >= 0) {
+        await dispatch(requisicaoSuccess({ empresas }));
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Empresas (selectAllEmpresas)!  ${error.message}`
+      );
+    }
+  };
+};
+
 export const selectAllMarcas = () => {
   return async dispatch => {
     try {
       const response = await api.get(`marca/`);
-      console.log(response.data);
       const { marcas } = response.data;
       if (marcas.length >= 0) {
         await dispatch(requisicaoSuccess({ marcas }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -268,11 +281,9 @@ export const selectAllCategorias = () => {
       const { categorias } = response.data;
       if (categorias.length >= 0) {
         await dispatch(requisicaoSuccess({ categorias }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -286,15 +297,12 @@ export const selectAllUnidadeMedidas = () => {
   return async dispatch => {
     try {
       const response = await api.get(`unidademedida/`);
-      console.log(response.data);
       const { unidadesmedida } = response.data;
       if (unidadesmedida.length >= 0) {
         await dispatch(requisicaoSuccess({ unidadesmedida }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -312,11 +320,9 @@ export const selectAllTipoFornecedores = () => {
       const { tiposfornecedor } = response.data;
       if (tiposfornecedor.length >= 0) {
         await dispatch(requisicaoSuccess({ tiposfornecedor }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -334,11 +340,9 @@ export const selectAllTipoEmpresas = () => {
       const { tiposempresa } = response.data;
       if (tiposempresa.length >= 0) {
         await dispatch(requisicaoSuccess({ tiposempresa }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -356,11 +360,9 @@ export const selectAllTipoTelefones = () => {
       const { tipostelefone } = response.data;
       if (tipostelefone.length >= 0) {
         await dispatch(requisicaoSuccess({ tipostelefone }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(

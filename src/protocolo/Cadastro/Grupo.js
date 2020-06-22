@@ -3,12 +3,12 @@ import { Form, Button, Card, Modal } from 'react-bootstrap';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
-import api from '../../../services/api';
+import api from '../../services/api';
 
-export default function DespachoPadrao() {
-  const [descricaopadrao, setDescricaoPadrao] = useState('');
-  const [listaDescricaoPadrao, setListaDescricaoPadrao] = useState([]);
-  const [, setNewDescricaoPadrao] = useState();
+export default function Grupo() {
+  const [descricaogrupo, setDescricaoGrupo] = useState('');
+  const [listaGrupo, setListaGrupo] = useState([]);
+  const [, setNewGrupo] = useState();
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -16,38 +16,38 @@ export default function DespachoPadrao() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const novoDespachoPadrao = {
-      descricaopadrao,
+    const novoGrupo = {
+      descricaogrupo,
     };
 
     try {
-      const response = await api.post('despachopadrao', novoDespachoPadrao);
+      const response = await api.post('groups', novoGrupo);
 
-      const { despachospadrao } = response.data;
-      setNewDescricaoPadrao(despachospadrao);
+      const { groups } = response.data;
+      setNewGrupo(groups);
 
-      toast.success('Despacho padrão cadastrado com sucesso!');
+      toast.success('Grupo cadastrado com sucesso!');
       history.push('/cadastros');
     } catch (err) {
-      toast.error('Erro ao cadastrar novo despacho padrão.');
+      toast.error('Erro ao cadastrar novo grupo.');
     }
   }
 
-  async function handleDescricaoCadastradas(e) {
+  async function handleGruposCadastrados(e) {
     e.preventDefault();
-    const response = await api.get('despachopadrao');
-    const { despachospadrao } = response.data;
-    setListaDescricaoPadrao(despachospadrao);
+    const response = await api.get('groups');
+    const { groups } = response.data;
+    setListaGrupo(groups);
     setShow(true);
   }
 
-  async function handleDelete(idpadrao, e) {
+  async function handleDelete(idgrupo, e) {
     try {
-      await api.delete(`despachopadrao/${idpadrao}`);
-      toast.success('Despacho padrão deletado com sucesso.');
-      handleDescricaoCadastradas(e);
+      await api.delete(`groups/${idgrupo}`);
+      toast.success('Grupo deletado com sucesso.');
+      handleGruposCadastrados(e);
     } catch (err) {
-      toast.error('Erro ao deletar despacho padrão.');
+      toast.error('Erro ao deletar grupo.');
     }
   }
 
@@ -57,37 +57,37 @@ export default function DespachoPadrao() {
         <Card className="m-2" style={{ width: '30rem' }}>
           <Card.Body>
             <Form>
-              <Form.Group controlId="novoDespachoPadraoForm">
-                <Form.Label>Novo despacho padrão</Form.Label>
+              <Form.Group controlId="novoGrupoForm">
+                <Form.Label>Novo grupo</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Descrição do novo despacho"
-                  value={descricaopadrao}
-                  onChange={e => setDescricaoPadrao(e.target.value)}
+                  placeholder="Descrição do grupo"
+                  value={descricaogrupo}
+                  onChange={e => setDescricaoGrupo(e.target.value)}
                 />
               </Form.Group>
               <div className="text-center p-1">
                 <Button
                   variant="primary"
                   type="submit"
-                  onClick={handleDescricaoCadastradas}
+                  onClick={handleGruposCadastrados}
                   show={show}
                 >
-                  Despachos cadastrados
+                  Grupos cadastrados
                 </Button>
               </div>
               <div className="text-center p-1">
                 <Button variant="success" type="submit" onClick={handleSubmit}>
-                  Cadastrar novo despacho padrão
+                  Cadastrar novo grupo
                 </Button>
               </div>
               <Modal show={show} onHide={handleClose}>
                 <Modal.Body>
-                  {listaDescricaoPadrao.map(f => (
-                    <li key={f.idpadrao}>
-                      {f.descricaopadrao}
+                  {listaGrupo.map(f => (
+                    <li key={f.idgrupo}>
+                      {f.descricaogrupo}
                       <DeleteForeverSharpIcon
-                        onClick={e => handleDelete(f.idpadrao, e)}
+                        onClick={e => handleDelete(f.idgrupo, e)}
                       />
                       <hr />
                     </li>

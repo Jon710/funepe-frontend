@@ -2,9 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
-
 /** *************STATE SLICE************** */
-
 export const sliceContext = createSlice({
   name: 'contexto',
   initialState: {
@@ -13,6 +11,8 @@ export const sliceContext = createSlice({
     despachoModal: false,
     anotacaoModal: false,
     uploadPercentage: 0,
+    showAlertError: false,
+    alertError: '',
   },
   reducers: {
     modalClose: (state, action) => {
@@ -42,6 +42,16 @@ export const sliceContext = createSlice({
     progressBar: (state, action) => {
       state.uploadPercentage = action.payload;
     },
+    showAlertErrorOpen: (state, action) => {
+      const { showAlertError, alertError } = action.payload;
+      state.showAlertError = showAlertError;
+      state.alertError = alertError;
+    },
+    showAlertErrorClose: (state, action) => {
+      const { showAlertError, alertError } = action.payload;
+      state.showAlertError = showAlertError;
+      state.alertError = alertError;
+    },
   },
 });
 
@@ -57,6 +67,8 @@ export const {
   anotacaoModalOpen,
   anotacaoModalClose,
   progressBar,
+  showAlertErrorOpen,
+  showAlertErrorClose,
 } = sliceContext.actions;
 
 export default sliceContext.reducer;

@@ -3,13 +3,13 @@ import { Form, Button, Card, Modal } from 'react-bootstrap';
 import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
-import api from '../../../services/api';
+import api from '../../services/api';
 
-export default function TipoDocumento() {
-  const [descricao, setDescricao] = useState('');
-  const [abreviacao, setAbreviacao] = useState('');
-  const [listaTipo, setListaTipo] = useState([]);
-  const [, setNewTipo] = useState();
+export default function Funcao() {
+  const [funcao, setFuncao] = useState('');
+  const [abreviatura, setAbreviatura] = useState('');
+  const [listaFuncao, setListaFuncao] = useState([]);
+  const [, setNewFuncao] = useState();
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -17,39 +17,39 @@ export default function TipoDocumento() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const novoTipo = {
-      descricao,
-      abreviacao,
+    const novaFuncao = {
+      funcao,
+      abreviatura,
     };
 
     try {
-      const response = await api.post('types', novoTipo);
+      const response = await api.post('roles', novaFuncao);
 
-      const { types } = response.data;
-      setNewTipo(types);
+      const { roles } = response.data;
+      setNewFuncao(roles);
 
-      toast.success('Tipo de documento cadastrada com sucesso!');
+      toast.success('Função cadastrada com sucesso!');
       history.push('/cadastros');
     } catch (err) {
-      toast.error('Erro ao cadastrar novo tipo de documento.');
+      toast.error('Erro ao cadastrar nova função.');
     }
   }
 
-  async function handleTiposCadastrados(e) {
+  async function handleFuncoesCadastradas(e) {
     e.preventDefault();
-    const response = await api.get('types');
-    const { types } = response.data;
-    setListaTipo(types);
+    const response = await api.get('roles');
+    const { roles } = response.data;
+    setListaFuncao(roles);
     setShow(true);
   }
 
-  async function handleDelete(idtipo, e) {
+  async function handleDelete(idfuncao, e) {
     try {
-      await api.delete(`types/${idtipo}`);
-      toast.success('Tipo de documento deletado com sucesso.');
-      handleTiposCadastrados(e);
+      await api.delete(`roles/${idfuncao}`);
+      toast.success('Função deletada com sucesso.');
+      handleFuncoesCadastradas(e);
     } catch (err) {
-      toast.error('Erro ao deletar tipo de documento.');
+      toast.error('Erro ao deletar função.');
     }
   }
 
@@ -59,46 +59,46 @@ export default function TipoDocumento() {
         <Card className="m-2" style={{ width: '30rem' }}>
           <Card.Body>
             <Form>
-              <Form.Group controlId="novoTipoForm">
-                <Form.Label>Novo tipo de documento</Form.Label>
+              <Form.Group controlId="novaFuncaoForm">
+                <Form.Label>Nova função</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Descrição"
-                  value={descricao}
-                  onChange={e => setDescricao(e.target.value)}
+                  placeholder="Função"
+                  value={funcao}
+                  onChange={e => setFuncao(e.target.value)}
                 />
               </Form.Group>
-              <Form.Group controlId="abreviacaoForm">
-                <Form.Label>Abreviação</Form.Label>
+              <Form.Group controlId="abreviaturaForm">
+                <Form.Label>Abreviatura</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Abreviação"
-                  value={abreviacao}
-                  onChange={e => setAbreviacao(e.target.value)}
+                  placeholder="Abreviatura"
+                  value={abreviatura}
+                  onChange={e => setAbreviatura(e.target.value)}
                 />
               </Form.Group>
               <div className="text-center p-1">
                 <Button
                   variant="primary"
                   type="submit"
-                  onClick={handleTiposCadastrados}
+                  onClick={handleFuncoesCadastradas}
                   show={show}
                 >
-                  Tipos de documento cadastrados
+                  Funções cadastradas
                 </Button>
               </div>
               <div className="text-center p-1">
                 <Button variant="success" type="submit" onClick={handleSubmit}>
-                  Cadastrar novo tipo de documento
+                  Cadastrar nova função
                 </Button>
               </div>
               <Modal show={show} onHide={handleClose}>
                 <Modal.Body>
-                  {listaTipo.map(f => (
-                    <li key={f.idtipo}>
-                      {f.descricao}
+                  {listaFuncao.map(f => (
+                    <li key={f.idfuncao}>
+                      {f.funcao}
                       <DeleteForeverSharpIcon
-                        onClick={e => handleDelete(f.idtipo, e)}
+                        onClick={e => handleDelete(f.idfuncao, e)}
                       />
                       <hr />
                     </li>
