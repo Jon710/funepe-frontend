@@ -2,7 +2,6 @@ import React from 'react';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import BootstrapTable from 'react-bootstrap-table-next';
 import 'bootstrap/dist/css/bootstrap.css';
-// import cellEditFactory from 'react-bootstrap-table2-editor';
 
 const columns = [
   {
@@ -88,50 +87,19 @@ const selectRow = {
   },
 };
 
-// const expandRow = {
-//   showExpandColumn: true,
-//   onlyOneExpanding: true,
-//   renderer: () =>
-//     arquivos.length > 0 ? (
-//       <Card>
-//         <Card.Body>
-//           <p>Arquivos Anexos:</p>
-//           <ListGroup className="list-group-flush">
-//             {arquivos.map(file => (
-//               <ListGroupItem key={file.idarquivoanexo}>
-//                 <Card.Link href={`${file.patharquivo}`}>
-//                   <MdFileDownload /> {file.tipo} - {file.patharquivo}
-//                 </Card.Link>
-//               </ListGroupItem>
-//             ))}
-//           </ListGroup>
-//         </Card.Body>
-//       </Card>
-//     ) : (
-//       <Card.Header>***Documento não possui anexos!***</Card.Header>
-//     ),
-//   onExpand: row => {
-//     console.log(row);
-//   },
-// };
-
-export default function ItemRequisicao() {
+export default function RequisicaoItem() {
   return (
     <div>
       <BootstrapTable
         keyField="id"
         data={produtos}
         columns={columns}
-        // {...props.baseProps}
         bootstrap4
         hover
         table-responsive-sm
-        // expandRow={expandRow}
         selectRow={selectRow}
-        // rowEvents={rowEvents}
         noDataIndication="Nenhum Registro Localizado!"
         headerClasses="header-class"
-        // pagination={paginationFactory()}
       />
     </div>
   );

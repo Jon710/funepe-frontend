@@ -12,7 +12,9 @@ export const sliceCompras = createSlice({
   name: 'compras',
   initialState: {
     loading: false,
+    requisicao: {},
     requisicoes: {},
+    requisicoesItem: [],
     orcamentos: {},
     produtos: {},
     fornecedores: {},
@@ -40,11 +42,15 @@ export const sliceCompras = createSlice({
         tiposempresa,
         tipostelefone,
         users,
+        itensrequisicao,
       } = action.payload;
       state.loading = false;
       // console.log('requisicaoSuccess', action.payload);
       if (requisicoes !== undefined) {
         state.requisicoes = requisicoes;
+      }
+      if (itensrequisicao !== undefined) {
+        state.requisicoesItem = itensrequisicao;
       }
       if (orcamentos !== undefined) {
         state.orcamentos = orcamentos;
@@ -109,11 +115,11 @@ export const sliceCompras = createSlice({
       state.orcamentos = {};
     },
     addRequisicaoSuccess(state, action) {
-      console.log('addRequisicaoSuccess Reducer/Action', action);
-      const { requisicoes } = action.payload;
-      if (requisicoes !== undefined) {
+      console.log('addRequisicaoSuccess Reducer/Action', action.payload);
+      const { requisicao } = action.payload;
+      if (requisicao !== undefined) {
         state.loading = false;
-        state.requisicoes = requisicoes;
+        state.requisicao = requisicao;
       }
     },
   },
@@ -129,7 +135,7 @@ export const {
   updateRequisicaoRequest,
   updateRequisicaoSuccess,
   updateFailure,
-  addDocumentoSuccess,
+  addRequisicaoSuccess,
 } = sliceCompras.actions;
 
 export default sliceCompras.reducer;
@@ -190,6 +196,126 @@ export const selectAllProdutos = () => {
       toast.error(
         `ERRO: Falha na busca de Produto (selectAllProduto)!  ${error.message}`
       );
+    }
+  };
+};
+
+export const selectProdutoByDescricao = descricao => {
+  return async () => {
+    try {
+      const response = await api.get(`produtos/${descricao}`);
+      console.log(response.data);
+      const { listaProdutos } = response.data;
+      if (listaProdutos.length >= 0) {
+        // await dispatch(requisicaoSuccess({ produtos }));
+        history.push('/requisicao');
+        return listaProdutos;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/requisicao');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Produto (selectProdutoByDescricao)!  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllItemRequisicao = requisicao_id => {
+  return async dispatch => {
+    try {
+      const response = await api.get(
+        `requisicao/${requisicao_id}/itemrequisicao/`
+      );
+      const { itensrequisicao } = response.data;
+      console.log(itensrequisicao);
+      if (itensrequisicao.length >= 0) {
+        await dispatch(requisicaoSuccess({ itensrequisicao }));
+        history.push('/requisicao');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/protocolo');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Item Requisicao. selectAllItemRequisicao  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllRequisicao = () => {
+  return async (dispatch, getState) => {
+    try {
+      const { user } = getState().auth;
+      const response = await api.get(`usuario/${user.idusuario}/requisicao/`);
+      const { requisicoes } = response.data;
+      if (requisicoes.length >= 0) {
+        await dispatch(requisicaoSuccess({ requisicoes }));
+        history.push('/requisicao');
+        return;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/protocolo');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Requisicao do Usuário. selectAllRequisicao  ${error.message}`
+      );
+    }
+  };
+};
+
+export const inserirRequisicao = payload => {
+  console.log('inserirRequisicao-payload: ', payload);
+  return async dispatch => {
+    try {
+      const newRequisicao = payload;
+      const response = await api.post(
+        `usuario/${newRequisicao.idsolicitante}/requisicao/`,
+        newRequisicao
+      );
+      dispatch(addRequisicaoSuccess(response.data));
+      dispatch(selectAllRequisicao());
+      return response.data;
+    } catch (error) {
+      toast.error(
+        `ERRO ao inserir Requisicao - inserirRequisicao ${error.message}`
+      );
+      console.log(
+        'ERRO ao despachar Documento - despacharProtocolo: ',
+        error.message
+      );
+      dispatch(updateFailure());
+    }
+  };
+};
+
+export const inserirItemRequisicao = payload => {
+  console.log('inserirRequisicao-payload: ', payload);
+  return async dispatch => {
+    try {
+      const newRequisicao = payload;
+        // /requisicao/:requisicao_id/itemrequisicao
+
+      const response = await api.post(
+        `requisicao/${newRequisicao.idrequisicao}/itemrequisicao/`,
+        newRequisicao
+      );
+      dispatch(addRequisicaoSuccess(response.data));
+      dispatch(selectAllRequisicao());
+      return response.data;
+    } catch (error) {
+      toast.error(
+        `ERRO ao inserir Item de Requisicao - inserirRequisicao ${error.message}`
+      );
+      console.log(
+        'ERRO ao inserir Item de Requisicao - inserirRequisicao: ',
+        error.message
+      );
+      dispatch(updateFailure());
     }
   };
 };
