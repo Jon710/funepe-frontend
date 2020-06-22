@@ -99,7 +99,7 @@ export default function Anotacao() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
-              Close
+              Fechar
             </Button>
           </Modal.Footer>
         </Modal>

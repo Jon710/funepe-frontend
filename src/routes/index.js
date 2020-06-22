@@ -20,6 +20,8 @@ import UnidadeMedida from '../compras/cadastro/UnidadeMedida';
 import TipoTelefone from '../compras/cadastro/TipoTelefone';
 import TipoEmpresa from '../compras/cadastro/TipoEmpresa';
 import TipoFornecedor from '../compras/cadastro/TipoFornecedor';
+import RequisicaoList from '../compras/requisicao/RequisicaoList';
+// import Orcamento from '../compras/requisicao/Orcamento';
 
 export default function Routes() {
   const { signed } = useSelector(state => state.auth);
@@ -44,6 +46,8 @@ export default function Routes() {
           <Route path="/formtipotel" component={TipoTelefone} />
           <Route path="/formtipoforn" component={TipoFornecedor} />
           <Route path="/formtipoempresa" component={TipoEmpresa} />
+          <Route path="/requisicao" component={RequisicaoList} />
+          {/* <Route path="/orcamento" component={Orcamento} /> */}
 
           <Route path="/usuario" component={Usuario} />
         </>

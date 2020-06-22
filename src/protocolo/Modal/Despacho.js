@@ -199,10 +199,10 @@ export default function Despacho() {
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
-              Close
+              Fechar
             </Button>
             <Button variant="primary" onClick={handleDespachar}>
-              Save Changes
+              Salvar
             </Button>
           </Modal.Footer>
         </Modal>

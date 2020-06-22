@@ -10,6 +10,8 @@ export const sliceContext = createSlice({
     editModal: false,
     despachoModal: false,
     anotacaoModal: false,
+    produtoModal: false,
+    requisicaoModal: false,
     uploadPercentage: 0,
     showAlertError: false,
     alertError: '',
@@ -39,6 +41,18 @@ export const sliceContext = createSlice({
     anotacaoModalOpen: (state, action) => {
       state.anotacaoModal = true;
     },
+    produtoModalClose: (state, action) => {
+      state.produtoModal = false;
+    },
+    produtoModalOpen: (state, action) => {
+      state.produtoModal = true;
+    },
+    requisicaoModalClose: (state, action) => {
+      state.requisicaoModal = false;
+    },
+    requisicaoModalOpen: (state, action) => {
+      state.requisicaoModal = true;
+    },
     progressBar: (state, action) => {
       state.uploadPercentage = action.payload;
     },
@@ -66,6 +80,10 @@ export const {
   despachoModalClose,
   anotacaoModalOpen,
   anotacaoModalClose,
+  produtoModalOpen,
+  produtoModalClose,
+  requisicaoModalOpen,
+  requisicaoModalClose,
   progressBar,
   showAlertErrorOpen,
   showAlertErrorClose,
