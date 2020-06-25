@@ -9,12 +9,14 @@ import {
   Col,
   Container,
   Modal,
+  FormControl,
 } from 'react-bootstrap';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   selectProdutoByDescricao,
   inserirItemRequisicao,
+  selectAllItemRequisicao,
 } from '../../redux/features/compras/comprasSlice';
 import { produtoModalClose } from '../../redux/features/context/contextSlice';
 import history from '../../services/history';
@@ -23,11 +25,12 @@ export default function Produto() {
   const { produtoModal } = useSelector(state => state.contexto);
   const { requisicao } = useSelector(state => state.compras);
   const dispatch = useDispatch();
-
+  console.log('REQUISICAO-Produtos: ', requisicao);
   const [listaProdutos, setListaProdutos] = useState([]);
   const [descricao, setDescricao] = useState('');
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState(false);
+  const [qtde, setQtde] = useState(1);
 
   async function handleProduto() {
     let c = 0;
@@ -56,13 +59,14 @@ export default function Produto() {
       idrequisicao: requisicao.idrequisicao,
       indicacaouso: '',
       prioridade: 1,
-      quantidade: 5,
+      quantidade: qtde,
       unidade: produto.idunidade,
-      valortotal: produto.valorunitario * 5,
+      valortotal: produto.valorunitario * qtde,
       valorunitario: produto.valorunitario,
     };
 
-    dispatch(inserirItemRequisicao(newItemProduto));
+    await dispatch(inserirItemRequisicao(newItemProduto));
+    await dispatch(selectAllItemRequisicao(requisicao.idrequisicao));
   }
 
   function checkEnter(e) {
@@ -110,17 +114,24 @@ export default function Produto() {
                 <Col sm={2}>
                   <Button
                     type="button"
+                    variant="success"
                     onClick={() => handleProduto(descricao)}
                   >
                     Localizar
                   </Button>
                 </Col>
               </Form.Row>
+              {/* <div className="upload-area">
+                <p className="alert alert-success text-center">
+                  <span>Click or Drag an Image Here to Upload</span>
+                  <input type="file" onChange={handleProduto} />
+                </p>
+              </div> */}
             </Card.Body>
           </Card>
 
           {search ? (
-            <>
+            <Card>
               <Col sm>
                 <Table
                   responsive="sm"
@@ -143,12 +154,21 @@ export default function Produto() {
                         <td>{p.idproduto}</td>
                         <td>{p.descricao}</td>
                         <td>
-                          <Button
-                            variant="success"
-                            onClick={() => handleAddItemProduto(p)}
-                          >
-                            Add
-                          </Button>
+                          <Form inline>
+                            <FormControl
+                              type="number"
+                              placeholder="Quantidade"
+                              className="mr-sm-2"
+                              value={qtde}
+                              onChange={e => setQtde(e.target.value)}
+                            />
+                            <Button
+                              variant="success"
+                              onClick={() => handleAddItemProduto(p)}
+                            >
+                              Add
+                            </Button>
+                          </Form>
                         </td>
                       </tr>
                     ))}
@@ -165,14 +185,14 @@ export default function Produto() {
                   </tfoot>
                 </Table>
               </Col>
-            </>
+            </Card>
           ) : (
             <div />
           )}
         </Modal.Body>
-        <Modal.Footer>
+        {/* <Modal.Footer>
           <Button onClick={handleClose}>Fechar</Button>
-        </Modal.Footer>
+        </Modal.Footer> */}
       </Modal>
     </Container>
   );

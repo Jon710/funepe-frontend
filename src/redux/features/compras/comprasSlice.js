@@ -116,6 +116,11 @@ export const sliceCompras = createSlice({
       state.requisicoes = {};
       state.orcamentos = {};
     },
+    addRequisicaoRequest(state, action) {
+      console.log('addRequisicaoRequest Reducer/Action', action.payload);
+      state.loading = false;
+      state.requisicao = {};
+    },
     addRequisicaoSuccess(state, action) {
       console.log('addRequisicaoSuccess Reducer/Action', action.payload);
       const { requisicao } = action.payload;
@@ -137,6 +142,7 @@ export const {
   updateRequisicaoRequest,
   updateRequisicaoSuccess,
   updateFailure,
+  addRequisicaoRequest,
   addRequisicaoSuccess,
 } = sliceCompras.actions;
 

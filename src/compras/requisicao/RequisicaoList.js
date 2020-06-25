@@ -20,6 +20,7 @@ import { parseISO, format } from 'date-fns';
 import {
   getFirstRender,
   selectAllItemRequisicao,
+  addRequisicaoRequest,
 } from '../../redux/features/compras/comprasSlice';
 import { requisicaoModalOpen } from '../../redux/features/context/contextSlice';
 
@@ -266,7 +267,10 @@ export default function RequisicaoList() {
                   size="lg"
                   block
                   p="2"
-                  onClick={() => dispatch(requisicaoModalOpen())}
+                  onClick={() => {
+                    dispatch(addRequisicaoRequest());
+                    dispatch(requisicaoModalOpen());
+                  }}
                 >
                   Solicitar Compras
                 </Button>

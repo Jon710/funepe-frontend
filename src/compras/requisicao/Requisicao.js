@@ -11,8 +11,10 @@ import {
   Modal,
 } from 'react-bootstrap';
 import Select from 'react-select';
+import SweetAlert from 'react-bootstrap-sweetalert';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+// import { toast } from 'react-toastify';
 
 import { inserirRequisicao } from '../../redux/features/compras/comprasSlice';
 import Produto from '../modal/Produto';
@@ -30,8 +32,8 @@ export default function Requisicao() {
   const { produtoModal, requisicaoModal } = useSelector(
     state => state.contexto
   );
-  const { departamentos } = useSelector(state => state.compras);
-
+  const { departamentos, requisicao } = useSelector(state => state.compras);
+  console.log('REQUISICAO-REQ: ', requisicao);
   const colourStyles = {
     option: provided => ({
       ...provided,
@@ -53,7 +55,8 @@ export default function Requisicao() {
   const [datareq, setDtReq] = useState(new Date());
   const [iddepartamento, setIdDpto] = useState(1);
   const [dptos, setDptos] = useState(1);
-  const [idsolicitante, setIdSolic] = useState(user.idusuario);
+  const [idsolicitante] = useState(user.idusuario);
+  const [solicitante, setSolic] = useState(user.username);
   const [iddestinatario, setIdDestin] = useState(user.idusuario);
   const [finalidade, setFinalidade] = useState('');
   const [idrequisicao, setIdReq] = useState();
@@ -63,8 +66,8 @@ export default function Requisicao() {
   const [orcamentos, setOrcam] = useState(1);
   const [prioridade, setPrio] = useState(1);
   const [status, setStatus] = useState(0);
-
   const [validated, setValidated] = useState(false);
+  const [alert, setAlert] = useState(false);
 
   useEffect(() => {
     const arrayDpto = [];
@@ -83,6 +86,7 @@ export default function Requisicao() {
   }, [departamentos]);
 
   async function handleRequisicao() {
+    setAlert(false);
     setIdDestin(user.idusuario);
     setJustificativa('');
     setOrcam('');
@@ -114,6 +118,10 @@ export default function Requisicao() {
   const handleClose = () => {
     dispatch(requisicaoModalClose());
     history.push('/requisicao');
+  };
+
+  const handleAlert = () => {
+    setAlert(true);
   };
 
   return (
@@ -197,8 +205,8 @@ export default function Requisicao() {
                     <Form.Label>Solicitante</Form.Label>
                     <Form.Control
                       type="text"
-                      value={idsolicitante}
-                      onChange={e => setIdSolic(e.target.value)}
+                      value={solicitante}
+                      onChange={e => setSolic(e.target.value)}
                     />
                   </Form.Group>
                 </Form.Row>
@@ -237,8 +245,18 @@ export default function Requisicao() {
                       <Col xs={6} md={4}>
                         <Button
                           block
-                          variant="primary"
-                          onClick={() => dispatch(produtoModalOpen())}
+                          variant="success"
+                          onClick={() => {
+                            console.log(typeof requisicao.idrequisicao);
+                            if (
+                              typeof requisicao.idrequisicao === 'undefined'
+                            ) {
+                              // toast.error('ID requisicao é inválido.');
+                              handleAlert();
+                            } else {
+                              dispatch(produtoModalOpen());
+                            }
+                          }}
                         >
                           Localizar
                         </Button>
@@ -246,18 +264,33 @@ export default function Requisicao() {
                     </Row>
                   </Card.Header>
                   <Card.Body>
-                    {produtoModal ? (
-                      <>
-                        <Produto />
-                      </>
-                    ) : (
-                      <></>
-                    )}
+                    {produtoModal ? <Produto /> : <></>}
                     <RequisicaoItem />
                   </Card.Body>
                 </Card>
                 <hr />
-                <Produto />
+                {/* <Produto /> */}
+                {alert ? (
+                  <>
+                    <SweetAlert
+                      custom
+                      showCancel
+                      showCloseButton
+                      confirmBtnText="Sim"
+                      cancelBtnText="Não"
+                      confirmBtnBsStyle="primary"
+                      cancelBtnBsStyle="warning"
+                      customIcon="https://raw.githubusercontent.com/djorg83/react-bootstrap-sweetalert/master/demo/assets/thumbs-up.jpg"
+                      title="Requisição Não Existe! Deseja Salvar uma Nova Requisição de Compras?"
+                      onConfirm={handleRequisicao}
+                      onCancel={handleClose}
+                    >
+                      {/* Uma Nova Requisição de Compras deve ser Salva antes de Inserir Produtos nas Lista! */}
+                    </SweetAlert>
+                  </>
+                ) : (
+                  ''
+                )}
                 <Form.Row>
                   {/* <Form.Group as={Col} controlId="editAssunto">
                     <Button
