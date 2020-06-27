@@ -40,7 +40,7 @@ export default function Produtos() {
   const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  const { produtos } = useSelector(state => state.compras);
+  const { produtos, marcas } = useSelector(state => state.compras);
   const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
 
@@ -441,7 +441,7 @@ export default function Produtos() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
-              ID Marca
+              Marca
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={idmarca} />
@@ -554,129 +554,215 @@ export default function Produtos() {
         </Modal.Body>
       </Modal>
 
-      <Modal show={show} onHide={handleCloseCadastrar}>
+      <Modal show={show} onHide={handleCloseCadastrar} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Novo Produto</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
           <Form
             noValidate
             validated={validated}
             onSubmit={handleCadastrarProdutos}
           >
-            <Form.Group controlId="validationProd">
-              <Form.Control
-                type="text"
-                placeholder="ID Unidade"
-                onChange={e => setIdUnidade(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="ID Marca"
-                onChange={e => setIdMarca(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Descrição"
-                onChange={e => setDescricao(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Inativar"
-                onChange={e => setInativar(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Código Extra"
-                onChange={e => setCodigoExtra(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Código Barra"
-                onChange={e => setCodigoBarra(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="ID Categoria"
-                onChange={e => setIdCategoria(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Número Referencia"
-                onChange={e => setNumeroReferencia(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Largura"
-                onChange={e => setLargura(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Profundidade"
-                onChange={e => setProfundidade(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Altura"
-                onChange={e => setAltura(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Peso"
-                onChange={e => setPeso(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Frete"
-                onChange={e => setFrete(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Garantia"
-                onChange={e => setGarantia(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Tipo"
-                onChange={e => setTipo(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control.Feedback type="invalid">
-                Favor preencher os campos.
-              </Form.Control.Feedback>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                ID Unidade
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setIdUnidade(e.target.value)}
+                  required
+                />
+              </Col>
             </Form.Group>
-            <Button type="submit" variant="primary">
-              Criar
-            </Button>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Marca
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  as="select"
+                  onChange={e => setIdMarca(e.target.value)}
+                >
+                  {marcas.length > 0
+                    ? marcas.map(marca => (
+                        <option key={marca.idmarca} value={marca.idmarca}>
+                          {marca.descricao}
+                        </option>
+                      ))
+                    : 'Nenhuma marca cadastrada.'}
+                </Form.Control>
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Descrição
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setDescricao(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Inativar
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setInativar(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Código Extra
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setCodigoExtra(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Código Barra
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setCodigoBarra(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                ID Categoria
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setIdCategoria(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Número Referencia
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setNumeroReferencia(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Largura
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setLargura(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Profundidade
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setProfundidade(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Altura
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setAltura(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Peso
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setPeso(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Frete
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setFrete(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Garantia
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setGarantia(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Tipo
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setTipo(e.target.value)}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
+              </Col>
+            </Form.Group>
+            <Form.Control.Feedback type="invalid">
+              Favor preencher os campos.
+            </Form.Control.Feedback>
+            <Form.Group>
+              <Button type="submit" variant="primary">
+                Criar
+              </Button>
+            </Form.Group>
           </Form>
         </Modal.Body>
       </Modal>
