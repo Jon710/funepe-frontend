@@ -7,6 +7,8 @@ const api = axios.create({
   },
 });
 
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
 // api.defaults.headers.common.Authorization = `Bearer ${
 //   store.getState().usuario.token
 // }`;
