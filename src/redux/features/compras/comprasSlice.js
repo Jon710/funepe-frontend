@@ -120,6 +120,7 @@ export const sliceCompras = createSlice({
       console.log('addRequisicaoRequest Reducer/Action', action.payload);
       state.loading = false;
       state.requisicao = {};
+      state.requisicoesItem = [];
     },
     addRequisicaoSuccess(state, action) {
       console.log('addRequisicaoSuccess Reducer/Action', action.payload);

@@ -15,8 +15,6 @@ export default function Despachos() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { documento } = useSelector(state => state.protocolo);
-  // const [loading, setLoading] = React.useState(true);
-  // console.log('Despachos-caixaDoc: ', loading);
 
   function alterarStatus(situacao) {
     const updateCaixa = {

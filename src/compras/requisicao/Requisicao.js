@@ -56,7 +56,7 @@ export default function Requisicao() {
   const [iddepartamento, setIdDpto] = useState(1);
   const [dptos, setDptos] = useState(1);
   const [idsolicitante] = useState(user.idusuario);
-  const [solicitante, setSolic] = useState(user.username);
+  const [solicitante] = useState(user.username);
   const [iddestinatario, setIdDestin] = useState(user.idusuario);
   const [finalidade, setFinalidade] = useState('');
   const [idrequisicao, setIdReq] = useState();
@@ -137,7 +137,10 @@ export default function Requisicao() {
         <Modal.Body>
           <Card>
             <Card.Header>
-              <Card.Title>NOVA REQUISIÇÃO DE COMPRAS</Card.Title>
+              <Card.Title>
+                NOVA REQUISIÇÃO DE COMPRAS - Solicitante:{' '}
+                {solicitante.toUpperCase()}
+              </Card.Title>
             </Card.Header>
             <Card.Body>
               <Form noValidate validated={validated}>
@@ -145,6 +148,7 @@ export default function Requisicao() {
                   <Form.Group as={Col} controlId="editPrazo">
                     <Form.Label>Nº Requisição</Form.Label>
                     <Form.Control
+                      readOnly
                       value={idrequisicao}
                       onChange={e => setIdReq(e.target.value)}
                     />
@@ -201,14 +205,6 @@ export default function Requisicao() {
                       })}
                     />
                   </Form.Group>
-                  <Form.Group as={Col} controlId="editRfr">
-                    <Form.Label>Solicitante</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={solicitante}
-                      onChange={e => setSolic(e.target.value)}
-                    />
-                  </Form.Group>
                 </Form.Row>
 
                 <Form.Row>
@@ -235,6 +231,42 @@ export default function Requisicao() {
                   </Form.Group>
                 </Form.Row>
                 <hr />
+                <Form.Row>
+                  {/* <Form.Group as={Col} controlId="editAssunto">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      block
+                      p="2"
+                      onClick={handleNova}
+                    >
+                      Novo
+                    </Button>
+                  </Form.Group> */}
+                  <Form.Group as={Col} controlId="editAssunto">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      block
+                      p="2"
+                      onClick={handleRequisicao}
+                    >
+                      Salvar
+                    </Button>
+                  </Form.Group>
+                  <Form.Group as={Col} controlId="editAssunto">
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      block
+                      p="2"
+                      onClick={handleClose}
+                    >
+                      Fechar
+                    </Button>
+                  </Form.Group>
+                </Form.Row>
+                <hr />
                 <Card className="text-center mb-2">
                   <Card.Header>
                     <Card.Title>Produtos/Serviços</Card.Title>
@@ -251,7 +283,6 @@ export default function Requisicao() {
                             if (
                               typeof requisicao.idrequisicao === 'undefined'
                             ) {
-                              // toast.error('ID requisicao é inválido.');
                               handleAlert();
                             } else {
                               dispatch(produtoModalOpen());
@@ -291,41 +322,6 @@ export default function Requisicao() {
                 ) : (
                   ''
                 )}
-                <Form.Row>
-                  {/* <Form.Group as={Col} controlId="editAssunto">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      block
-                      p="2"
-                      onClick={handleNova}
-                    >
-                      Novo
-                    </Button>
-                  </Form.Group> */}
-                  <Form.Group as={Col} controlId="editAssunto">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      block
-                      p="2"
-                      onClick={handleRequisicao}
-                    >
-                      Salvar
-                    </Button>
-                  </Form.Group>
-                  <Form.Group as={Col} controlId="editAssunto">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      block
-                      p="2"
-                      onClick={handleClose}
-                    >
-                      Fechar
-                    </Button>
-                  </Form.Group>
-                </Form.Row>
               </Form>
             </Card.Body>
           </Card>

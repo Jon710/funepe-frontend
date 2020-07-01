@@ -1,121 +1,108 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import BootstrapTable from 'react-bootstrap-table-next';
-import 'bootstrap/dist/css/bootstrap.css';
-
-// datauso: "2020-06-25T03:00:00.000Z"
-// desconto: 0
-// iditemrequisicao: 16
-// idproduto: 1
-// idrequisicao: 31
-// indicacaouso: null
-// prioridade: 1
-// produto: {idproduto: 1, idunidade: 1, idmarca: 1, descricao: "Mesa de Madeira", inativar: 2, …}
-// quantidade: 2
-// requisicao: {idrequisicao: 31, iddepartamento: 1, idsolicitante: 12, datareq: "2020-06-25T03:00:00.000Z", horareq: null, …}
-// unidade: "1"
-// valortotal: 300
-// valorunitario: 150
-
-const columns = [
-  {
-    dataField: 'iditemrequisicao',
-    text: '#',
-    align: 'center',
-    hidden: true,
-  },
-  {
-    dataField: 'counter',
-    text: '#',
-    align: 'center',
-    headerAlign: 'center',
-  },
-  {
-    dataField: 'idproduto',
-    text: 'ID',
-    align: 'center',
-    // sort: true,
-    headerAlign: 'center',
-  },
-  {
-    dataField: 'produto.descricao',
-    text: 'Descrição',
-    align: 'center',
-    // sort: true,
-    headerAlign: 'center',
-  },
-  {
-    dataField: 'unidade',
-    text: 'UN',
-    align: 'center',
-    // sort: true,
-    headerAlign: 'center',
-  },
-  {
-    dataField: 'valorunitario',
-    text: 'V.Unit',
-    align: 'center',
-    headerAlign: 'center',
-  },
-  {
-    dataField: 'quantidade',
-    text: 'Qtde',
-    align: 'center',
-    headerAlign: 'center',
-  },
-  {
-    dataField: 'valortotal',
-    text: 'V.Total',
-    align: 'center',
-    headerAlign: 'center',
-  },
-  {
-    isDummyField: true,
-    text: 'Menu',
-    dataField: 'iditemrequisicao',
-    formatter: () => {
-      return <div />;
-    },
-  },
-];
-
-const selectRow = {
-  mode: 'checkbox',
-  clickToSelect: true,
-  clickToExpand: true,
-  onSelect: rowIndex => {
-    // const { documento } = rowIndex;
-    // dispatch(addDocumentoSuccess({ documento }));
-  },
-  onExpand: () => {},
-  // style: { backgroundColor: '#80ced6' },
-  headerColumnStyle: status => {
-    if (status === 'unchecked') {
-      return {
-        backgroundColor: 'grey',
-      };
-    }
-    return {};
-  },
-};
+import {
+  Table,
+  Col,
+  Container,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import ListIcon from '@material-ui/icons/List';
+import { green } from '@material-ui/core/colors';
 
 export default function RequisicaoItem() {
   const { requisicoesItem } = useSelector(state => state.compras);
   console.log('requisicoesItem: ', requisicoesItem);
+
+  // datauso: "2020-07-01T00:00:00.000Z"
+  // desconto: 0
+  // iditemrequisicao: 25
+  // idproduto: 2
+  // idrequisicao: 42
+  // indicacaouso: null
+  // prioridade: 1
+  // produto: {idproduto: 2, idunidade: 1, idmarca: 1, descricao: "Caneta", inativar: 50, …}
+  // quantidade: 2
+  // requisicao: {idrequisicao: 42, iddepartamento: 5, idsolicitante: 12, datareq: "2020-07-01T00:00:00.000Z", horareq: null, …}
+  // unidade: "1"
+  // valortotal: 6
+  // valorunitario: 3
+
+  function handleDeleteProduto(item) {
+    console.log('ITEM: ', item);
+  }
+
   return (
-    <div>
-      <BootstrapTable
-        keyField="id"
-        data={requisicoesItem}
-        columns={columns}
-        bootstrap4
-        hover
-        table-responsive-sm
-        selectRow={selectRow}
-        noDataIndication="Nenhum Registro Localizado!"
-        headerClasses="header-class"
-      />
-    </div>
+    <Container>
+      <Col sm>
+        <Table
+          responsive="sm"
+          striped
+          bordered
+          hover
+          size="sm"
+          variant="success"
+        >
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Descrição</th>
+              <th>UN</th>
+              <th>V.Unit</th>
+              <th>Qtde</th>
+              <th>V.Total</th>
+              <th>#</th>
+            </tr>
+          </thead>
+          <tbody>
+            {requisicoesItem.map(item => (
+              <tr key={item.iditemrequisicao}>
+                <td>{item.idproduto}</td>
+                <td>{item.produto.descricao}</td>
+                <td>{item.unidade}</td>
+                <td>{item.valorunitario}</td>
+                <td>{item.quantidade}</td>
+                <td>{item.valortotal}</td>
+                <td align="center" style={{ whiteSpace: 'nowrap' }}>
+                  <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 250, hide: 100 }}
+                    overlay={
+                      <Tooltip id={item.iditemrequisicao}>Excluir</Tooltip>
+                    }
+                  >
+                    <DeleteIcon
+                      color="primary"
+                      onClick={() => handleDeleteProduto(item)}
+                    />
+                  </OverlayTrigger>
+                  <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 250, hide: 100 }}
+                    overlay={
+                      <Tooltip id={item.iditemrequisicao}>
+                        Novo Atendimento
+                      </Tooltip>
+                    }
+                  >
+                    <EditIcon style={{ color: green[500] }} />
+                  </OverlayTrigger>
+                  <OverlayTrigger
+                    placement="top"
+                    delay={{ show: 250, hide: 100 }}
+                    overlay={<Tooltip id={item.iditemrequisicao}>Menu</Tooltip>}
+                  >
+                    <ListIcon />
+                  </OverlayTrigger>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </Col>
+    </Container>
   );
 }

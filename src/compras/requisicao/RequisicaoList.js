@@ -24,7 +24,7 @@ import {
 } from '../../redux/features/compras/comprasSlice';
 import { requisicaoModalOpen } from '../../redux/features/context/contextSlice';
 
-import Requisicao from './Requisicao';
+// import Requisicao from './Requisicao';
 import NavBar from './NavBar';
 
 const CaptionElement = () => (
@@ -58,7 +58,7 @@ export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { requisicoesItem } = useSelector(state => state.compras);
-  const { requisicaoModal } = useSelector(state => state.contexto);
+  // const { requisicaoModal } = useSelector(state => state.contexto);
   const [solicitacoes, setSolicitacoes] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
@@ -286,14 +286,6 @@ export default function RequisicaoList() {
               <>
                 <SpinnerLine />
                 <span className="sr-only">Loading...</span>
-              </>
-            ) : (
-              <></>
-            )}
-
-            {requisicaoModal ? (
-              <>
-                <Requisicao show={requisicaoModal} idReq="idReq" />
               </>
             ) : (
               <></>
