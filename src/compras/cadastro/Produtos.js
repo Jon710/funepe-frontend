@@ -47,10 +47,9 @@ export default function Produtos() {
   async function handleCadastrarProdutos(e) {
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
+      e.preventDefault();
       e.stopPropagation();
     } else {
-      e.preventDefault();
-
       const novoProduto = {
         idproduto,
         idunidade,
@@ -332,84 +331,166 @@ export default function Produtos() {
         </Modal.Body>
       </Modal>
 
-      <Modal show={showEdit} onHide={handleCloseEdit}>
+      <Modal show={showEdit} onHide={handleCloseEdit} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Editar produto</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group>
-              <Form.Control
-                type="input"
-                value={descricao}
-                onChange={e => setDescricao(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={inativar}
-                onChange={e => setInativar(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={codigoextra}
-                onChange={e => setCodigoExtra(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={codigobarra}
-                onChange={e => setCodigoBarra(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={numeroreferencia}
-                onChange={e => setNumeroReferencia(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={largura}
-                onChange={e => setLargura(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={profundidade}
-                onChange={e => setProfundidade(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={altura}
-                onChange={e => setAltura(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={peso}
-                onChange={e => setPeso(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={frete}
-                onChange={e => setFrete(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={garantia}
-                onChange={e => setGarantia(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={tipo}
-                onChange={e => setTipo(e.target.value)}
-              />
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Descrição
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={descricao}
+                  onChange={e => setDescricao(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Inativar
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  value={inativar}
+                  onChange={e => setInativar(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Código Extra
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={codigoextra}
+                  onChange={e => setCodigoExtra(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Código Barra
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={codigobarra}
+                  onChange={e => setCodigoBarra(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Número Referencia
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={numeroreferencia}
+                  onChange={e => setNumeroReferencia(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Largura
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  value={largura}
+                  type="text"
+                  onChange={e => setLargura(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Profundidade
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={profundidade}
+                  onChange={e => setProfundidade(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Altura
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={altura}
+                  onChange={e => setAltura(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Peso
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={peso}
+                  onChange={e => setPeso(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Frete
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={frete}
+                  onChange={e => setFrete(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Garantia
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={garantia}
+                  onChange={e => setGarantia(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Tipo
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={tipo}
+                  onChange={e => setTipo(e.target.value)}
+                  required
+                />
+              </Col>
             </Form.Group>
           </Form>
           <Button type="submit" variant="primary" onClick={handleEdit}>
@@ -575,6 +656,9 @@ export default function Produtos() {
                   onChange={e => setIdUnidade(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -594,6 +678,9 @@ export default function Produtos() {
                       ))
                     : 'Nenhuma marca cadastrada.'}
                 </Form.Control>
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -606,6 +693,9 @@ export default function Produtos() {
                   onChange={e => setDescricao(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -618,6 +708,9 @@ export default function Produtos() {
                   onChange={e => setInativar(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -630,6 +723,9 @@ export default function Produtos() {
                   onChange={e => setCodigoExtra(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -642,6 +738,9 @@ export default function Produtos() {
                   onChange={e => setCodigoBarra(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -654,6 +753,9 @@ export default function Produtos() {
                   onChange={e => setIdCategoria(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -666,6 +768,9 @@ export default function Produtos() {
                   onChange={e => setNumeroReferencia(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -678,6 +783,9 @@ export default function Produtos() {
                   onChange={e => setLargura(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -690,6 +798,9 @@ export default function Produtos() {
                   onChange={e => setProfundidade(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -702,6 +813,9 @@ export default function Produtos() {
                   onChange={e => setAltura(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -714,6 +828,9 @@ export default function Produtos() {
                   onChange={e => setPeso(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -726,6 +843,9 @@ export default function Produtos() {
                   onChange={e => setFrete(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -738,6 +858,9 @@ export default function Produtos() {
                   onChange={e => setGarantia(e.target.value)}
                   required
                 />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -755,9 +878,6 @@ export default function Produtos() {
                 </Form.Control.Feedback>
               </Col>
             </Form.Group>
-            <Form.Control.Feedback type="invalid">
-              Favor preencher os campos.
-            </Form.Control.Feedback>
             <Form.Group>
               <Button type="submit" variant="primary">
                 Criar
