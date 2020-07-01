@@ -24,7 +24,6 @@ import {
 } from '../../redux/features/compras/comprasSlice';
 import { requisicaoModalOpen } from '../../redux/features/context/contextSlice';
 
-// import Requisicao from './Requisicao';
 import NavBar from './NavBar';
 
 const CaptionElement = () => (
@@ -58,7 +57,6 @@ export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { requisicoesItem } = useSelector(state => state.compras);
-  // const { requisicaoModal } = useSelector(state => state.contexto);
   const [solicitacoes, setSolicitacoes] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
@@ -145,13 +143,7 @@ export default function RequisicaoList() {
       const requisicao = rowIndex;
       dispatch(selectAllItemRequisicao(requisicao.idrequisicao));
     },
-    onExpand: () => {
-      // row, isExpand, rowIndex, e
-      // console.log(row.id);
-      // console.log(isExpand);
-      // console.log(rowIndex);
-      // console.log(e);
-    },
+    onExpand: () => {},
     headerColumnStyle: status => {
       if (status === 'checked') {
         return {
@@ -214,7 +206,7 @@ export default function RequisicaoList() {
       ) : (
         <Card.Header>***Requisição não possui produtos!***</Card.Header>
       ),
-    onExpand: row => {
+    onExpand: () => {
       // dispatch(getUploadedFiles(row.iddocumento));
     },
   };
@@ -296,10 +288,7 @@ export default function RequisicaoList() {
               bootstrap4
               hover
               table-responsive-sm
-              // keyField="idrequisicao"
-              // data={solicitacoes}
               caption={<CaptionElement />}
-              // columns={columns}
               expandRow={expandRow}
               selectRow={selectRow}
               noDataIndication="Nenhum Registro Localizado!"

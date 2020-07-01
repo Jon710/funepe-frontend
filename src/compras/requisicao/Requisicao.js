@@ -14,7 +14,7 @@ import Select from 'react-select';
 import SweetAlert from 'react-bootstrap-sweetalert';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import { inserirRequisicao } from '../../redux/features/compras/comprasSlice';
 import Produto from '../modal/Produto';
@@ -104,6 +104,7 @@ export default function Requisicao() {
       status,
     };
     dispatch(inserirRequisicao(newRequisicao));
+    toast.success('Requisição realizada! Agora, insira o produto.');
   }
 
   function handleDtRequisicao(dtReq) {
@@ -203,6 +204,15 @@ export default function Requisicao() {
                           neutral50: '#1A1A1A', // Placeholder color
                         },
                       })}
+                    />
+                  </Form.Group>
+                  <Form.Group as={Col} controlId="editRfr">
+                    <Form.Label>Solicitante</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={solicitante}
+                      onChange={e => setSolic(e.target.value)}
+                      readOnly
                     />
                   </Form.Group>
                 </Form.Row>
