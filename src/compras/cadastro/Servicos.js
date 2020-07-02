@@ -144,7 +144,7 @@ export default function Servicos() {
         dispatch(
           showAlertErrorOpen({
             showAlertError: true,
-            alertError: `${error.response.data.error} Algo com a ${descricao}`,
+            alertError: `${error.response.data.error} Problema com a ${descricao}`,
           })
         );
       });
@@ -242,7 +242,7 @@ export default function Servicos() {
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar fornecedor</Modal.Title>
+          <Modal.Title>Editar serviço</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>

@@ -56,7 +56,7 @@ export default function Requisicao() {
   const [iddepartamento, setIdDpto] = useState(1);
   const [dptos, setDptos] = useState(1);
   const [idsolicitante] = useState(user.idusuario);
-  const [solicitante] = useState(user.username);
+  const [solicitante, setSolicitante] = useState(user.username);
   const [iddestinatario, setIdDestin] = useState(user.idusuario);
   const [finalidade, setFinalidade] = useState('');
   const [idrequisicao, setIdReq] = useState();
@@ -205,6 +205,15 @@ export default function Requisicao() {
                           neutral50: '#1A1A1A', // Placeholder color
                         },
                       })}
+                    />
+                  </Form.Group>
+                  <Form.Group as={Col} controlId="editRfr">
+                    <Form.Label>Solicitante</Form.Label>
+                    <Form.Control
+                      type="text"
+                      value={solicitante}
+                      onChange={e => setSolicitante(e.target.value)}
+                      readOnly
                     />
                   </Form.Group>
                 </Form.Row>
