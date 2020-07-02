@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import history from '../../../services/history';
 import api from '../../../services/api';
+import { formatPrice } from '../../../services/formatPrice';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 
@@ -42,14 +43,14 @@ export const sliceCompras = createSlice({
         tiposempresa,
         tipostelefone,
         users,
-        itensrequisicao,
+        itensReq,
       } = action.payload;
       state.loading = false;
       if (requisicoes !== undefined) {
         state.requisicoes = requisicoes;
       }
-      if (itensrequisicao !== undefined) {
-        state.requisicoesItem = itensrequisicao;
+      if (itensReq !== undefined) {
+        state.requisicoesItem = itensReq;
       }
       if (orcamentos !== undefined) {
         state.orcamentos = orcamentos;
@@ -94,36 +95,36 @@ export const sliceCompras = createSlice({
       state.requisicoes = requisicoes;
     },
     requisicaoFailure: (state, action) => {
-      console.log('requisicaoFailure', action.payload);
+      // console.log('requisicaoFailure', action.payload);
       state.loading = false;
       state.requisicoes = {};
     },
     updateRequisicaoRequest: (state, action) => {
-      console.log('updateRequisicaoRequest Reducer/Action', action);
+      // console.log('updateRequisicaoRequest Reducer/Action', action);
       const { requisicoes } = action.payload;
       state.loading = false;
       state.requisicoes = requisicoes;
     },
     updateRequisicaoSuccess: (state, action) => {
-      console.log('updateRequisicaoSuccess Reducer/Action', action);
+      // console.log('updateRequisicaoSuccess Reducer/Action', action);
       const { requisicoes } = action.payload;
       state.loading = false;
       state.requisicoes = requisicoes;
     },
     updateFailure: (state, action) => {
-      console.log('updateFAILURE', action.payload);
+      // console.log('updateFAILURE', action.payload);
       state.loading = false;
       state.requisicoes = {};
       state.orcamentos = {};
     },
     addRequisicaoRequest(state, action) {
-      console.log('addRequisicaoRequest Reducer/Action', action.payload);
+      // console.log('addRequisicaoRequest Reducer/Action', action.payload);
       state.loading = false;
       state.requisicao = {};
       state.requisicoesItem = [];
     },
     addRequisicaoSuccess(state, action) {
-      console.log('addRequisicaoSuccess Reducer/Action', action.payload);
+      // console.log('addRequisicaoSuccess Reducer/Action', action.payload);
       const { requisicao } = action.payload;
       if (requisicao !== undefined) {
         state.loading = false;
@@ -192,7 +193,7 @@ export const selectAllProdutos = () => {
   return async dispatch => {
     try {
       const response = await api.get(`produto/`);
-      console.log(response.data);
+      // console.log(response.data);
       const { produtos } = response.data;
       if (produtos.length >= 0) {
         await dispatch(requisicaoSuccess({ produtos }));
@@ -212,7 +213,7 @@ export const selectProdutoByDescricao = descricao => {
   return async () => {
     try {
       const response = await api.get(`produtos/${descricao}`);
-      console.log(response.data);
+      // console.log(response.data);
       const { listaProdutos } = response.data;
       if (listaProdutos.length >= 0) {
         // await dispatch(requisicaoSuccess({ produtos }));
@@ -237,9 +238,16 @@ export const selectAllItemRequisicao = requisicao_id => {
         `requisicao/${requisicao_id}/itemrequisicao/`
       );
       const { itensrequisicao } = response.data;
-      console.log(itensrequisicao);
-      if (itensrequisicao.length >= 0) {
-        await dispatch(requisicaoSuccess({ itensrequisicao }));
+      // console.log('DATA1: ', itensrequisicao);
+      const itensReq = itensrequisicao.map(item => ({
+        ...item,
+        vlrUnit: formatPrice(item.valorunitario),
+        vlrTotal: formatPrice(item.valortotal),
+      }));
+      // console.log('DATA2: ', itensReq);
+
+      if (itensReq.length >= 0) {
+        await dispatch(requisicaoSuccess({ itensReq }));
         history.push('/requisicao');
         return;
       }
@@ -332,7 +340,7 @@ export const selectAllFornecedores = () => {
   return async dispatch => {
     try {
       const response = await api.get(`fornecedor/`);
-      console.log(response.data);
+      // console.log(response.data);
       const { fornecedores } = response.data;
       if (fornecedores.length >= 0) {
         await dispatch(requisicaoSuccess({ fornecedores }));
@@ -372,7 +380,7 @@ export const selectAllEmpresas = () => {
     try {
       const response = await api.get(`empresa/`);
       const { empresas } = response.data;
-      console.log(empresas);
+      // console.log(empresas);
       if (empresas.length >= 0) {
         await dispatch(requisicaoSuccess({ empresas }));
         return;
@@ -410,7 +418,7 @@ export const selectAllCategorias = () => {
   return async dispatch => {
     try {
       const response = await api.get(`categoria/`);
-      console.log(response.data);
+      // console.log(response.data);
       const { categorias } = response.data;
       if (categorias.length >= 0) {
         await dispatch(requisicaoSuccess({ categorias }));
@@ -449,7 +457,7 @@ export const selectAllTipoFornecedores = () => {
   return async dispatch => {
     try {
       const response = await api.get(`tipofornecedor/`);
-      console.log(response.data);
+      // console.log(response.data);
       const { tiposfornecedor } = response.data;
       if (tiposfornecedor.length >= 0) {
         await dispatch(requisicaoSuccess({ tiposfornecedor }));
@@ -469,7 +477,7 @@ export const selectAllTipoEmpresas = () => {
   return async dispatch => {
     try {
       const response = await api.get(`tipoempresa/`);
-      console.log(response.data);
+      // console.log(response.data);
       const { tiposempresa } = response.data;
       if (tiposempresa.length >= 0) {
         await dispatch(requisicaoSuccess({ tiposempresa }));
@@ -489,7 +497,7 @@ export const selectAllTipoTelefones = () => {
   return async dispatch => {
     try {
       const response = await api.get(`tipotelefone/`);
-      console.log(response.data);
+      // console.log(response.data);
       const { tipostelefone } = response.data;
       if (tipostelefone.length >= 0) {
         await dispatch(requisicaoSuccess({ tipostelefone }));

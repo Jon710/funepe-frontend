@@ -37,8 +37,8 @@ export default function RequisicaoItem() {
               <th>ID</th>
               <th>Descrição</th>
               <th>UN</th>
-              <th>V.Unit</th>
               <th>Qtde</th>
+              <th>V.Unit</th>
               <th>V.Total</th>
               <th>#</th>
             </tr>
@@ -49,9 +49,9 @@ export default function RequisicaoItem() {
                 <td>{item.idproduto}</td>
                 <td>{item.produto.descricao}</td>
                 <td>{item.unidade}</td>
-                <td>{item.valorunitario}</td>
                 <td>{item.quantidade}</td>
-                <td>{item.valortotal}</td>
+                <td>{item.vlrUnit}</td>
+                <td>{item.vlrTotal}</td>
                 <td align="center" style={{ whiteSpace: 'nowrap' }}>
                   <OverlayTrigger
                     placement="top"
