@@ -20,6 +20,8 @@ import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
 export default function Produtos() {
   const [idproduto, setIdProduto] = useState();
   const [idunidade, setIdUnidade] = useState();
+  const [valorunitario, setValorUnitario] = useState(0);
+  const [qtdestoque, setQtdEstoque] = useState(0);
   const [idmarca, setIdMarca] = useState();
   const [descricao, setDescricao] = useState('');
   const [inativar, setInativar] = useState();
@@ -49,13 +51,14 @@ export default function Produtos() {
   async function handleCadastrarProdutos(e) {
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
-      e.preventDefault();
       e.stopPropagation();
     } else {
+      e.preventDefault();
+
       const novoProduto = {
         idproduto,
-        idunidade,
-        idmarca,
+        idunidade: 6,
+        idmarca: 3,
         descricao,
         inativar,
         codigoextra,
@@ -66,17 +69,19 @@ export default function Produtos() {
         profundidade,
         altura,
         peso,
-        frete,
+        frete: false,
         garantia,
         tipo,
+        valorunitario,
+        qtdestoque,
       };
 
+      console.log(novoProduto);
       await api
         .post('produto', novoProduto)
         .then(() => {
           toast.success('Produto cadastrado com sucesso!');
           dispatch(selectAllProdutos());
-
           setShow(false);
         })
         .catch(error => {
@@ -884,11 +889,39 @@ export default function Produtos() {
                 </Form.Control.Feedback>
               </Col>
             </Form.Group>
-            <Form.Group>
-              <Button type="submit" variant="primary">
-                Criar
-              </Button>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Valor Unitário
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setValorUnitario(e.target.value)}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
+              </Col>
             </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Estoque
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setQtdEstoque(e.target.value)}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Favor preencher os campos.
+                </Form.Control.Feedback>
+              </Col>
+            </Form.Group>
+            <Button type="submit" variant="primary">
+              Criar
+            </Button>
           </Form>
         </Modal.Body>
       </Modal>
