@@ -191,12 +191,12 @@ export default function RequisicaoList() {
               </thead>
               <tbody>
                 {requisicoesItem.map(item => (
-                  <tr key={item.idproduto}>
+                  <tr key={item.iditemrequisicao}>
                     <td>{item.idproduto}</td>
                     <td>{item.produto.descricao}</td>
                     <td>{item.quantidade}</td>
-                    <td>{item.valorunitario}</td>
-                    <td>{item.valortotal}</td>
+                    <td>{item.vlrUnit}</td>
+                    <td>{item.vlrTotal}</td>
                   </tr>
                 ))}
               </tbody>

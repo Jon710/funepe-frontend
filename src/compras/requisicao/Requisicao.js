@@ -118,6 +118,7 @@ export default function Requisicao() {
 
   const handleClose = () => {
     dispatch(requisicaoModalClose());
+    setAlert(false);
     history.push('/requisicao');
   };
 
@@ -206,15 +207,6 @@ export default function Requisicao() {
                       })}
                     />
                   </Form.Group>
-                  <Form.Group as={Col} controlId="editRfr">
-                    <Form.Label>Solicitante</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={solicitante}
-                      onChange={e => setSolic(e.target.value)}
-                      readOnly
-                    />
-                  </Form.Group>
                 </Form.Row>
 
                 <Form.Row>
@@ -242,17 +234,6 @@ export default function Requisicao() {
                 </Form.Row>
                 <hr />
                 <Form.Row>
-                  {/* <Form.Group as={Col} controlId="editAssunto">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      block
-                      p="2"
-                      onClick={handleNova}
-                    >
-                      Novo
-                    </Button>
-                  </Form.Group> */}
                   <Form.Group as={Col} controlId="editAssunto">
                     <Button
                       variant="primary"

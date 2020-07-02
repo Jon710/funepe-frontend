@@ -1,5 +1,5 @@
 /* eslint-disable no-return-assign */
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Table,
@@ -31,18 +31,23 @@ export default function Produto() {
   const [count, setCount] = useState(0);
   const [search, setSearch] = useState(false);
   const [qtde, setQtde] = useState(1);
+  const textInput = useRef(null);
+
+  useEffect(() => {
+    textInput.current.focus();
+  }, []);
 
   async function handleProduto() {
     let c = 0;
 
     dispatch(selectProdutoByDescricao(descricao)).then(response => {
-      console.log(response);
+      // console.log(response);
       if (response.length > 0) {
         const prods = response.map(produto => ({
           ...produto,
           counter: (c += 1),
         }));
-        console.log('PRODUTOS: ', prods);
+        // console.log('PRODUTOS: ', prods);
         setListaProdutos(prods);
         setCount(c);
         setSearch(true);
@@ -91,13 +96,13 @@ export default function Produto() {
         show={produtoModal}
         onHide={handleClose}
       >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            Localizar Produtos
-          </Modal.Title>
-        </Modal.Header>
         <Modal.Body>
-          <Card>
+          <Card bg="success">
+            <Card.Header>
+              <Card.Title id="contained-modal-title-vcenter">
+                Localizar Produtos
+              </Card.Title>
+            </Card.Header>
             <Card.Body>
               <Form.Row>
                 <Col sm={10}>
@@ -105,6 +110,7 @@ export default function Produto() {
                     style={{ textTransform: 'uppercase' }}
                     value={descricao}
                     required
+                    ref={textInput}
                     type="text"
                     placeholder="Descrição do Produto"
                     onChange={e => setDescricao(e.target.value)}
