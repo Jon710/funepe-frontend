@@ -31,7 +31,7 @@ export default function NavBar() {
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
           <Nav.Link href="/requisicao">Requisição</Nav.Link>
-          <Nav.Link href="/requisicao">Orçamento</Nav.Link>
+          <Nav.Link href="/orcamento">Orçamento</Nav.Link>
           <NavDropdown title="Configurações" id="basic-nav-dropdown">
             <NavDropdown.Item href="/formcategoria">
               Categorias

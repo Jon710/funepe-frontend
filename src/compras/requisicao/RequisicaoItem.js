@@ -17,20 +17,6 @@ export default function RequisicaoItem() {
   const { requisicoesItem } = useSelector(state => state.compras);
   console.log('requisicoesItem: ', requisicoesItem);
 
-  // datauso: "2020-07-01T00:00:00.000Z"
-  // desconto: 0
-  // iditemrequisicao: 25
-  // idproduto: 2
-  // idrequisicao: 42
-  // indicacaouso: null
-  // prioridade: 1
-  // produto: {idproduto: 2, idunidade: 1, idmarca: 1, descricao: "Caneta", inativar: 50, …}
-  // quantidade: 2
-  // requisicao: {idrequisicao: 42, iddepartamento: 5, idsolicitante: 12, datareq: "2020-07-01T00:00:00.000Z", horareq: null, …}
-  // unidade: "1"
-  // valortotal: 6
-  // valorunitario: 3
-
   function handleDeleteProduto(item) {
     console.log('ITEM: ', item);
   }
