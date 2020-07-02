@@ -83,7 +83,7 @@ export default function UnidadeMedida() {
 
   function handleShowDelete(unidade, e) {
     e.preventDefault();
-    setDescricaoUnidade(unidade.descricaoUnidade);
+    setDescricaoUnidade(unidade.descricao);
     setIdUnidade(unidade.idunidade);
     setShowDelete(true);
   }
@@ -94,7 +94,7 @@ export default function UnidadeMedida() {
 
   async function handleShowDetalhes(unidade, e) {
     e.preventDefault();
-    setDescricaoUnidade(unidade);
+    setDescricaoUnidade(unidade.descricao);
     setShowDetalhes(true);
   }
 
@@ -112,8 +112,9 @@ export default function UnidadeMedida() {
     await api
       .put(`unidademedida/${idunidade}`, editUnidade)
       .then(() => {
-        toast.success('Categoria atualizada com sucesso!');
+        toast.success('Unidade de Medida atualizada com sucesso!');
         dispatch(selectAllUnidadeMedidas());
+        setShowEdit(false);
       })
       .catch(error => {
         dispatch(

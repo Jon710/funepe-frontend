@@ -94,37 +94,31 @@ export const sliceCompras = createSlice({
       state.loading = true;
       state.requisicoes = requisicoes;
     },
-    requisicaoFailure: (state, action) => {
-      // console.log('requisicaoFailure', action.payload);
+    requisicaoFailure: state => {
       state.loading = false;
       state.requisicoes = {};
     },
     updateRequisicaoRequest: (state, action) => {
-      // console.log('updateRequisicaoRequest Reducer/Action', action);
       const { requisicoes } = action.payload;
       state.loading = false;
       state.requisicoes = requisicoes;
     },
     updateRequisicaoSuccess: (state, action) => {
-      // console.log('updateRequisicaoSuccess Reducer/Action', action);
       const { requisicoes } = action.payload;
       state.loading = false;
       state.requisicoes = requisicoes;
     },
-    updateFailure: (state, action) => {
-      // console.log('updateFAILURE', action.payload);
+    updateFailure: state => {
       state.loading = false;
       state.requisicoes = {};
       state.orcamentos = {};
     },
-    addRequisicaoRequest(state, action) {
-      // console.log('addRequisicaoRequest Reducer/Action', action.payload);
+    addRequisicaoRequest(state) {
       state.loading = false;
       state.requisicao = {};
       state.requisicoesItem = [];
     },
     addRequisicaoSuccess(state, action) {
-      // console.log('addRequisicaoSuccess Reducer/Action', action.payload);
       const { requisicao } = action.payload;
       if (requisicao !== undefined) {
         state.loading = false;
@@ -151,7 +145,6 @@ export const {
 export default sliceCompras.reducer;
 
 // API REQUEST ACTIONS HANDLED WITH REDUX-THUNK MIDDLEWARE BUILT INTO REDUX TOOLKIT -->
-
 /** *************THUNKS************** */
 export const getFirstRender = usuario => {
   console.log('Compras getFirstRender:', usuario);

@@ -40,7 +40,9 @@ export default function Produtos() {
   const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  const { produtos, marcas } = useSelector(state => state.compras);
+  const { produtos, marcas, unidadeMedidas } = useSelector(
+    state => state.compras
+  );
   const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
 
@@ -514,7 +516,7 @@ export default function Produtos() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
-              ID Unidade
+              Unidade de Medida
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={idunidade} />
@@ -648,17 +650,24 @@ export default function Produtos() {
           >
             <Form.Group as={Row}>
               <Form.Label column sm="2">
-                ID Unidade
+                Unidade de Medida
               </Form.Label>
               <Col sm="10">
                 <Form.Control
-                  type="text"
+                  as="select"
                   onChange={e => setIdUnidade(e.target.value)}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
+                >
+                  {unidadeMedidas.length > 0
+                    ? unidadeMedidas.map(unidade => (
+                        <option
+                          key={unidade.idunidade}
+                          value={unidade.idunidade}
+                        >
+                          {unidade.descricao}
+                        </option>
+                      ))
+                    : 'Nenhuma unidade de medida cadastrada.'}
+                </Form.Control>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -678,9 +687,6 @@ export default function Produtos() {
                       ))
                     : 'Nenhuma marca cadastrada.'}
                 </Form.Control>
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
