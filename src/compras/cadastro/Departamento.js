@@ -28,8 +28,9 @@ export default function Departamento() {
     } else {
       e.preventDefault();
 
+      console.log(descricaoDepto);
       const novoDepto = {
-        descricaoDepto,
+        descricao: descricaoDepto,
       };
 
       await api
@@ -193,7 +194,11 @@ export default function Departamento() {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Control type="input" defaultValue={descricaoDepto} />
+              <Form.Control
+                readOnly
+                type="input"
+                defaultValue={descricaoDepto}
+              />
             </Form.Group>
           </Form>
           <Button type="submit" variant="danger" onClick={handleDelete}>

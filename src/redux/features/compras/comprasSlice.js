@@ -7,7 +7,6 @@ import api from '../../../services/api';
 import { formatPrice } from '../../../services/formatPrice';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
-
 export const sliceCompras = createSlice({
   name: 'compras',
   initialState: {
@@ -104,9 +103,10 @@ export const sliceCompras = createSlice({
       state.requisicoes = requisicoes;
     },
     updateRequisicaoSuccess: (state, action) => {
-      const { requisicoes } = action.payload;
+      const { requisicoes, requisicao } = action.payload;
       state.loading = false;
       state.requisicoes = requisicoes;
+      state.requisicao = requisicao;
     },
     updateFailure: state => {
       state.loading = false;
@@ -119,10 +119,15 @@ export const sliceCompras = createSlice({
       state.requisicoesItem = [];
     },
     addRequisicaoSuccess(state, action) {
-      const { requisicao } = action.payload;
+      console.log('ACTION REQ SUCCESS', action.payload);
+      const { requisicao, rowIndex } = action.payload;
       if (requisicao !== undefined) {
         state.loading = false;
         state.requisicao = requisicao;
+      }
+      if (rowIndex !== undefined) {
+        state.loading = false;
+        state.requisicao = rowIndex;
       }
     },
   },
@@ -186,7 +191,6 @@ export const selectAllProdutos = () => {
   return async dispatch => {
     try {
       const response = await api.get(`produto/`);
-      // console.log(response.data);
       const { produtos } = response.data;
       if (produtos.length >= 0) {
         await dispatch(requisicaoSuccess({ produtos }));
@@ -206,10 +210,8 @@ export const selectProdutoByDescricao = descricao => {
   return async () => {
     try {
       const response = await api.get(`produtos/${descricao}`);
-      // console.log(response.data);
       const { listaProdutos } = response.data;
       if (listaProdutos.length >= 0) {
-        // await dispatch(requisicaoSuccess({ produtos }));
         history.push('/requisicao');
         return listaProdutos;
       }
@@ -231,13 +233,11 @@ export const selectAllItemRequisicao = requisicao_id => {
         `requisicao/${requisicao_id}/itemrequisicao/`
       );
       const { itensrequisicao } = response.data;
-      // console.log('DATA1: ', itensrequisicao);
       const itensReq = itensrequisicao.map(item => ({
         ...item,
         vlrUnit: formatPrice(item.valorunitario),
         vlrTotal: formatPrice(item.valortotal),
       }));
-      // console.log('DATA2: ', itensReq);
 
       if (itensReq.length >= 0) {
         await dispatch(requisicaoSuccess({ itensReq }));
@@ -293,10 +293,26 @@ export const inserirRequisicao = payload => {
       toast.error(
         `ERRO ao inserir Requisicao - inserirRequisicao ${error.message}`
       );
-      console.log(
-        'ERRO ao despachar Documento - despacharProtocolo: ',
-        error.message
+      dispatch(updateFailure());
+    }
+  };
+};
+
+export const atualizarRequisicao = payload => {
+  return async dispatch => {
+    try {
+      const newRequisicao = payload;
+      const response = await api.put(
+        `usuario/${newRequisicao.idsolicitante}/requisicao/${newRequisicao.idrequisicao}`,
+        newRequisicao
       );
+      dispatch(updateRequisicaoSuccess(response.data));
+      dispatch(selectAllRequisicao());
+      toast.success('Requisição atualizada!');
+
+      return response.data;
+    } catch (error) {
+      toast.error(`ERRO ao atualizar requisição ${error.message}`);
       dispatch(updateFailure());
     }
   };
@@ -373,7 +389,6 @@ export const selectAllEmpresas = () => {
     try {
       const response = await api.get(`empresa/`);
       const { empresas } = response.data;
-      // console.log(empresas);
       if (empresas.length >= 0) {
         await dispatch(requisicaoSuccess({ empresas }));
         return;
@@ -411,7 +426,6 @@ export const selectAllCategorias = () => {
   return async dispatch => {
     try {
       const response = await api.get(`categoria/`);
-      // console.log(response.data);
       const { categorias } = response.data;
       if (categorias.length >= 0) {
         await dispatch(requisicaoSuccess({ categorias }));
@@ -450,7 +464,6 @@ export const selectAllTipoFornecedores = () => {
   return async dispatch => {
     try {
       const response = await api.get(`tipofornecedor/`);
-      // console.log(response.data);
       const { tiposfornecedor } = response.data;
       if (tiposfornecedor.length >= 0) {
         await dispatch(requisicaoSuccess({ tiposfornecedor }));
@@ -470,7 +483,6 @@ export const selectAllTipoEmpresas = () => {
   return async dispatch => {
     try {
       const response = await api.get(`tipoempresa/`);
-      // console.log(response.data);
       const { tiposempresa } = response.data;
       if (tiposempresa.length >= 0) {
         await dispatch(requisicaoSuccess({ tiposempresa }));
@@ -490,7 +502,6 @@ export const selectAllTipoTelefones = () => {
   return async dispatch => {
     try {
       const response = await api.get(`tipotelefone/`);
-      // console.log(response.data);
       const { tipostelefone } = response.data;
       if (tipostelefone.length >= 0) {
         await dispatch(requisicaoSuccess({ tipostelefone }));

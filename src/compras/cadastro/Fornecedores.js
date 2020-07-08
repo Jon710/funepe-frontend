@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   Container,
@@ -8,6 +8,7 @@ import {
   Row,
   Col,
 } from 'react-bootstrap';
+import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import AlertError from '../../pages/alerts/AlertError';
@@ -21,6 +22,7 @@ export default function Fornecedores() {
   const [idfornecedor, setIdFornecedor] = useState();
   const [codigoextra, setCodigoExtra] = useState();
   const [idtipofornecedor, setIdTipoFornecedor] = useState();
+  const [descricao, setDescricao] = useState('');
   const [descricaoTipoFornecedor, setDescricaoTipoFornecedor] = useState('');
   const [tipoFornece, setTipoFornece] = useState(1);
   const [ativo, setAtivo] = useState();
@@ -42,6 +44,28 @@ export default function Fornecedores() {
   const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    const arrayForn = [];
+
+    async function loadSelectTipoForn() {
+      if (tipoFornecedores.length > 0) {
+        tipoFornecedores.forEach(tipo => {
+          arrayForn.push({
+            value: tipo.idtipofornecedor,
+            label: tipo.descricao,
+          });
+        });
+      }
+      setDescricao(arrayForn);
+    }
+
+    loadSelectTipoForn();
+  }, [tipoFornecedores]);
+
+  function onChangeTipoForn(selectedOption) {
+    setIdTipoFornecedor(selectedOption.value);
+  }
+
   async function handleCadastrarFornecedor(e) {
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
@@ -62,6 +86,7 @@ export default function Fornecedores() {
         prod_servicos,
       };
 
+      console.log(novoFornecedor);
       await api
         .post('fornecedor', novoFornecedor)
         .then(() => {
@@ -266,27 +291,35 @@ export default function Fornecedores() {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Control type="input" defaultValue={idfornecedor} />
+              <Form.Control readOnly type="input" defaultValue={idfornecedor} />
               <br />
-              <Form.Control type="input" defaultValue={codigoextra} />
+              <Form.Control readOnly type="input" defaultValue={codigoextra} />
               <br />
-              <Form.Control type="input" defaultValue={idtipofornecedor} />
+              <Form.Control
+                readOnly
+                type="input"
+                defaultValue={idtipofornecedor}
+              />
               <br />
-              <Form.Control type="input" defaultValue={tipoFornece} />
+              <Form.Control readOnly type="input" defaultValue={tipoFornece} />
               <br />
-              <Form.Control type="input" defaultValue={ativo} />
+              <Form.Control readOnly type="input" defaultValue={ativo} />
               <br />
-              <Form.Control type="input" defaultValue={razaosocial} />
+              <Form.Control readOnly type="input" defaultValue={razaosocial} />
               <br />
-              <Form.Control type="input" defaultValue={nomefantasia} />
+              <Form.Control readOnly type="input" defaultValue={nomefantasia} />
               <br />
-              <Form.Control type="input" defaultValue={cpf_cnpj} />
+              <Form.Control readOnly type="input" defaultValue={cpf_cnpj} />
               <br />
-              <Form.Control type="input" defaultValue={rg_ie} />
+              <Form.Control readOnly type="input" defaultValue={rg_ie} />
               <br />
-              <Form.Control type="input" defaultValue={observacao} />
+              <Form.Control readOnly type="input" defaultValue={observacao} />
               <br />
-              <Form.Control type="input" defaultValue={prod_servicos} />
+              <Form.Control
+                readOnly
+                type="input"
+                defaultValue={prod_servicos}
+              />
             </Form.Group>
           </Form>
           <Button type="submit" variant="danger" onClick={handleDelete}>
@@ -501,7 +534,7 @@ export default function Fornecedores() {
         </Modal.Body>
       </Modal>
 
-      <Modal show={show} onHide={handleCloseCadastrar}>
+      <Modal show={show} onHide={handleCloseCadastrar} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Novo Fornecedor</Modal.Title>
         </Modal.Header>
@@ -511,80 +544,115 @@ export default function Fornecedores() {
             validated={validated}
             onSubmit={handleCadastrarFornecedor}
           >
-            <Form.Group controlId="validationFORN">
-              <Form.Label>Tipo de Fornecedor</Form.Label>
-              <Form.Control
-                as="select"
-                onChange={e => setIdTipoFornecedor(e.target.value)}
-              >
-                {tipoFornecedores.length > 0
-                  ? tipoFornecedores.map(tipo => (
-                      <option
-                        key={tipo.idtipofornecedor}
-                        value={tipo.idtipofornecedor}
-                      >
-                        {tipo.descricao}
-                      </option>
-                    ))
-                  : 'Nenhuma fornecedor cadastrado.'}
-              </Form.Control>
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Código Extra"
-                onChange={e => setCodigoExtra(e.target.value)}
-                required
-              />
-              <br />
-              {/* <Form.Control
-                type="text"
-                placeholder="Tipo de Fornecedor"
-                onChange={e => setIdTipoFornecedor(e.target.value)}
-                required
-              />
-              <br /> */}
-              <Form.Control
-                type="text"
-                placeholder="Ativo"
-                onChange={e => setAtivo(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Razão Social"
-                onChange={e => setRazaoSocial(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Nome Fantasia"
-                onChange={e => setNomeFantasia(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="CPF/CNPJ"
-                onChange={e => setCpfCnpj(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="RG/IE"
-                onChange={e => setRgIe(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Observação"
-                onChange={e => setObservacao(e.target.value)}
-                required
-              />
-              <br />
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Tipo de Fornecedor
+              </Form.Label>
+              <Col sm="10">
+                <Select
+                  isSearchable
+                  options={descricao}
+                  onChange={selectedOption => onChangeTipoForn(selectedOption)}
+                  placeholder="Selecione um tipo de fornecedor"
+                >
+                  {tipoFornecedores.length > 0
+                    ? tipoFornecedores.map(tipo => (
+                        <option
+                          key={tipo.idtipofornecedor}
+                          value={tipo.idtipofornecedor}
+                        >
+                          {tipo.descricao}
+                        </option>
+                      ))
+                    : 'Nenhuma fornecedor cadastrado.'}
+                </Select>
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Código Extra
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setCodigoExtra(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Ativo
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setAtivo(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Razão Social
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setRazaoSocial(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Nome Fantasia
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setNomeFantasia(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                CPF/CNPJ
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setCpfCnpj(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                RG/IE
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setRgIe(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Observacão
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setObservacao(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group>
               <Col>
                 <Form.Check
                   inline
@@ -614,10 +682,11 @@ export default function Fornecedores() {
                   onChange={e => setProdServicos(e.target.value)}
                 />
               </Col>
-              <Form.Control.Feedback type="invalid">
-                Favor preencher os campos.
-              </Form.Control.Feedback>
             </Form.Group>
+
+            <Form.Control.Feedback type="invalid">
+              Favor preencher os campos.
+            </Form.Control.Feedback>
             <Button type="submit" variant="primary">
               Criar
             </Button>

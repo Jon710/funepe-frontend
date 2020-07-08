@@ -154,7 +154,7 @@ export default function Despacho() {
                           ...theme,
                           colors: {
                             ...theme.colors,
-                            neutral50: '#1A1A1A', // Placeholder color
+                            neutral50: '#1A1A1A',
                           },
                         })}
                       />
@@ -175,7 +175,7 @@ export default function Despacho() {
                           ...theme,
                           colors: {
                             ...theme.colors,
-                            neutral50: '#1A1A1A', // Placeholder color
+                            neutral50: '#1A1A1A',
                           },
                         })}
                       />
@@ -187,7 +187,6 @@ export default function Despacho() {
                       <Form.Control
                         as="textarea"
                         rows="3"
-                        // placeholder="Tomar providências necessárias."
                         value={anotacao}
                         onChange={e => setAnotacao(e.target.value)}
                       />

@@ -95,6 +95,7 @@ export default function UnidadeMedida() {
   async function handleShowDetalhes(unidade, e) {
     e.preventDefault();
     setDescricaoUnidade(unidade.descricao);
+    setIdUnidade(unidade.idunidade);
     setShowDetalhes(true);
   }
 
@@ -192,7 +193,11 @@ export default function UnidadeMedida() {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Control type="input" defaultValue={descricaoUnidade} />
+              <Form.Control
+                readOnly
+                type="input"
+                defaultValue={descricaoUnidade}
+              />
             </Form.Group>
           </Form>
           <Button type="submit" variant="danger" onClick={handleDelete}>
@@ -230,7 +235,7 @@ export default function UnidadeMedida() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Nome</th>
+                <th>Descrição</th>
               </tr>
             </thead>
             <tbody>
@@ -262,7 +267,7 @@ export default function UnidadeMedida() {
                 required
               />
               <Form.Control.Feedback type="invalid">
-                Favor digitar a unidade de medida..
+                Favor digitar a unidade de medida.
               </Form.Control.Feedback>
             </Form.Group>
             <Button type="submit" variant="primary">

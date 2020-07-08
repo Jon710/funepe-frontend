@@ -56,7 +56,7 @@ export default function Routes() {
         onIdle={onIdle}
         onAction={onAction}
         debounce={250}
-        timeout={1000 * 60 * 1}
+        timeout={1000 * 60 * 5}
       />
       <Switch>
         <Route path="/" exact component={Auth} />

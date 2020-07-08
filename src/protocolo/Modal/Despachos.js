@@ -28,7 +28,6 @@ export default function Despachos() {
           updateCaixa
         )
         .then(() => {
-          // setLoading(false);
           history.push('/protocolo');
         })
         .catch(err => {

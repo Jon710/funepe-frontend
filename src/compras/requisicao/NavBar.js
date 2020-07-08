@@ -32,7 +32,7 @@ export default function NavBar() {
         <Nav className="mr-auto">
           <Nav.Link href="/requisicao">Requisição</Nav.Link>
           <Nav.Link href="/orcamento">Orçamento</Nav.Link>
-          <NavDropdown title="Configurações" id="basic-nav-dropdown">
+          <NavDropdown title="Cadastros" id="basic-nav-dropdown">
             <NavDropdown.Item href="/formcategoria">
               Categorias
             </NavDropdown.Item>

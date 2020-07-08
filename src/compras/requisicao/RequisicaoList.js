@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-return-assign */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
@@ -10,8 +11,9 @@ import {
   Col,
   Spinner,
   Table,
+  Dropdown,
+  DropdownButton,
 } from 'react-bootstrap';
-
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
@@ -21,9 +23,13 @@ import {
   getFirstRender,
   selectAllItemRequisicao,
   addRequisicaoRequest,
+  addRequisicaoSuccess,
 } from '../../redux/features/compras/comprasSlice';
-import { requisicaoModalOpen } from '../../redux/features/context/contextSlice';
-
+import {
+  requisicaoModalOpen,
+  editRequisicaoModalOpen,
+  deleteRequisicaoModalOpen,
+} from '../../redux/features/context/contextSlice';
 import NavBar from './NavBar';
 
 const CaptionElement = () => (
@@ -57,9 +63,47 @@ export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { requisicoesItem } = useSelector(state => state.compras);
-  const [solicitacoes, setSolicitacoes] = React.useState([]);
-  const [count, setCount] = React.useState(0);
-  const [loading, setLoading] = React.useState(true);
+  const [solicitacoes, setSolicitacoes] = useState([]);
+  const [count, setCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [observacao, setObservacao] = useState();
+
+  useEffect(() => {
+    let c = 0;
+    function loadRequisicoes() {
+      setLoading(true);
+      if (user.idusuario !== 0) {
+        dispatch(getFirstRender(user)).then(response => {
+          if (response.length > 0) {
+            const reqs = response.map(req => ({
+              ...req,
+              idreq: req.idrequisicao,
+              dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy'),
+              nomeSolicitante: req.solicitante.username.toUpperCase(),
+              departamento: req.departamento.descricao.toUpperCase(),
+              nomeDestinatario:
+                req.destinatario !== null
+                  ? req.destinatario.username.toUpperCase()
+                  : '',
+              counter: (c += 1),
+            }));
+            setSolicitacoes(reqs);
+            setCount(c);
+            setLoading(false);
+          }
+        });
+      }
+    }
+    loadRequisicoes();
+  }, [dispatch, count]);
+
+  async function editRequisicao() {
+    dispatch(editRequisicaoModalOpen());
+  }
+
+  async function deleteRequisicao() {
+    dispatch(deleteRequisicaoModalOpen());
+  }
 
   const columns = [
     {
@@ -76,7 +120,7 @@ export default function RequisicaoList() {
       headerAlign: 'center',
     },
     {
-      dataField: 'departamento.descricao',
+      dataField: 'departamento',
       text: 'Dpto',
       align: 'center',
       headerAlign: 'center',
@@ -117,7 +161,27 @@ export default function RequisicaoList() {
       text: 'Menu',
       dataField: 'idrequisicao',
       formatter: () => {
-        return <div>ADD</div>;
+        return (
+          <DropdownButton
+            drop="left"
+            size="sm"
+            id="dropdown-item-button"
+            title="Menu"
+          >
+            <Dropdown.Item
+              as="button"
+              // onClick={() => dispatch(despachoModalOpen())}
+            >
+              Despachar Requisição
+            </Dropdown.Item>
+            <Dropdown.Item as="button" onClick={() => deleteRequisicao()}>
+              Excluir
+            </Dropdown.Item>
+            <Dropdown.Item as="button" onClick={() => editRequisicao()}>
+              Editar
+            </Dropdown.Item>
+          </DropdownButton>
+        );
       },
     },
   ];
@@ -140,10 +204,11 @@ export default function RequisicaoList() {
     clickToSelect: true,
     clickToExpand: true,
     onSelect: rowIndex => {
-      const requisicao = rowIndex;
-      dispatch(selectAllItemRequisicao(requisicao.idrequisicao));
+      const req = { rowIndex };
+      dispatch(selectAllItemRequisicao(rowIndex.idrequisicao));
+      setObservacao(rowIndex.observacao);
+      dispatch(addRequisicaoSuccess(req));
     },
-    onExpand: () => {},
     headerColumnStyle: status => {
       if (status === 'checked') {
         return {
@@ -201,44 +266,25 @@ export default function RequisicaoList() {
                 ))}
               </tbody>
             </Table>
+            {observacao ? (
+              <Form.Group as={Col}>
+                <Form.Label>Observação</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows="3"
+                  value={observacao}
+                  readOnly
+                />
+              </Form.Group>
+            ) : (
+              ''
+            )}
           </Card.Body>
         </Card>
       ) : (
         <Card.Header>***Requisição não possui produtos!***</Card.Header>
       ),
-    onExpand: () => {
-      // dispatch(getUploadedFiles(row.iddocumento));
-    },
   };
-
-  useEffect(() => {
-    let c = 0;
-    function loadRequisicoes() {
-      setLoading(true);
-      if (user.idusuario !== 0) {
-        dispatch(getFirstRender(user)).then(response => {
-          if (response.length > 0) {
-            const reqs = response.map(requisicao => ({
-              ...requisicao,
-              idreq: requisicao.idrequisicao,
-              dataFormatada: format(parseISO(requisicao.datareq), 'dd/MM/yyyy'),
-              nomeSolicitante: requisicao.solicitante.username.toUpperCase(),
-              nomeDestinatario:
-                requisicao.destinatario !== null
-                  ? requisicao.destinatario.username.toUpperCase()
-                  : '',
-              counter: (c += 1),
-            }));
-            setSolicitacoes(reqs);
-            setCount(c);
-            setLoading(false);
-          }
-        });
-      }
-      console.log('REQ: ', solicitacoes);
-    }
-    loadRequisicoes();
-  }, [dispatch, count]);
 
   return (
     <Container>
@@ -270,7 +316,7 @@ export default function RequisicaoList() {
               <Form.Group as={Col} controlId="editArq">
                 <Form.Label />
                 <ExportCSVButton {...props.csvProps} size="lg" block p="2">
-                  Export CSV!!
+                  Export CSV!
                 </ExportCSVButton>
               </Form.Group>
             </Form.Row>

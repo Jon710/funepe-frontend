@@ -15,7 +15,6 @@ import { green } from '@material-ui/core/colors';
 
 export default function RequisicaoItem() {
   const { requisicoesItem } = useSelector(state => state.compras);
-  console.log('requisicoesItem: ', requisicoesItem);
 
   function handleDeleteProduto(item) {
     console.log('ITEM: ', item);

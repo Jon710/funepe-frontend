@@ -193,7 +193,11 @@ export default function Marcas() {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Control type="input" defaultValue={descricaoMarca} />
+              <Form.Control
+                readOnly
+                type="input"
+                defaultValue={descricaoMarca}
+              />
             </Form.Group>
           </Form>
           <Button type="submit" variant="danger" onClick={handleDelete}>

@@ -193,7 +193,7 @@ export default function TipoFornecedor() {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Control type="input" defaultValue={descricao} />
+              <Form.Control readOnly type="input" defaultValue={descricao} />
             </Form.Group>
           </Form>
           <Button type="submit" variant="danger" onClick={handleDelete}>

@@ -191,7 +191,7 @@ export default function Categoria() {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Control type="input" defaultValue={categoria} />
+              <Form.Control readOnly type="input" defaultValue={categoria} />
             </Form.Group>
           </Form>
           <Button type="submit" variant="danger" onClick={handleDelete}>

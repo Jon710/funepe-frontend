@@ -25,7 +25,6 @@ export default function Documento() {
   const { user } = useSelector(state => state.auth);
   const { prioridades, tipoDocumentos } = useSelector(state => state.protocolo);
   const { showModal } = useSelector(state => state.contexto);
-  // console.log(`Entrando no DocumentoAdd`, documento);
 
   const [idtipodocumento, setIdTipoDoc] = useState(1);
   const [idprioridade, setIdPrio] = useState(1);
@@ -95,7 +94,6 @@ export default function Documento() {
                 'Content-Type': 'multipart/form-data',
               },
               onUploadProgress: progressEvent => {
-                // console.log('onUlpoadingggggggggg');
                 dispatch(
                   progressBar(
                     // eslint-disable-next-line radix
@@ -107,9 +105,6 @@ export default function Documento() {
                     )
                   )
                 );
-
-                // Clear percentage
-                // setTimeout(() => dispatch(progressBar(0), 1000));
               },
             });
             handleCloseModal();
@@ -122,9 +117,7 @@ export default function Documento() {
           );
         }
       });
-      // console.log('documentoAddeddocumentoAdded: ', documentoAdded, documento);
-      // handleSubmitUpload(documentoAdded);
-      // clear form data
+
       setValidated(true);
     } catch (error) {
       console.error('ERRO: ', error);
@@ -245,7 +238,6 @@ export default function Documento() {
                   <DatePicker
                     selected={dataexpedicao}
                     onChange={handleDtExpedicao}
-                    // style={{ width: '100%' }}
                     className="form-control"
                     dateFormat="dd/MM/yyyy"
                   />
@@ -402,20 +394,15 @@ export default function Documento() {
                   title="Deseja Protocolor Novo Documento com seus anexos?"
                   onConfirm={handleSubmitDocuments}
                   onCancel={handleCancelDocuments}
-                >
-                  {/* Protocolando... */}
-                </SweetAlert>
+                />
               </>
             ) : (
               ''
             )}
-
             <hr />
-
             <Form.Row>
               <Form.Group as={Col} controlId="editArq">
                 <Form.Label>Arquivos Anexos</Form.Label>
-                {/* Upload Files */}
                 <div>
                   <Card>
                     <section>
@@ -450,8 +437,6 @@ export default function Documento() {
                     </section>
                   </Card>
                 </div>
-
-                {/* Upload Files */}
               </Form.Group>
             </Form.Row>
           </Form>

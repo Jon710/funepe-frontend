@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   Container,
@@ -10,6 +10,7 @@ import {
 } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
+import Select from 'react-select';
 import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
 
@@ -20,6 +21,9 @@ import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
 export default function Produtos() {
   const [idproduto, setIdProduto] = useState();
   const [idunidade, setIdUnidade] = useState();
+  const [unidadeDescricao, setUnidadeDescricao] = useState('');
+  const [marcaDescricao, setMarcaDescricao] = useState('');
+  const [categoriaDescricao, setCategoriaDescricao] = useState('');
   const [valorunitario, setValorUnitario] = useState(0);
   const [qtdestoque, setQtdEstoque] = useState(0);
   const [idmarca, setIdMarca] = useState();
@@ -42,11 +46,68 @@ export default function Produtos() {
   const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  const { produtos, marcas, unidadeMedidas } = useSelector(
+  const { produtos, marcas, unidadeMedidas, categorias } = useSelector(
     state => state.compras
   );
   const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const arrayCategoria = [];
+    const arrayUnidade = [];
+    const arrayMarca = [];
+
+    async function loadSelectUnidades() {
+      if (unidadeMedidas.length > 0) {
+        unidadeMedidas.forEach(unidade => {
+          arrayUnidade.push({
+            value: unidade.idunidade,
+            label: unidade.descricao,
+          });
+        });
+      }
+      setUnidadeDescricao(arrayUnidade);
+    }
+
+    async function loadSelectCategorias() {
+      if (categorias.length > 0) {
+        categorias.forEach(categoria => {
+          arrayCategoria.push({
+            value: categoria.idcategoria,
+            label: categoria.categoria,
+          });
+        });
+      }
+      setCategoriaDescricao(arrayCategoria);
+    }
+
+    async function loadSelectMarcas() {
+      if (marcas.length > 0) {
+        marcas.forEach(marca => {
+          arrayMarca.push({
+            value: marca.idmarca,
+            label: marca.descricao,
+          });
+        });
+      }
+      setMarcaDescricao(arrayMarca);
+    }
+    loadSelectMarcas();
+    loadSelectCategorias();
+    loadSelectUnidades();
+  }, [unidadeMedidas, categorias, marcas]);
+
+  function onChangeUnidade(selectedOption) {
+    setIdUnidade(selectedOption.value);
+  }
+
+  function onChangeMarca(selectedOption) {
+    setIdMarca(selectedOption.value);
+  }
+
+  function onChangeCategoria(selectedOption) {
+    setIdCategoria(selectedOption.value);
+  }
 
   async function handleCadastrarProdutos(e) {
     const form = e.currentTarget;
@@ -56,9 +117,8 @@ export default function Produtos() {
       e.preventDefault();
 
       const novoProduto = {
-        idproduto,
-        idunidade: 6,
-        idmarca: 3,
+        idunidade,
+        idmarca,
         descricao,
         inativar,
         codigoextra,
@@ -75,8 +135,8 @@ export default function Produtos() {
         valorunitario,
         qtdestoque,
       };
-
       console.log(novoProduto);
+
       await api
         .post('produto', novoProduto)
         .then(() => {
@@ -93,7 +153,6 @@ export default function Produtos() {
           );
         });
     }
-
     setValidated(true);
   }
 
@@ -108,13 +167,13 @@ export default function Produtos() {
   async function handleShowDetalhes(prod, e) {
     e.preventDefault();
     setIdProduto(prod.idproduto);
-    setIdUnidade(prod.idunidade);
-    setIdMarca(prod.idmarca);
+    setIdUnidade(prod.unidademedida.descricao);
+    setIdMarca(prod.marca.descricao);
     setDescricao(prod.descricao);
     setInativar(prod.inativar);
     setCodigoExtra(prod.codigoextra);
     setCodigoBarra(prod.codigobarra);
-    setIdCategoria(prod.idcategoria);
+    setIdCategoria(prod.categoria.categoria);
     setNumeroReferencia(prod.numeroreferencia);
     setLargura(prod.largura);
     setProfundidade(prod.profundidade);
@@ -154,13 +213,13 @@ export default function Produtos() {
   function handleShowDelete(prod, e) {
     e.preventDefault();
     setIdProduto(prod.idproduto);
-    setIdUnidade(prod.idunidade);
-    setIdMarca(prod.idmarca);
+    setIdUnidade(prod.unidademedida.descricao);
+    setIdMarca(prod.marca.descricao);
     setDescricao(prod.descricao);
-    setInativar(prod.inativa);
+    setInativar(prod.inativar);
     setCodigoExtra(prod.codigoextra);
     setCodigoBarra(prod.codigobarra);
-    setIdCategoria(prod.idcategoria);
+    setIdCategoria(prod.categoria.categoria);
     setNumeroReferencia(prod.numeroreferencia);
     setLargura(prod.largura);
     setProfundidade(prod.profundidade);
@@ -299,37 +358,41 @@ export default function Produtos() {
         <Modal.Body>
           <Form>
             <Form.Group>
-              <Form.Control type="input" defaultValue={idproduto} />
+              <Form.Control readOnly type="input" defaultValue={idproduto} />
               <br />
-              <Form.Control type="input" defaultValue={idunidade} />
+              <Form.Control readOnly type="input" defaultValue={idunidade} />
               <br />
-              <Form.Control type="input" defaultValue={idmarca} />
+              <Form.Control readOnly type="input" defaultValue={idmarca} />
               <br />
-              <Form.Control type="input" defaultValue={descricao} />
+              <Form.Control readOnly type="input" defaultValue={descricao} />
               <br />
-              <Form.Control type="input" defaultValue={inativar} />
+              <Form.Control readOnly type="input" defaultValue={inativar} />
               <br />
-              <Form.Control type="input" defaultValue={codigoextra} />
+              <Form.Control readOnly type="input" defaultValue={codigoextra} />
               <br />
-              <Form.Control type="input" defaultValue={codigobarra} />
+              <Form.Control readOnly type="input" defaultValue={codigobarra} />
               <br />
-              <Form.Control type="input" defaultValue={idcategoria} />
+              <Form.Control readOnly type="input" defaultValue={idcategoria} />
               <br />
-              <Form.Control type="input" defaultValue={numeroreferencia} />
+              <Form.Control
+                readOnly
+                type="input"
+                defaultValue={numeroreferencia}
+              />
               <br />
-              <Form.Control type="input" defaultValue={largura} />
+              <Form.Control readOnly type="input" defaultValue={largura} />
               <br />
-              <Form.Control type="input" defaultValue={profundidade} />
+              <Form.Control readOnly type="input" defaultValue={profundidade} />
               <br />
-              <Form.Control type="input" defaultValue={altura} />
+              <Form.Control readOnly type="input" defaultValue={altura} />
               <br />
-              <Form.Control type="input" defaultValue={peso} />
+              <Form.Control readOnly type="input" defaultValue={peso} />
               <br />
-              <Form.Control type="input" defaultValue={frete} />
+              <Form.Control readOnly type="input" defaultValue={frete} />
               <br />
-              <Form.Control type="input" defaultValue={garantia} />
+              <Form.Control readOnly type="input" defaultValue={garantia} />
               <br />
-              <Form.Control type="input" defaultValue={tipo} />
+              <Form.Control readOnly type="input" defaultValue={tipo} />
             </Form.Group>
           </Form>
           <Button type="submit" variant="danger" onClick={handleDelete}>
@@ -569,7 +632,7 @@ export default function Produtos() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
-              ID Categoria
+              Categoria
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={idcategoria} />
@@ -658,21 +721,23 @@ export default function Produtos() {
                 Unidade de Medida
               </Form.Label>
               <Col sm="10">
-                <Form.Control
-                  as="select"
-                  onChange={e => setIdUnidade(e.target.value)}
+                <Select
+                  isSearchable
+                  options={unidadeDescricao}
+                  onChange={selectedOption => onChangeUnidade(selectedOption)}
+                  placeholder="Selecione uma unidade"
                 >
                   {unidadeMedidas.length > 0
                     ? unidadeMedidas.map(unidade => (
                         <option
                           key={unidade.idunidade}
-                          value={unidade.idunidade}
+                          value={unidade.descricao}
                         >
                           {unidade.descricao}
                         </option>
                       ))
                     : 'Nenhuma unidade de medida cadastrada.'}
-                </Form.Control>
+                </Select>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -680,18 +745,20 @@ export default function Produtos() {
                 Marca
               </Form.Label>
               <Col sm="10">
-                <Form.Control
-                  as="select"
-                  onChange={e => setIdMarca(e.target.value)}
+                <Select
+                  isSearchable
+                  options={marcaDescricao}
+                  onChange={selectedOption => onChangeMarca(selectedOption)}
+                  placeholder="Selecione uma marca"
                 >
                   {marcas.length > 0
                     ? marcas.map(marca => (
-                        <option key={marca.idmarca} value={marca.idmarca}>
+                        <option key={marca.idmarca} value={marca.descricao}>
                           {marca.descricao}
                         </option>
                       ))
                     : 'Nenhuma marca cadastrada.'}
-                </Form.Control>
+                </Select>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -714,10 +781,23 @@ export default function Produtos() {
                 Inativar
               </Form.Label>
               <Col sm="10">
-                <Form.Control
-                  type="text"
+                <Form.Check
+                  inline
+                  type="radio"
+                  value={1}
+                  label="SIM"
+                  name="formHorizontalRadios"
+                  id="form2"
                   onChange={e => setInativar(e.target.value)}
-                  required
+                />
+                <Form.Check
+                  inline
+                  type="radio"
+                  value={0}
+                  label="NÃO"
+                  name="formHorizontalRadios"
+                  id="form2"
+                  onChange={e => setInativar(e.target.value)}
                 />
                 <Form.Control.Feedback type="invalid">
                   Favor preencher os campos.
@@ -756,18 +836,30 @@ export default function Produtos() {
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
-                ID Categoria
+                Categoria
               </Form.Label>
               <Col sm="10">
-                <Form.Control
-                  type="text"
-                  onChange={e => setIdCategoria(e.target.value)}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
+                <Select
+                  isSearchable
+                  options={categoriaDescricao}
+                  onChange={selectedOption => onChangeCategoria(selectedOption)}
+                  placeholder="Selecione uma categoria"
+                >
+                  {categorias.length > 0
+                    ? categorias.map(categoria => (
+                        <option
+                          key={categoria.idcategoria}
+                          value={categoria.categoria}
+                        >
+                          {categoria.categoria}
+                        </option>
+                      ))
+                    : 'Nenhuma categoria cadastrada.'}
+                </Select>
               </Col>
+              <Form.Control.Feedback type="invalid">
+                Favor preencher os campos.
+              </Form.Control.Feedback>
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
