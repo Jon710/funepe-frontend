@@ -300,7 +300,6 @@ export const inserirRequisicao = payload => {
 export const atualizarRequisicao = payload => {
   return async dispatch => {
     try {
-      console.log('PAYLOAD', payload);
       const newRequisicao = payload;
       const response = await api.put(
         `usuario/${newRequisicao.idsolicitante}/requisicao/${newRequisicao.idrequisicao}`,

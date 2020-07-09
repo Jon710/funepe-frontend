@@ -159,12 +159,6 @@ export default function RequisicaoList() {
       align: 'center',
       headerAlign: 'center',
     },
-    // {
-    //   dataField: 'nomeDestinatario',
-    //   text: 'Destin',
-    //   align: 'center',
-    //   headerAlign: 'center',
-    // },
     {
       dataField: 'status',
       text: 'Status',
@@ -181,10 +175,7 @@ export default function RequisicaoList() {
             <Dropdown.Item as="button" onClick={() => despachaRequisicao()}>
               Despachar Requisição
             </Dropdown.Item>
-            <Dropdown.Item
-              as="button"
-              onClick={() => dispatch(() => visualizarHistorico())}
-            >
+            <Dropdown.Item as="button" onClick={() => visualizarHistorico()}>
               Visualizar Histórico
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => deleteRequisicao()}>
