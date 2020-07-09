@@ -5,29 +5,28 @@ import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { despachoModalClose } from '../../redux/features/context/contextSlice';
 import {
-  encaminharDocumento,
-  inserirAnotacao,
-  selectAllUsuariosGrupo,
-} from '../../redux/features/protocolo/protocoloSlice';
+  inserirHistorico,
+  atualizarRequisicao,
+} from '../../redux/features/compras/comprasSlice';
+import { selectAllUsuariosGrupoReq } from '../../redux/features/protocolo/protocoloSlice';
 
 export default function Despacho() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { despachoModal } = useSelector(state => state.contexto);
-  const { grupos, usuarios, usuariosgrupo, documento } = useSelector(
-    state => state.protocolo
-  );
-  const [idGrupo, setIdGrupo] = useState([]);
+  const { despachaRequisicaoModal } = useSelector(state => state.contexto);
+  const { requisicao } = useSelector(state => state.compras);
+  const { grupos, usuarios } = useSelector(state => state.protocolo);
+  const [selectGrupo, setSelectGrupo] = useState([]);
   const [idUsuario, setIdUsuario] = useState([]);
-  const [anotacao, setAnotacao] = useState('Tomar providências necessárias.');
+  const [observacao, setObservacao] = useState(
+    'Tomar providências necessárias.'
+  );
   const [valueUsuario, setValueUsuario] = useState([]);
-  const [valueGrupo, setValueGrupo] = useState([]);
-  console.log(idGrupo, idUsuario, anotacao, usuariosgrupo, valueGrupo);
+  const [, setValueGrupo] = useState([]);
 
   const colourStyles = {
     option: provided => ({
       ...provided,
-      borderBottom: '1px dotted pink',
       color: 'blue',
     }),
     placeholder: defaultStyles => {
@@ -56,6 +55,7 @@ export default function Despacho() {
       }
       setIdUsuario(arrayUsuarios);
     }
+
     async function loadGrupos() {
       if (grupos.length > 0) {
         grupos.forEach(grupo => {
@@ -65,7 +65,7 @@ export default function Despacho() {
           });
         });
       }
-      setIdGrupo(arrayGrupos);
+      setSelectGrupo(arrayGrupos);
     }
     loadUsuarios();
     loadGrupos();
@@ -77,7 +77,7 @@ export default function Despacho() {
 
   function onChangeGrupo(selectedOption) {
     setValueGrupo(selectedOption);
-    dispatch(selectAllUsuariosGrupo(selectedOption.value)).then(response => {
+    dispatch(selectAllUsuariosGrupoReq(selectedOption.value)).then(response => {
       const arrayUsuarios = [];
       if (response.length > 0) {
         response.forEach(usuario => {
@@ -95,25 +95,23 @@ export default function Despacho() {
   async function handleDespachar() {
     if (valueUsuario.length > 0) {
       valueUsuario.forEach(usuario => {
-        const docDespachado = {
-          iddocumento: documento.iddocumento,
-          idusuario: user.idusuario,
+        const historico = {
+          idrequisicao: requisicao.idrequisicao,
+          iddespachante: user.idusuario,
           iddestinatario: usuario.value,
-          status: 'Remetido',
-          dataenvio: documento.dataexpedicao,
-          statusprazo: 1,
+          status: 'Despachado',
+          datahistorico: new Date(),
+          observacao,
         };
-        dispatch(encaminharDocumento(docDespachado));
-        const anotacaoDespacho = {
-          iddocumento: documento.iddocumento,
-          idusuario: user.idusuario,
-          descricao: anotacao,
-          tipo: 1,
-          prazo: 1,
+        dispatch(inserirHistorico(historico));
+
+        const reqAtualizada = {
+          idsolicitante: usuario.value,
+          idrequisicao: requisicao.idrequisicao,
         };
-        dispatch(inserirAnotacao(anotacaoDespacho));
+        dispatch(atualizarRequisicao(reqAtualizada));
       });
-      toast.success('Documento despachado com sucesso!');
+      toast.success('Requisição despachada com sucesso!');
     }
   }
 
@@ -127,13 +125,13 @@ export default function Despacho() {
           dialogClassName="modal-danger"
           size="lg"
           animation
-          show={despachoModal}
+          show={despachaRequisicaoModal}
           onHide={handleClose}
         >
           <Modal.Body>
             <Card bg="success" text="light" key={1}>
               <Card.Body>
-                <Card.Title>Remeter Documento</Card.Title>
+                <Card.Title>Despachar Requisição</Card.Title>
                 <Container>
                   <Form.Row>
                     <Form.Group as={Col} controlId="editPrazo">
@@ -141,11 +139,11 @@ export default function Despacho() {
                       <Select
                         isSearchable
                         styles={colourStyles}
-                        options={idGrupo}
+                        options={selectGrupo}
                         onChange={selectedOption =>
                           onChangeGrupo(selectedOption)
                         }
-                        placeholder="Selecione um Grupo"
+                        defaultValue={{ label: 'Compras', value: 21 }}
                         theme={theme => ({
                           ...theme,
                           colors: {
@@ -156,7 +154,7 @@ export default function Despacho() {
                       />
                     </Form.Group>
 
-                    <Form.Group as={Col} controlId="formUsuario">
+                    <Form.Group as={Col}>
                       <Form.Label>Usuários:</Form.Label>
                       <Select
                         isMulti
@@ -183,8 +181,8 @@ export default function Despacho() {
                       <Form.Control
                         as="textarea"
                         rows="3"
-                        value={anotacao}
-                        onChange={e => setAnotacao(e.target.value)}
+                        value={observacao}
+                        onChange={e => setObservacao(e.target.value)}
                       />
                     </Form.Group>
                   </Form.Row>

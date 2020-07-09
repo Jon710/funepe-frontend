@@ -5,7 +5,6 @@ import { toast } from 'react-toastify';
 import history from '../../../services/history';
 import api from '../../../services/api';
 import { formatPrice } from '../../../services/formatPrice';
-
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 export const sliceCompras = createSlice({
   name: 'compras',
@@ -301,6 +300,7 @@ export const inserirRequisicao = payload => {
 export const atualizarRequisicao = payload => {
   return async dispatch => {
     try {
+      console.log('PAYLOAD', payload);
       const newRequisicao = payload;
       const response = await api.put(
         `usuario/${newRequisicao.idsolicitante}/requisicao/${newRequisicao.idrequisicao}`,
@@ -308,7 +308,6 @@ export const atualizarRequisicao = payload => {
       );
       dispatch(updateRequisicaoSuccess(response.data));
       dispatch(selectAllRequisicao());
-      toast.success('Requisição atualizada!');
 
       return response.data;
     } catch (error) {
@@ -513,6 +512,43 @@ export const selectAllTipoTelefones = () => {
       toast.error(
         `ERRO: Falha na busca de Tipos de Telefones (selectAllTipoTelefones)!  ${error.message}`
       );
+    }
+  };
+};
+
+export const inserirHistorico = payload => {
+  return async dispatch => {
+    try {
+      const historico = payload;
+      const response = await api.post(
+        `requisicao/${historico.idrequisicao}/historicorequisicao/`,
+        historico
+      );
+      dispatch(selectAllRequisicao());
+      return response.data;
+    } catch (error) {
+      toast.error(
+        `ERRO ao despachar Documento - despacharProtocolo ${error.message}`
+      );
+
+      dispatch(updateFailure());
+    }
+  };
+};
+
+export const selecionarHistorico = payload => {
+  return async dispatch => {
+    try {
+      const idrequisicao = payload;
+      const response = await api.get(
+        `requisicao/${idrequisicao}/historicorequisicao/`
+      );
+      dispatch(selectAllRequisicao());
+      return response.data;
+    } catch (error) {
+      toast.error(`ERRO ao Selecionar histórico ${error.message}`);
+
+      dispatch(updateFailure());
     }
   };
 };

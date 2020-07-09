@@ -206,7 +206,6 @@ export const selectAllProtocolo = () => {
 };
 
 export const selecionarAnotacao = payload => {
-  // console.log('selecionarAnotacao-payload: ', payload);
   return async dispatch => {
     try {
       const idDocumento = payload;
@@ -217,10 +216,7 @@ export const selecionarAnotacao = payload => {
       toast.error(
         `ERRO ao Selecionar Anotação - selecionarAnotacao ${error.message}`
       );
-      console.log(
-        'ERRO ao Selecionar Anotação - selecionarAnotacao: ',
-        error.message
-      );
+
       dispatch(updateFailure());
     }
   };
@@ -404,6 +400,28 @@ export const selectAllUsuariosGrupo = payload => {
       }
       toast.info('Nenhum Registro Localizado!');
       history.push('/protocolo');
+      return;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de UsuarioGrupo (selectAllUsuariosGrupo)!  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllUsuariosGrupoReq = payload => {
+  return async dispatch => {
+    try {
+      const idGrupo = payload;
+      const response = await api.get(`grupo/${idGrupo}/usuariogrupo/`);
+      const { usuariosgrupo } = response.data;
+      if (usuariosgrupo.length >= 0) {
+        await dispatch(protocoloSuccess({ usuariosgrupo }));
+        history.push('/requisicao');
+        return usuariosgrupo;
+      }
+      toast.info('Nenhum Registro Localizado!');
+      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(

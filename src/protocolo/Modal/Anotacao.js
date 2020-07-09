@@ -1,7 +1,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable func-names */
 /* eslint-disable no-console */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Container, Card, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { addDays, parseISO, format } from 'date-fns';
@@ -16,7 +16,7 @@ export default function Anotacao() {
   const [count, setCount] = useState(0);
   const [anotacoes, setAnotacoes] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     let c = 0;
     async function loadAnotacoes() {
       if (documento.iddocumento !== 0) {

@@ -29,8 +29,12 @@ import {
   requisicaoModalOpen,
   editRequisicaoModalOpen,
   deleteRequisicaoModalOpen,
+  despachaRequisicaoModalOpen,
+  visualizaHistoricoModalOpen,
 } from '../../redux/features/context/contextSlice';
 import NavBar from './NavBar';
+import Despacho from './Despacho';
+import Historico from './Historico';
 
 const CaptionElement = () => (
   <h3
@@ -63,6 +67,9 @@ export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { requisicoesItem } = useSelector(state => state.compras);
+  const { despachaRequisicaoModal, visualizaHistoricoModal } = useSelector(
+    state => state.contexto
+  );
   const [solicitacoes, setSolicitacoes] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -105,6 +112,14 @@ export default function RequisicaoList() {
     dispatch(deleteRequisicaoModalOpen());
   }
 
+  async function despachaRequisicao() {
+    dispatch(despachaRequisicaoModalOpen());
+  }
+
+  async function visualizarHistorico() {
+    dispatch(visualizaHistoricoModalOpen());
+  }
+
   const columns = [
     {
       dataField: 'counter',
@@ -140,16 +155,16 @@ export default function RequisicaoList() {
     },
     {
       dataField: 'nomeSolicitante',
-      text: 'Solic',
+      text: 'Usuário',
       align: 'center',
       headerAlign: 'center',
     },
-    {
-      dataField: 'nomeDestinatario',
-      text: 'Destin',
-      align: 'center',
-      headerAlign: 'center',
-    },
+    // {
+    //   dataField: 'nomeDestinatario',
+    //   text: 'Destin',
+    //   align: 'center',
+    //   headerAlign: 'center',
+    // },
     {
       dataField: 'status',
       text: 'Status',
@@ -162,17 +177,15 @@ export default function RequisicaoList() {
       dataField: 'idrequisicao',
       formatter: () => {
         return (
-          <DropdownButton
-            drop="left"
-            size="sm"
-            id="dropdown-item-button"
-            title="Menu"
-          >
+          <DropdownButton drop="left" size="sm" title="Menu">
+            <Dropdown.Item as="button" onClick={() => despachaRequisicao()}>
+              Despachar Requisição
+            </Dropdown.Item>
             <Dropdown.Item
               as="button"
-              // onClick={() => dispatch(despachoModalOpen())}
+              onClick={() => dispatch(() => visualizarHistorico())}
             >
-              Despachar Requisição
+              Visualizar Histórico
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => deleteRequisicao()}>
               Excluir
@@ -328,6 +341,9 @@ export default function RequisicaoList() {
             ) : (
               <></>
             )}
+
+            {despachaRequisicaoModal ? <Despacho /> : null}
+            {visualizaHistoricoModal ? <Historico /> : null}
 
             <BootstrapTable
               {...props.baseProps}

@@ -41,12 +41,7 @@ export default function Despachos() {
 
   return (
     <>
-      <DropdownButton
-        drop="left"
-        size="sm"
-        id="dropdown-item-button"
-        title="Menu"
-      >
+      <DropdownButton drop="left" size="sm" title="Menu">
         <Dropdown.Item
           as="button"
           onClick={() => dispatch(despachoModalOpen())}
