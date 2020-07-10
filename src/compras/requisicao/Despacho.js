@@ -11,7 +11,11 @@ import {
   inserirHistorico,
   atualizarRequisicao,
 } from '../../redux/features/compras/comprasSlice';
-import { selectAllUsuariosGrupoReq } from '../../redux/features/protocolo/protocoloSlice';
+import {
+  selectAllUsuariosGrupoReq,
+  selectAllGrupos,
+  selectAllUsuarios,
+} from '../../redux/features/protocolo/protocoloSlice';
 import AlertError from '../../pages/alerts/AlertError';
 
 export default function Despacho() {
@@ -48,6 +52,8 @@ export default function Despacho() {
   };
 
   useEffect(() => {
+    dispatch(selectAllUsuarios());
+    dispatch(selectAllGrupos());
     const arrayUsuarios = [];
     const arrayGrupos = [];
     async function loadUsuarios() {
