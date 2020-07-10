@@ -154,7 +154,7 @@ export default function RequisicaoList() {
       headerAlign: 'center',
     },
     {
-      dataField: 'nomeSolicitante',
+      dataField: 'nomeDestinatario',
       text: 'Usuário',
       align: 'center',
       headerAlign: 'center',

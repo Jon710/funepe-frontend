@@ -3,17 +3,23 @@ import { Modal, Button, Form, Container, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
-import { despachoModalClose } from '../../redux/features/context/contextSlice';
+import {
+  despachoModalClose,
+  showAlertErrorOpen,
+} from '../../redux/features/context/contextSlice';
 import {
   inserirHistorico,
   atualizarRequisicao,
 } from '../../redux/features/compras/comprasSlice';
 import { selectAllUsuariosGrupoReq } from '../../redux/features/protocolo/protocoloSlice';
+import AlertError from '../../pages/alerts/AlertError';
 
 export default function Despacho() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { despachaRequisicaoModal } = useSelector(state => state.contexto);
+  const { despachaRequisicaoModal, showAlertError } = useSelector(
+    state => state.contexto
+  );
   const { requisicao } = useSelector(state => state.compras);
   const { grupos, usuarios } = useSelector(state => state.protocolo);
   const [selectGrupo, setSelectGrupo] = useState([]);
@@ -70,6 +76,7 @@ export default function Despacho() {
     loadUsuarios();
     loadGrupos();
   }, [usuarios, grupos]);
+  console.log(usuarios, grupos);
 
   function onChangeUsuarios(selectedOption) {
     setValueUsuario(selectedOption);
@@ -106,12 +113,26 @@ export default function Despacho() {
         dispatch(inserirHistorico(historico));
 
         const reqAtualizada = {
-          idsolicitante: usuario.value,
+          iddestinatario: usuario.value,
           idrequisicao: requisicao.idrequisicao,
         };
         dispatch(atualizarRequisicao(reqAtualizada));
       });
       toast.success('Requisição despachada com sucesso!');
+      dispatch(
+        showAlertErrorOpen({
+          showAlertError: false,
+          alertError: '',
+        })
+      );
+    } else {
+      console.log(showAlertError);
+      dispatch(
+        showAlertErrorOpen({
+          showAlertError: true,
+          alertError: 'Selecione um usuário!',
+        })
+      );
     }
   }
 
@@ -128,6 +149,8 @@ export default function Despacho() {
           show={despachaRequisicaoModal}
           onHide={handleClose}
         >
+          {showAlertError ? <AlertError /> : null}
+
           <Modal.Body>
             <Card bg="success" text="light" key={1}>
               <Card.Body>
