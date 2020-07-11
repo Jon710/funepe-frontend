@@ -3,17 +3,25 @@ import { Modal, Button, Form, Container, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
-import { despachoModalClose } from '../../redux/features/context/contextSlice';
+import {
+  despachoModalClose,
+  showAlertErrorOpen,
+} from '../../redux/features/context/contextSlice';
 import {
   inserirHistorico,
   atualizarRequisicao,
+  selectAllGrupos,
+  selectAllUsuarios,
 } from '../../redux/features/compras/comprasSlice';
 import { selectAllUsuariosGrupoReq } from '../../redux/features/protocolo/protocoloSlice';
+import AlertError from '../../pages/alerts/AlertError';
 
 export default function Despacho() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { despachaRequisicaoModal } = useSelector(state => state.contexto);
+  const { despachaRequisicaoModal, showAlertError } = useSelector(
+    state => state.contexto
+  );
   const { requisicao } = useSelector(state => state.compras);
   const { grupos, usuarios } = useSelector(state => state.protocolo);
   const [selectGrupo, setSelectGrupo] = useState([]);
@@ -22,6 +30,8 @@ export default function Despacho() {
     'Tomar providências necessárias.'
   );
   const [valueUsuario, setValueUsuario] = useState([]);
+  const [usuarioReq, setUsuarioReq] = useState(usuarios);
+  const [grupoReq, setGrupoReq] = useState(grupos);
   const [, setValueGrupo] = useState([]);
 
   const colourStyles = {
@@ -42,11 +52,33 @@ export default function Despacho() {
   };
 
   useEffect(() => {
+    dispatch(selectAllUsuarios()).then(response => {
+      if (response.length > 0) {
+        const reqs = response.map(req => ({
+          ...req,
+        }));
+
+        setUsuarioReq(reqs);
+      }
+    });
+
+    dispatch(selectAllGrupos()).then(response => {
+      if (response.length > 0) {
+        const reqs = response.map(req => ({
+          ...req,
+        }));
+        setGrupoReq(reqs);
+      }
+    });
+  }, [dispatch]);
+
+  useEffect(() => {
     const arrayUsuarios = [];
     const arrayGrupos = [];
     async function loadUsuarios() {
-      if (usuarios.length > 0) {
-        usuarios.forEach(usuario => {
+      console.log(usuarioReq.length);
+      if (usuarioReq.length > 0) {
+        usuarioReq.forEach(usuario => {
           arrayUsuarios.push({
             value: usuario.idusuario,
             label: usuario.username,
@@ -55,10 +87,9 @@ export default function Despacho() {
       }
       setIdUsuario(arrayUsuarios);
     }
-
     async function loadGrupos() {
-      if (grupos.length > 0) {
-        grupos.forEach(grupo => {
+      if (grupoReq.length > 0) {
+        grupoReq.forEach(grupo => {
           arrayGrupos.push({
             value: grupo.idgrupo,
             label: grupo.descricaogrupo,
@@ -69,7 +100,8 @@ export default function Despacho() {
     }
     loadUsuarios();
     loadGrupos();
-  }, [usuarios, grupos]);
+  }, []);
+  console.log(usuarioReq, grupoReq);
 
   function onChangeUsuarios(selectedOption) {
     setValueUsuario(selectedOption);
@@ -106,12 +138,26 @@ export default function Despacho() {
         dispatch(inserirHistorico(historico));
 
         const reqAtualizada = {
-          idsolicitante: usuario.value,
+          iddestinatario: usuario.value,
           idrequisicao: requisicao.idrequisicao,
         };
         dispatch(atualizarRequisicao(reqAtualizada));
       });
       toast.success('Requisição despachada com sucesso!');
+      dispatch(
+        showAlertErrorOpen({
+          showAlertError: false,
+          alertError: '',
+        })
+      );
+    } else {
+      console.log(showAlertError);
+      dispatch(
+        showAlertErrorOpen({
+          showAlertError: true,
+          alertError: 'Selecione um usuário!',
+        })
+      );
     }
   }
 
@@ -128,6 +174,8 @@ export default function Despacho() {
           show={despachaRequisicaoModal}
           onHide={handleClose}
         >
+          {showAlertError ? <AlertError /> : null}
+
           <Modal.Body>
             <Card bg="success" text="light" key={1}>
               <Card.Body>

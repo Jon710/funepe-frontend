@@ -300,7 +300,6 @@ export const inserirRequisicao = payload => {
 export const atualizarRequisicao = payload => {
   return async dispatch => {
     try {
-      console.log('PAYLOAD', payload);
       const newRequisicao = payload;
       const response = await api.put(
         `usuario/${newRequisicao.idsolicitante}/requisicao/${newRequisicao.idrequisicao}`,
@@ -549,6 +548,36 @@ export const selecionarHistorico = payload => {
       toast.error(`ERRO ao Selecionar histórico ${error.message}`);
 
       dispatch(updateFailure());
+    }
+  };
+};
+
+export const selectAllUsuarios = () => {
+  return async () => {
+    try {
+      const response = await api.get(`usuarios/`);
+      const { users } = response.data;
+      console.log(users);
+      return users;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Tipo de Usuarios (selectAllUsuarios)!  ${error.message}`
+      );
+    }
+  };
+};
+
+export const selectAllGrupos = () => {
+  return async () => {
+    try {
+      const response = await api.get(`groups/`);
+      const { groups } = response.data;
+
+      return groups;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Grupos (selectAllGrupos)!  ${error.message}`
+      );
     }
   };
 };
