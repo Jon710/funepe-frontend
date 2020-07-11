@@ -10,8 +10,6 @@ import {
 import {
   inserirHistorico,
   atualizarRequisicao,
-  selectAllGrupos,
-  selectAllUsuarios,
 } from '../../redux/features/compras/comprasSlice';
 import { selectAllUsuariosGrupoReq } from '../../redux/features/protocolo/protocoloSlice';
 import AlertError from '../../pages/alerts/AlertError';
@@ -30,8 +28,6 @@ export default function Despacho() {
     'Tomar providências necessárias.'
   );
   const [valueUsuario, setValueUsuario] = useState([]);
-  const [usuarioReq, setUsuarioReq] = useState(usuarios);
-  const [grupoReq, setGrupoReq] = useState(grupos);
   const [, setValueGrupo] = useState([]);
 
   const colourStyles = {
@@ -52,33 +48,11 @@ export default function Despacho() {
   };
 
   useEffect(() => {
-    dispatch(selectAllUsuarios()).then(response => {
-      if (response.length > 0) {
-        const reqs = response.map(req => ({
-          ...req,
-        }));
-
-        setUsuarioReq(reqs);
-      }
-    });
-
-    dispatch(selectAllGrupos()).then(response => {
-      if (response.length > 0) {
-        const reqs = response.map(req => ({
-          ...req,
-        }));
-        setGrupoReq(reqs);
-      }
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
     const arrayUsuarios = [];
     const arrayGrupos = [];
     async function loadUsuarios() {
-      console.log(usuarioReq.length);
-      if (usuarioReq.length > 0) {
-        usuarioReq.forEach(usuario => {
+      if (usuarios.length > 0) {
+        usuarios.forEach(usuario => {
           arrayUsuarios.push({
             value: usuario.idusuario,
             label: usuario.username,
@@ -88,8 +62,8 @@ export default function Despacho() {
       setIdUsuario(arrayUsuarios);
     }
     async function loadGrupos() {
-      if (grupoReq.length > 0) {
-        grupoReq.forEach(grupo => {
+      if (grupos.length > 0) {
+        grupos.forEach(grupo => {
           arrayGrupos.push({
             value: grupo.idgrupo,
             label: grupo.descricaogrupo,
@@ -100,8 +74,7 @@ export default function Despacho() {
     }
     loadUsuarios();
     loadGrupos();
-  }, []);
-  console.log(usuarioReq, grupoReq);
+  }, [grupos, usuarios]);
 
   function onChangeUsuarios(selectedOption) {
     setValueUsuario(selectedOption);
