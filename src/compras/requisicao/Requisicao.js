@@ -164,6 +164,7 @@ export default function Requisicao() {
     };
 
     dispatch(atualizarRequisicao(newRequisicao));
+    toast.success('Requisição atualizada!');
   }
 
   async function deleteRequisicao(e) {
