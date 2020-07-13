@@ -15,8 +15,10 @@ import {
 export default function Despacho() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { despachoModal } = useSelector(state => state.contexto);
-  const { grupos, usuarios, documento } = useSelector(state => state.protocolo);
+  const { despachoModal, grupos, usuarios } = useSelector(
+    state => state.contexto
+  );
+  const { documento } = useSelector(state => state.protocolo);
   const [idGrupo, setIdGrupo] = useState([]);
   const [idUsuario, setIdUsuario] = useState([]);
   const [anotacao, setAnotacao] = useState('Tomar providências necessárias.');
