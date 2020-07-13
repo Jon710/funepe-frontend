@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,7 +25,10 @@ import {
   getUploadedFiles,
   addDocumentoSuccess,
 } from '../../redux/features/protocolo/protocoloSlice';
-import { modalOpen } from '../../redux/features/context/contextSlice';
+import {
+  modalOpen,
+  getFirstRenderContext,
+} from '../../redux/features/context/contextSlice';
 
 import Documento from '../Modal/Documento';
 import Despachos from '../Modal/Despachos';
@@ -63,16 +67,12 @@ export default function Protocolo() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { arquivos } = useSelector(state => state.protocolo);
-  const {
-    showModal,
-    // uploadPercentage,
-    despachoModal,
-    anotacaoModal,
-  } = useSelector(state => state.contexto);
+  const { showModal, despachoModal, anotacaoModal } = useSelector(
+    state => state.contexto
+  );
   const [cxEntrada, setCxEntrada] = React.useState([]);
   const [count, setCount] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
-  // const [atualiza, setAtualiza] = React.useState(false);
 
   const columns = [
     {
@@ -166,14 +166,7 @@ export default function Protocolo() {
       const { documento } = rowIndex;
       dispatch(addDocumentoSuccess({ documento }));
     },
-    onExpand: () => {
-      // row, isExpand, rowIndex, e
-      // console.log(row.id);
-      // console.log(isExpand);
-      // console.log(rowIndex);
-      // console.log(e);
-    },
-    // style: { backgroundColor: '#80ced6' },
+    onExpand: () => {},
     headerColumnStyle: status => {
       if (status === 'checked') {
         return {
@@ -226,6 +219,7 @@ export default function Protocolo() {
     function loadDocumentos() {
       setLoading(true);
       if (user.idusuario !== 0) {
+        dispatch(getFirstRenderContext());
         dispatch(getFirstRender(user)).then(response => {
           if (response.length > 0) {
             const protocolos = response.map(protocolo => ({
@@ -316,20 +310,14 @@ export default function Protocolo() {
             <BootstrapTable
               {...props.baseProps}
               bootstrap4
-              // striped
-              // bordered
               hover
-              // responsive
-              // size="md"
               table-responsive-sm
               keyField="idcaixaentrada"
               data={cxEntrada}
               caption={<CaptionElement />}
               columns={columns}
-              // rowStyle={rowStyle}
               expandRow={expandRow}
               selectRow={selectRow}
-              // rowEvents={rowEvents}
               noDataIndication="Nenhum Registro Localizado!"
               headerClasses="header-class"
               pagination={paginationFactory()}
