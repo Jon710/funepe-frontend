@@ -1,7 +1,15 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-console */
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Container, Card, Table } from 'react-bootstrap';
+import {
+  Modal,
+  Button,
+  Form,
+  Container,
+  Card,
+  Table,
+  Spinner,
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
@@ -14,6 +22,7 @@ export default function Historico() {
   const { requisicao } = useSelector(state => state.compras);
   const [count, setCount] = useState(0);
   const [historicos, setHistoricos] = useState([]);
+  const [loadingHistorico, setLoadingHistorico] = useState(true);
 
   useEffect(() => {
     let c = 0;
@@ -34,17 +43,28 @@ export default function Historico() {
               }));
               setHistoricos(listHistoricos);
               setCount(c);
+              setLoadingHistorico(false);
             }
           }
         );
       } else {
-        console.log('Documento não identificado!');
+        console.log('Erro ao carregar histórico de requisições.');
       }
     }
     loadRequisicoes();
   }, [dispatch, requisicao.idrequisicao]);
 
   const handleClose = () => dispatch(modalClose());
+
+  const SpinnerLineHistorico = () => (
+    <>
+      <Spinner animation="grow" variant="primary" />
+      <Spinner animation="grow" variant="primary" />
+      <Spinner animation="grow" variant="primary" />
+      <Spinner animation="grow" variant="primary" />
+      <Spinner animation="grow" variant="primary" />
+    </>
+  );
 
   return (
     <Container>
@@ -62,38 +82,46 @@ export default function Historico() {
               <Card.Body>
                 <Card.Title>Requisições</Card.Title>
                 <Container>
-                  <Table striped bordered hover size="sm" variant="primary">
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Data</th>
-                        <th>Despachante</th>
-                        <th>Destinatário</th>
-                        <th>Observação</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {historicos.map(hist => (
-                        <tr key={hist.counter}>
-                          <td>{hist.counter}</td>
-                          <td>{hist.dataFormatada}</td>
-                          <td>{hist.despachante.username}</td>
-                          <td>{hist.destinatario.username}</td>
-                          <td>{hist.observacao}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td style={{ textAlign: 'right' }} colSpan="4">
-                          TOTAL DE HISTÓRICOS
-                        </td>
-                        <td style={{ textAlign: 'left' }} colSpan="1">
-                          {count}
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </Table>
+                  {loadingHistorico ? (
+                    <>
+                      <SpinnerLineHistorico />
+                    </>
+                  ) : (
+                    <>
+                      <Table striped bordered hover size="sm" variant="primary">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Data</th>
+                            <th>Despachante</th>
+                            <th>Destinatário</th>
+                            <th>Observação</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {historicos.map(hist => (
+                            <tr key={hist.counter}>
+                              <td>{hist.counter}</td>
+                              <td>{hist.dataFormatada}</td>
+                              <td>{hist.despachante.username}</td>
+                              <td>{hist.destinatario.username}</td>
+                              <td>{hist.observacao}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                        <tfoot>
+                          <tr>
+                            <td style={{ textAlign: 'right' }} colSpan="4">
+                              TOTAL DE HISTÓRICOS
+                            </td>
+                            <td style={{ textAlign: 'left' }} colSpan="1">
+                              {count}
+                            </td>
+                          </tr>
+                        </tfoot>
+                      </Table>
+                    </>
+                  )}
                 </Container>
               </Card.Body>
             </Card>
