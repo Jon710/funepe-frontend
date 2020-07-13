@@ -3,26 +3,25 @@ import { Modal, Button, Form, Container, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
-import { despachoModalClose } from '../../redux/features/context/contextSlice';
+import {
+  despachoModalClose,
+  selectAllUsuariosGrupo,
+} from '../../redux/features/context/contextSlice';
 import {
   encaminharDocumento,
   inserirAnotacao,
-  selectAllUsuariosGrupo,
 } from '../../redux/features/protocolo/protocoloSlice';
 
 export default function Despacho() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { despachoModal } = useSelector(state => state.contexto);
-  const { grupos, usuarios, usuariosgrupo, documento } = useSelector(
-    state => state.protocolo
-  );
+  const { grupos, usuarios, documento } = useSelector(state => state.protocolo);
   const [idGrupo, setIdGrupo] = useState([]);
   const [idUsuario, setIdUsuario] = useState([]);
   const [anotacao, setAnotacao] = useState('Tomar providências necessárias.');
   const [valueUsuario, setValueUsuario] = useState([]);
-  const [valueGrupo, setValueGrupo] = useState([]);
-  console.log(idGrupo, idUsuario, anotacao, usuariosgrupo, valueGrupo);
+  const [, setValueGrupo] = useState([]);
 
   const colourStyles = {
     option: provided => ({

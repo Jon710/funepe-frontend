@@ -6,12 +6,12 @@ import { toast } from 'react-toastify';
 import {
   despachoModalClose,
   showAlertErrorOpen,
+  selectAllUsuariosGrupo,
 } from '../../redux/features/context/contextSlice';
 import {
   inserirHistorico,
   atualizarRequisicao,
 } from '../../redux/features/compras/comprasSlice';
-import { selectAllUsuariosGrupoReq } from '../../redux/features/protocolo/protocoloSlice';
 import AlertError from '../../pages/alerts/AlertError';
 
 export default function Despacho() {
@@ -21,7 +21,7 @@ export default function Despacho() {
     state => state.contexto
   );
   const { requisicao } = useSelector(state => state.compras);
-  const { grupos, usuarios } = useSelector(state => state.protocolo);
+  const { grupos, usuarios } = useSelector(state => state.contexto);
   const [selectGrupo, setSelectGrupo] = useState([]);
   const [idUsuario, setIdUsuario] = useState([]);
   const [observacao, setObservacao] = useState(
@@ -82,7 +82,7 @@ export default function Despacho() {
 
   function onChangeGrupo(selectedOption) {
     setValueGrupo(selectedOption);
-    dispatch(selectAllUsuariosGrupoReq(selectedOption.value)).then(response => {
+    dispatch(selectAllUsuariosGrupo(selectedOption.value)).then(response => {
       const arrayUsuarios = [];
       if (response.length > 0) {
         response.forEach(usuario => {

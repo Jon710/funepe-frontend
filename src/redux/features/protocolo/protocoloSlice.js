@@ -17,10 +17,6 @@ export const sliceProtocolo = createSlice({
     arquivos: [],
     tipoDocumentos: {},
     prioridades: {},
-    usuarios: {},
-    grupos: {},
-    usuariosgrupo: {},
-    funcoes: {},
   },
   reducers: {
     protocoloSuccess: (state, action) => {
@@ -35,7 +31,6 @@ export const sliceProtocolo = createSlice({
         usuariosgrupo,
       } = action.payload;
       state.loading = false;
-      // console.log(action.payload);
       if (caixaentradas !== undefined) {
         state.protocolo = caixaentradas;
       }
@@ -62,36 +57,30 @@ export const sliceProtocolo = createSlice({
       }
     },
     protocoloRequest: (state, action) => {
-      // console.log('protocoloRequest Reducer/Action', action.payload);
       const { caixaentradas } = action.payload;
       state.loading = true;
       state.protocolo = caixaentradas;
     },
-    protocoloFailure: (state, action) => {
-      console.log('FAILURE', action.payload);
+    protocoloFailure: state => {
       state.loading = false;
       state.protocolo = {};
     },
     updateProtocoloRequest: (state, action) => {
-      console.log('updateProtocoloRequest Reducer/Action', action);
       const { caixaentradas } = action.payload;
       state.loading = false;
       state.protocolo = caixaentradas;
     },
     updateProtocoloSuccess: (state, action) => {
-      console.log('updateProtocoloSuccess Reducer/Action', action);
       const { caixaentradas } = action.payload;
       state.loading = false;
       state.protocolo = caixaentradas;
     },
-    updateFailure: (state, action) => {
-      console.log('updateFAILURE', action.payload);
+    updateFailure: state => {
       state.loading = false;
       state.protocolo = {};
       state.documento = {};
     },
     addDocumentoSuccess(state, action) {
-      console.log('addDocumentoSuccess Reducer/Action', action);
       const { documento, documentoEdit } = action.payload;
       if (documento !== undefined) {
         state.loading = false;
@@ -124,7 +113,6 @@ export default sliceProtocolo.reducer;
 
 /** *************THUNKS************** */
 export const getFirstRender = usuario => {
-  // console.log('Protocolo getFirstRender:', usuario);
   return async (dispatch, getState) => {
     dispatch(protocoloRequest({ usuario }));
     try {
@@ -135,14 +123,10 @@ export const getFirstRender = usuario => {
       const response = await api.get(
         `usuarios/${usuario.idusuario}/caixaentrada/`
       );
-      // console.log(response.data);
       const { caixaentradas } = response.data;
       if (caixaentradas.length >= 0) {
         dispatch(selectAllPrioridade());
         dispatch(selectAllTipoDocumentos());
-        dispatch(selectAllUsuarios());
-        dispatch(selectAllGrupos());
-        dispatch(selectAllFuncoes());
         await dispatch(protocoloSuccess({ caixaentradas }));
         const { protocolo } = Object.assign(
           {},
@@ -223,7 +207,6 @@ export const selecionarAnotacao = payload => {
 };
 
 export const inserirAnotacao = payload => {
-  // console.log('inserirAnotacao-payload: ', payload);
   return async dispatch => {
     try {
       const anotacaoDespacho = payload;
@@ -361,113 +344,6 @@ export const selectAllTipoDocumentos = () => {
     } catch (error) {
       toast.error(
         `ERRO: Falha na busca de Tipo de Documentos (selectAllTipoDocumentos)!  ${error.message}`
-      );
-    }
-  };
-};
-
-export const selectAllUsuarios = () => {
-  return async dispatch => {
-    try {
-      const response = await api.get(`usuarios/`);
-      const { users } = response.data;
-      if (users.length >= 0) {
-        await dispatch(protocoloSuccess({ users }));
-        history.push('/protocolo');
-        return;
-      }
-      toast.info('Nenhum Registro Localizado!');
-      history.push('/protocolo');
-      return;
-    } catch (error) {
-      toast.error(
-        `ERRO: Falha na busca de Tipo de Usuarios (selectAllUsuarios)!  ${error.message}`
-      );
-    }
-  };
-};
-
-export const selectAllUsuariosGrupo = payload => {
-  return async dispatch => {
-    try {
-      const idGrupo = payload;
-      const response = await api.get(`grupo/${idGrupo}/usuariogrupo/`);
-      const { usuariosgrupo } = response.data;
-      if (usuariosgrupo.length >= 0) {
-        await dispatch(protocoloSuccess({ usuariosgrupo }));
-        history.push('/protocolo');
-        return usuariosgrupo;
-      }
-      toast.info('Nenhum Registro Localizado!');
-      history.push('/protocolo');
-      return;
-    } catch (error) {
-      toast.error(
-        `ERRO: Falha na busca de UsuarioGrupo (selectAllUsuariosGrupo)!  ${error.message}`
-      );
-    }
-  };
-};
-
-export const selectAllUsuariosGrupoReq = payload => {
-  return async dispatch => {
-    try {
-      const idGrupo = payload;
-      const response = await api.get(`grupo/${idGrupo}/usuariogrupo/`);
-      const { usuariosgrupo } = response.data;
-      if (usuariosgrupo.length >= 0) {
-        await dispatch(protocoloSuccess({ usuariosgrupo }));
-        history.push('/requisicao');
-        return usuariosgrupo;
-      }
-      toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
-      return;
-    } catch (error) {
-      toast.error(
-        `ERRO: Falha na busca de UsuarioGrupo (selectAllUsuariosGrupo)!  ${error.message}`
-      );
-    }
-  };
-};
-
-export const selectAllGrupos = () => {
-  return async dispatch => {
-    try {
-      const response = await api.get(`groups/`);
-      const { groups } = response.data;
-      if (groups.length >= 0) {
-        await dispatch(protocoloSuccess({ groups }));
-        history.push('/protocolo');
-        return;
-      }
-      toast.info('Nenhum Registro Localizado!');
-      history.push('/protocolo');
-      return;
-    } catch (error) {
-      toast.error(
-        `ERRO: Falha na busca de Grupos (selectAllGrupos)!  ${error.message}`
-      );
-    }
-  };
-};
-
-export const selectAllFuncoes = () => {
-  return async dispatch => {
-    try {
-      const response = await api.get(`roles/`);
-      const { roles } = response.data;
-      if (roles.length >= 0) {
-        await dispatch(protocoloSuccess({ roles }));
-        history.push('protocolo');
-        return;
-      }
-      toast.info('Nenhum Registro Localizado!');
-      history.push('/protocolo');
-      return;
-    } catch (error) {
-      toast.error(
-        `ERRO: Falha na busca de Funcoes (selectAllFuncoes)!  ${error.message}`
       );
     }
   };

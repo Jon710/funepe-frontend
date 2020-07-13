@@ -31,6 +31,7 @@ import {
   deleteRequisicaoModalOpen,
   despachaRequisicaoModalOpen,
   visualizaHistoricoModalOpen,
+  getFirstRenderContext,
 } from '../../redux/features/context/contextSlice';
 import NavBar from './NavBar';
 import Despacho from './Despacho';
@@ -80,6 +81,7 @@ export default function RequisicaoList() {
     function loadRequisicoes() {
       setLoading(true);
       if (user.idusuario !== 0) {
+        dispatch(getFirstRenderContext());
         dispatch(getFirstRender(user)).then(response => {
           if (response.length > 0) {
             const reqs = response.map(req => ({
