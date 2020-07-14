@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import history from '../../../services/history';
 import api from '../../../services/api';
 import { formatPrice } from '../../../services/formatPrice';
+
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 export const sliceCompras = createSlice({
   name: 'compras',
@@ -118,7 +119,6 @@ export const sliceCompras = createSlice({
       state.requisicoesItem = [];
     },
     addRequisicaoSuccess(state, action) {
-      console.log('ACTION REQ SUCCESS', action.payload);
       const { requisicao, rowIndex } = action.payload;
       if (requisicao !== undefined) {
         state.loading = false;
@@ -131,8 +131,6 @@ export const sliceCompras = createSlice({
     },
   },
 });
-
-/** *************EXPORTED ACTIONS & REDUCERS************** */
 
 export const {
   requisicaoRequest,
@@ -266,7 +264,7 @@ export const selectAllRequisicao = () => {
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/protocolo');
+      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(
@@ -277,7 +275,6 @@ export const selectAllRequisicao = () => {
 };
 
 export const inserirRequisicao = payload => {
-  console.log('inserirRequisicao-payload: ', payload);
   return async dispatch => {
     try {
       const newRequisicao = payload;
@@ -302,7 +299,7 @@ export const atualizarRequisicao = payload => {
     try {
       const newRequisicao = payload;
       const response = await api.put(
-        `usuario/${newRequisicao.idsolicitante}/requisicao/${newRequisicao.idrequisicao}`,
+        `usuario/${newRequisicao.iddestinatario}/requisicao/${newRequisicao.idrequisicao}`,
         newRequisicao
       );
       dispatch(updateRequisicaoSuccess(response.data));
@@ -317,12 +314,9 @@ export const atualizarRequisicao = payload => {
 };
 
 export const inserirItemRequisicao = payload => {
-  console.log('inserirRequisicao-payload: ', payload);
   return async dispatch => {
     try {
       const newRequisicao = payload;
-      // /requisicao/:requisicao_id/itemrequisicao
-
       const response = await api.post(
         `requisicao/${newRequisicao.idrequisicao}/itemrequisicao/`,
         newRequisicao
@@ -334,10 +328,6 @@ export const inserirItemRequisicao = payload => {
       toast.error(
         `ERRO ao inserir Item de Requisicao - inserirRequisicao ${error.message}`
       );
-      console.log(
-        'ERRO ao inserir Item de Requisicao - inserirRequisicao: ',
-        error.message
-      );
       dispatch(updateFailure());
     }
   };
@@ -347,7 +337,6 @@ export const selectAllFornecedores = () => {
   return async dispatch => {
     try {
       const response = await api.get(`fornecedor/`);
-      // console.log(response.data);
       const { fornecedores } = response.data;
       if (fornecedores.length >= 0) {
         await dispatch(requisicaoSuccess({ fornecedores }));

@@ -1,5 +1,5 @@
 /* eslint-disable no-return-assign */
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Container,
@@ -16,6 +16,7 @@ import SweetAlert from 'react-bootstrap-sweetalert';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
+
 import {
   inserirRequisicao,
   atualizarRequisicao,
@@ -45,9 +46,7 @@ export default function Requisicao() {
     deleteRequisicaoModal,
     showAlertError,
   } = useSelector(state => state.contexto);
-  const { departamentos, requisicao, requisicoesItem } = useSelector(
-    state => state.compras
-  );
+  const { departamentos, requisicao } = useSelector(state => state.compras);
   const colourStyles = {
     option: provided => ({
       ...provided,
@@ -65,7 +64,6 @@ export default function Requisicao() {
       color: 'black',
     }),
   };
-
   const [datareq, setDtReq] = useState(new Date());
   const [iddepartamento, setIdDpto] = useState(0);
   const [dptos, setDptos] = useState(1);
@@ -85,11 +83,6 @@ export default function Requisicao() {
   const [status, setStatus] = useState('Aberto');
   const [validated, setValidated] = useState(false);
   const [alert, setAlert] = useState(false);
-  const [, setReq] = useState(requisicoesItem);
-
-  const rerenderRequisicao = useCallback(() => {
-    setReq(oldReq => [...oldReq, { requisicoesItem }]);
-  }, [requisicoesItem]);
 
   useEffect(() => {
     const arrayDpto = [];
@@ -109,11 +102,12 @@ export default function Requisicao() {
       setFinalidade(requisicao.finalidade);
       setObservacao(requisicao.observacao);
       setEditDepartamento(requisicao.departamento);
+      setIdDpto(requisicao.iddepartamento);
     }
 
     loadRequisicao();
     loadDptos();
-  }, [departamentos, requisicao, rerenderRequisicao]);
+  }, [departamentos, requisicao]);
 
   async function handleRequisicao() {
     setAlert(false);
@@ -202,7 +196,6 @@ export default function Requisicao() {
   const handleClose = () => {
     dispatch(addRequisicaoRequest());
     dispatch(requisicaoModalClose());
-    rerenderRequisicao();
 
     setAlert(false);
     history.push('/requisicao');

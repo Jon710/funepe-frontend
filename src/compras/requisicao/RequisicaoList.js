@@ -68,9 +68,12 @@ export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
   const { requisicoesItem } = useSelector(state => state.compras);
-  const { despachaRequisicaoModal, visualizaHistoricoModal } = useSelector(
-    state => state.contexto
-  );
+  const {
+    despachaRequisicaoModal,
+    visualizaHistoricoModal,
+    updatedRequisicao,
+    requisicaoDespachada,
+  } = useSelector(state => state.contexto);
   const [solicitacoes, setSolicitacoes] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -104,7 +107,7 @@ export default function RequisicaoList() {
       }
     }
     loadRequisicoes();
-  }, [dispatch, count]);
+  }, [dispatch, count, updatedRequisicao, requisicaoDespachada]);
 
   async function editRequisicao() {
     dispatch(editRequisicaoModalOpen());
@@ -174,6 +177,9 @@ export default function RequisicaoList() {
       formatter: () => {
         return (
           <DropdownButton drop="left" size="sm" title="Menu">
+            <Dropdown.Item as="button" onClick={() => despachaRequisicao()}>
+              Visualizar Requisição
+            </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => despachaRequisicao()}>
               Despachar Requisição
             </Dropdown.Item>

@@ -117,6 +117,7 @@ export default function Despacho() {
         dispatch(atualizarRequisicao(reqAtualizada));
       });
       toast.success('Requisição despachada com sucesso!');
+
       dispatch(
         showAlertErrorOpen({
           showAlertError: false,
@@ -124,7 +125,6 @@ export default function Despacho() {
         })
       );
     } else {
-      console.log(showAlertError);
       dispatch(
         showAlertErrorOpen({
           showAlertError: true,
@@ -197,7 +197,7 @@ export default function Despacho() {
                     </Form.Group>
                   </Form.Row>
                   <Form.Row>
-                    <Form.Group as={Col} controlId="editDepacho">
+                    <Form.Group as={Col}>
                       <Form.Label>Despacho</Form.Label>
                       <Form.Control
                         as="textarea"

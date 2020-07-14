@@ -27,6 +27,8 @@ export const sliceContext = createSlice({
     grupos: {},
     usuariosgrupo: {},
     funcoes: {},
+    updatedRequisicao: false,
+    requisicaoDespachada: false,
   },
   reducers: {
     contextoSuccess: (state, action) => {
@@ -61,6 +63,7 @@ export const sliceContext = createSlice({
     despachoModalClose: state => {
       state.despachoModal = false;
       state.despachaRequisicaoModal = false;
+      state.requisicaoDespachada = true;
     },
     despachoModalOpen: state => {
       state.despachoModal = true;
@@ -81,18 +84,21 @@ export const sliceContext = createSlice({
       state.requisicaoModal = false;
       state.editRequisicaoModal = false;
       state.deleteRequisicaoModal = false;
+      state.updatedRequisicao = true;
     },
-    requisicaoModalOpen: (state, action) => {
+    requisicaoModalOpen: state => {
       state.requisicaoModal = true;
     },
     editRequisicaoModalOpen: state => {
       state.editRequisicaoModal = true;
+      state.updatedRequisicao = false;
     },
     deleteRequisicaoModalOpen: state => {
       state.deleteRequisicaoModal = true;
     },
     despachaRequisicaoModalOpen: state => {
       state.despachaRequisicaoModal = true;
+      state.requisicaoDespachada = false;
     },
     visualizaHistoricoModalOpen: state => {
       state.visualizaHistoricoModal = true;
@@ -146,7 +152,6 @@ export const getFirstRenderContext = () => {
     dispatch(selectAllUsuarios());
     dispatch(selectAllGrupos());
     dispatch(selectAllFuncoes());
-    // dispatch(selectAllUsuariosGrupo());
   };
 };
 
