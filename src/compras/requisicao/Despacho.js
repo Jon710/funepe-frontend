@@ -29,6 +29,7 @@ export default function Despacho() {
   );
   const [valueUsuario, setValueUsuario] = useState([]);
   const [, setValueGrupo] = useState([]);
+  const [status, setStatus] = useState('');
 
   const colourStyles = {
     option: provided => ({
@@ -104,7 +105,7 @@ export default function Despacho() {
           idrequisicao: requisicao.idrequisicao,
           iddespachante: user.idusuario,
           iddestinatario: usuario.value,
-          status: 'Despachado',
+          status,
           datahistorico: new Date(),
           observacao,
         };
@@ -113,6 +114,7 @@ export default function Despacho() {
         const reqAtualizada = {
           iddestinatario: usuario.value,
           idrequisicao: requisicao.idrequisicao,
+          status,
         };
         dispatch(atualizarRequisicao(reqAtualizada));
       });
@@ -196,6 +198,81 @@ export default function Despacho() {
                       />
                     </Form.Group>
                   </Form.Row>
+                  <Form.Row>
+                    <Form.Group as={Col}>
+                      <Form.Check
+                        inline
+                        value="Aberta"
+                        type="radio"
+                        label="Aberta"
+                        name="formHorizontalRadios"
+                        id="form1"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                      <Form.Check
+                        type="radio"
+                        value="Em cotação"
+                        label="Em cotação"
+                        name="formHorizontalRadios"
+                        id="form2"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                      <Form.Check
+                        inline
+                        type="radio"
+                        label="Aguardando autorização"
+                        value="Aguardando autorização"
+                        name="formHorizontalRadios"
+                        id="form3"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                      <Form.Check
+                        type="radio"
+                        label="Finalizada"
+                        value="Finalizada"
+                        name="formHorizontalRadios"
+                        id="form4"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                    </Form.Group>
+
+                    <Form.Group as={Col}>
+                      <Form.Check
+                        type="radio"
+                        label="Retirar no almoxarifado"
+                        value="Retirar no almoxarifado"
+                        name="formHorizontalRadios"
+                        id="form5"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                      <Form.Check
+                        inline
+                        type="radio"
+                        label="Cancelada"
+                        value="Cancelada"
+                        name="formHorizontalRadios"
+                        id="form6"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                      <Form.Check
+                        type="radio"
+                        label="Negada"
+                        value="Negada"
+                        name="formHorizontalRadios"
+                        id="form7"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                      <Form.Check
+                        type="radio"
+                        label="Autorizada"
+                        value="Autorizada"
+                        name="formHorizontalRadios"
+                        id="form8"
+                        onChange={e => setStatus(e.target.value)}
+                      />
+                    </Form.Group>
+                  </Form.Row>
+
                   <Form.Row>
                     <Form.Group as={Col}>
                       <Form.Label>Despacho</Form.Label>

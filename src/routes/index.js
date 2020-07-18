@@ -23,6 +23,7 @@ import TipoEmpresa from '../compras/cadastro/TipoEmpresa';
 import TipoFornecedor from '../compras/cadastro/TipoFornecedor';
 import RequisicaoList from '../compras/requisicao/RequisicaoList';
 import Orcamento from '../compras/requisicao/Orcamento';
+import MinhaReq from '../compras/requisicao/MinhaReq';
 
 import { signOut } from '../store/modules/auth/actions';
 
@@ -79,6 +80,7 @@ export default function Routes() {
             <Route path="/formtipoempresa" component={TipoEmpresa} />
             <Route path="/requisicao" component={RequisicaoList} />
             <Route path="/orcamento" component={Orcamento} />
+            <Route path="/minhareq" component={MinhaReq} />
 
             <Route path="/usuario" component={Usuario} />
           </>

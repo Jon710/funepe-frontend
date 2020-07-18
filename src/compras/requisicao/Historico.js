@@ -95,23 +95,25 @@ export default function Historico() {
                             <th>Data</th>
                             <th>Despachante</th>
                             <th>Destinatário</th>
+                            <th>Status</th>
                             <th>Observação</th>
                           </tr>
                         </thead>
                         <tbody>
                           {historicos.map(hist => (
-                            <tr key={hist.counter}>
+                            <tr key={hist.counter} style={{ fontSize: 13 }}>
                               <td>{hist.counter}</td>
                               <td>{hist.dataFormatada}</td>
                               <td>{hist.despachante.username}</td>
                               <td>{hist.destinatario.username}</td>
+                              <td>{hist.requisicao.status}</td>
                               <td>{hist.observacao}</td>
                             </tr>
                           ))}
                         </tbody>
                         <tfoot>
                           <tr>
-                            <td style={{ textAlign: 'right' }} colSpan="4">
+                            <td style={{ textAlign: 'right' }} colSpan="5">
                               TOTAL DE HISTÓRICOS
                             </td>
                             <td style={{ textAlign: 'left' }} colSpan="1">

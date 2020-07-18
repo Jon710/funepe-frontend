@@ -30,7 +30,14 @@ export default function NavBar() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link href="/requisicao">Requisição</Nav.Link>
+          <NavDropdown title="Requisições" id="basic-nav-dropdown">
+            <NavDropdown.Item href="/requisicao">
+              Caixa de Entrada
+            </NavDropdown.Item>
+            <NavDropdown.Item href="/minhareq">
+              Minhas requisições
+            </NavDropdown.Item>
+          </NavDropdown>
           <Nav.Link href="/orcamento">Orçamento</Nav.Link>
           <NavDropdown title="Cadastros" id="basic-nav-dropdown">
             <NavDropdown.Item href="/formcategoria">

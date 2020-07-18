@@ -251,15 +251,21 @@ export default function Requisicao() {
                       <Form.Control
                         as="select"
                         readOnly
-                        value="Aberto"
+                        value="Aberta"
                         onChange={e => setStatus(e.target.value)}
                       >
-                        <option value="Aberto">Aberto</option>
+                        <option value="Aberta">Aberta</option>
+                        <option value="Em cotação">Em cotação</option>
+                        <option value="Aguardando autorização">
+                          Aguardando autorização
+                        </option>
+                        <option value="Autorizada">Autorizada</option>
                         <option value="Retirar no almoxarifado">
                           Retirar no almoxarifado
                         </option>
-                        <option value="Em cotação">Em cotação</option>
-                        <option value="Finalizado">Finalizado</option>
+                        <option value="Cancelada">Cancelada</option>
+                        <option value="Negada">Negada</option>
+                        <option value="Finalizada">Finalizada</option>
                       </Form.Control>
                     </Form.Group>
                   </Form.Row>

@@ -125,6 +125,12 @@ export default function RequisicaoList() {
     dispatch(visualizaHistoricoModalOpen());
   }
 
+  async function handleVisualizarRequisicao() {
+    // dar opcao de imprimir aqui
+  }
+
+  async function handleAlterarStatus() {}
+
   const columns = [
     {
       dataField: 'counter',
@@ -177,7 +183,7 @@ export default function RequisicaoList() {
       formatter: () => {
         return (
           <DropdownButton drop="left" size="sm" title="Menu">
-            <Dropdown.Item as="button" onClick={() => despachaRequisicao()}>
+            <Dropdown.Item as="button" onClick={handleVisualizarRequisicao}>
               Visualizar Requisição
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => despachaRequisicao()}>
@@ -185,6 +191,9 @@ export default function RequisicaoList() {
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => visualizarHistorico()}>
               Visualizar Histórico
+            </Dropdown.Item>
+            <Dropdown.Item as="button" onClick={handleAlterarStatus}>
+              Alterar Status
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => deleteRequisicao()}>
               Excluir
@@ -308,7 +317,7 @@ export default function RequisicaoList() {
         exportCSV
       >
         {props => (
-          <div>
+          <div style={{ fontSize: 13 }}>
             <Form.Row>
               <Form.Group as={Col} controlId="editArq">
                 <Form.Label />

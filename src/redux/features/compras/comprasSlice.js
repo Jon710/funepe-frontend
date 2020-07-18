@@ -2,6 +2,9 @@
 /* eslint-disable consistent-return */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
+import { format, parseISO } from 'date-fns';
+import pt from 'date-fns/locale/pt';
+
 import history from '../../../services/history';
 import api from '../../../services/api';
 import { formatPrice } from '../../../services/formatPrice';
@@ -12,7 +15,7 @@ export const sliceCompras = createSlice({
   initialState: {
     loading: false,
     requisicao: {},
-    requisicoes: {},
+    requisicoes: [],
     requisicoesItem: [],
     orcamentos: {},
     produtos: {},
@@ -25,6 +28,7 @@ export const sliceCompras = createSlice({
     tipoEmpresas: {},
     tipoTelefones: {},
     usuarios: {},
+    minhasRequisicoes: [],
   },
   reducers: {
     requisicaoSuccess: (state, action) => {
@@ -43,10 +47,14 @@ export const sliceCompras = createSlice({
         tipostelefone,
         users,
         itensReq,
+        myReqs,
       } = action.payload;
       state.loading = false;
       if (requisicoes !== undefined) {
         state.requisicoes = requisicoes;
+      }
+      if (myReqs !== undefined) {
+        state.minhasRequisicoes = myReqs;
       }
       if (itensReq !== undefined) {
         state.requisicoesItem = itensReq;
@@ -184,6 +192,37 @@ export const getFirstRender = usuario => {
   };
 };
 
+export const getMyOwnReq = usuario => {
+  console.log('Compras getMyOwnReq:', usuario);
+  return async dispatch => {
+    dispatch(requisicaoRequest({ usuario }));
+    try {
+      if (!usuario.idusuario) {
+        toast.error('ID do Usuário é inválido.');
+        return;
+      }
+      const response = await api.get(
+        `/solicitante/${usuario.idusuario}/requisicao`
+      );
+      let myReqs;
+      if (response.data.myOwnReq.length > 0) {
+        myReqs = response.data.myOwnReq.map(req => ({
+          ...req,
+          dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy', {
+            locale: pt,
+          }),
+        }));
+      }
+      dispatch(requisicaoSuccess({ myReqs }));
+      return myReqs;
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Minhas reqs. getMyOwnReq.  ${error.message}`
+      );
+    }
+  };
+};
+
 export const selectAllProdutos = () => {
   return async dispatch => {
     try {
@@ -238,11 +277,9 @@ export const selectAllItemRequisicao = requisicao_id => {
 
       if (itensReq.length >= 0) {
         await dispatch(requisicaoSuccess({ itensReq }));
-        history.push('/requisicao');
         return;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/protocolo');
       return;
     } catch (error) {
       toast.error(
