@@ -24,6 +24,7 @@ import TipoFornecedor from '../compras/cadastro/TipoFornecedor';
 import RequisicaoList from '../compras/requisicao/RequisicaoList';
 import Orcamento from '../compras/requisicao/Orcamento';
 import MinhaReq from '../compras/requisicao/MinhaReq';
+import VisualizarPDF from '../compras/requisicao/VisualizarPDF';
 
 import { signOut } from '../store/modules/auth/actions';
 
@@ -81,6 +82,7 @@ export default function Routes() {
             <Route path="/requisicao" component={RequisicaoList} />
             <Route path="/orcamento" component={Orcamento} />
             <Route path="/minhareq" component={MinhaReq} />
+            <Route path="/pdf" component={VisualizarPDF} />
 
             <Route path="/usuario" component={Usuario} />
           </>

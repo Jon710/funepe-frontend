@@ -30,12 +30,14 @@ import {
   editRequisicaoModalOpen,
   deleteRequisicaoModalOpen,
   despachaRequisicaoModalOpen,
+  visualizaRequisicaoModalOpen,
   visualizaHistoricoModalOpen,
   getFirstRenderContext,
 } from '../../redux/features/context/contextSlice';
 import NavBar from './NavBar';
 import Despacho from './Despacho';
 import Historico from './Historico';
+import VisualizarPDF from './VisualizarPDF';
 
 const CaptionElement = () => (
   <h3
@@ -71,6 +73,7 @@ export default function RequisicaoList() {
   const {
     despachaRequisicaoModal,
     visualizaHistoricoModal,
+    visualizaRequisicaoModal,
     updatedRequisicao,
     requisicaoDespachada,
   } = useSelector(state => state.contexto);
@@ -125,8 +128,9 @@ export default function RequisicaoList() {
     dispatch(visualizaHistoricoModalOpen());
   }
 
-  async function handleVisualizarRequisicao() {
-    // dar opcao de imprimir aqui
+  async function visualizarRequisicao(e) {
+    e.preventDefault();
+    dispatch(visualizaRequisicaoModalOpen());
   }
 
   async function handleAlterarStatus() {}
@@ -183,7 +187,7 @@ export default function RequisicaoList() {
       formatter: () => {
         return (
           <DropdownButton drop="left" size="sm" title="Menu">
-            <Dropdown.Item as="button" onClick={handleVisualizarRequisicao}>
+            <Dropdown.Item as="button" onClick={e => visualizarRequisicao(e)}>
               Visualizar Requisição
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => despachaRequisicao()}>
@@ -352,6 +356,7 @@ export default function RequisicaoList() {
 
             {despachaRequisicaoModal ? <Despacho /> : null}
             {visualizaHistoricoModal ? <Historico /> : null}
+            {visualizaRequisicaoModal ? <VisualizarPDF /> : null}
 
             <BootstrapTable
               {...props.baseProps}

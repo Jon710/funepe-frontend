@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable no-use-before-define */
 /* eslint-disable consistent-return */
 import { createSlice } from '@reduxjs/toolkit';
@@ -101,6 +102,10 @@ export const sliceCompras = createSlice({
       state.loading = true;
       state.requisicoes = requisicoes;
     },
+    requisicaoItemRequest: state => {
+      state.loading = true;
+      state.requisicoesItem = [];
+    },
     requisicaoFailure: state => {
       state.loading = false;
       state.requisicoes = {};
@@ -142,6 +147,7 @@ export const sliceCompras = createSlice({
 
 export const {
   requisicaoRequest,
+  requisicaoItemRequest,
   requisicaoSuccess,
   requisicaoUser,
   requisicaoFailure,
@@ -193,7 +199,6 @@ export const getFirstRender = usuario => {
 };
 
 export const getMyOwnReq = usuario => {
-  console.log('Compras getMyOwnReq:', usuario);
   return async dispatch => {
     dispatch(requisicaoRequest({ usuario }));
     try {

@@ -23,6 +23,7 @@ export const sliceContext = createSlice({
     deleteRequisicaoModal: false,
     despachaRequisicaoModal: false,
     visualizaHistoricoModal: false,
+    visualizaRequisicaoModal: false,
     usuarios: {},
     grupos: {},
     usuariosgrupo: {},
@@ -50,6 +51,7 @@ export const sliceContext = createSlice({
       state.showModal = false;
       state.deleteRequisicaoModal = false;
       state.visualizaHistoricoModal = false;
+      state.visualizaRequisicaoModal = false;
     },
     modalOpen: state => {
       state.showModal = true;
@@ -103,6 +105,9 @@ export const sliceContext = createSlice({
     visualizaHistoricoModalOpen: state => {
       state.visualizaHistoricoModal = true;
     },
+    visualizaRequisicaoModalOpen: state => {
+      state.visualizaRequisicaoModal = true;
+    },
     progressBar: (state, action) => {
       state.uploadPercentage = action.payload;
     },
@@ -136,6 +141,7 @@ export const {
   deleteRequisicaoModalOpen,
   despachaRequisicaoModalOpen,
   visualizaHistoricoModalOpen,
+  visualizaRequisicaoModalOpen,
   progressBar,
   showAlertErrorOpen,
   showAlertErrorClose,
