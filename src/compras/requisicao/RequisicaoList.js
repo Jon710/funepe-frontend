@@ -13,17 +13,22 @@ import {
   Table,
   Dropdown,
   DropdownButton,
+  ListGroupItem,
+  ListGroup,
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import { parseISO, format } from 'date-fns';
+import { MdFileDownload } from 'react-icons/md';
+
 import {
   getFirstRender,
   selectAllItemRequisicao,
   addRequisicaoRequest,
   addRequisicaoSuccess,
+  getUploadedFiles,
 } from '../../redux/features/compras/comprasSlice';
 import {
   requisicaoModalOpen,
@@ -69,7 +74,7 @@ const SpinnerLine = () => (
 export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { requisicoesItem } = useSelector(state => state.compras);
+  const { requisicoesItem, arquivos } = useSelector(state => state.compras);
   const {
     despachaRequisicaoModal,
     visualizaHistoricoModal,
@@ -257,58 +262,83 @@ export default function RequisicaoList() {
   const expandRow = {
     showExpandColumn: true,
     onlyOneExpanding: true,
-    renderer: () =>
-      requisicoesItem.length > 0 ? (
-        <Card>
-          <Card.Body>
-            <Card.Title>Produtos:</Card.Title>
-            <Table
-              responsive="sm"
-              striped
-              bordered
-              hover
-              size="sm"
-              variant="success"
-            >
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Produto</th>
-                  <th>Qtde</th>
-                  <th>V.Unit</th>
-                  <th>V.Tot</th>
-                </tr>
-              </thead>
-              <tbody>
-                {requisicoesItem.map(item => (
-                  <tr key={item.iditemrequisicao}>
-                    <td>{item.idproduto}</td>
-                    <td>{item.produto.descricao}</td>
-                    <td>{item.quantidade}</td>
-                    <td>{item.vlrUnit}</td>
-                    <td>{item.vlrTotal}</td>
+    renderer: () => (
+      <div>
+        {requisicoesItem.length > 0 ? (
+          <Card>
+            <Card.Body>
+              <Card.Title>Produtos:</Card.Title>
+              <Table
+                responsive="sm"
+                striped
+                bordered
+                hover
+                size="sm"
+                variant="success"
+              >
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Produto</th>
+                    <th>Qtde</th>
+                    <th>V.Unit</th>
+                    <th>V.Tot</th>
                   </tr>
+                </thead>
+                <tbody>
+                  {requisicoesItem.map(item => (
+                    <tr key={item.iditemrequisicao}>
+                      <td>{item.idproduto}</td>
+                      <td>{item.produto.descricao}</td>
+                      <td>{item.quantidade}</td>
+                      <td>{item.vlrUnit}</td>
+                      <td>{item.vlrTotal}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+              {observacao ? (
+                <Form.Group as={Col}>
+                  <Form.Label>Observação</Form.Label>
+                  <Form.Control
+                    as="textarea"
+                    rows="3"
+                    value={observacao}
+                    readOnly
+                  />
+                </Form.Group>
+              ) : (
+                ''
+              )}
+            </Card.Body>
+          </Card>
+        ) : (
+          <Card.Header>***Requisição não possui produtos!***</Card.Header>
+        )}
+
+        {arquivos.length > 0 ? (
+          <Card>
+            <Card.Body>
+              <p>Arquivos Anexos:</p>
+              <ListGroup>
+                {arquivos.map(file => (
+                  <ListGroupItem key={file.idarquivoanexo}>
+                    <Card.Link href={`${file.patharquivo}`}>
+                      <MdFileDownload /> {file.tipo} - {file.patharquivo}
+                    </Card.Link>
+                  </ListGroupItem>
                 ))}
-              </tbody>
-            </Table>
-            {observacao ? (
-              <Form.Group as={Col}>
-                <Form.Label>Observação</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows="3"
-                  value={observacao}
-                  readOnly
-                />
-              </Form.Group>
-            ) : (
-              ''
-            )}
-          </Card.Body>
-        </Card>
-      ) : (
-        <Card.Header>***Requisição não possui produtos!***</Card.Header>
-      ),
+              </ListGroup>
+            </Card.Body>
+          </Card>
+        ) : (
+          <Card.Header>***Requisição não possui anexo!***</Card.Header>
+        )}
+      </div>
+    ),
+    onExpand: row => {
+      dispatch(getUploadedFiles(row.idrequisicao));
+    },
   };
 
   return (

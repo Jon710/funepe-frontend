@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable no-return-assign */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';

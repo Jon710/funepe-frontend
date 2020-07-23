@@ -30,6 +30,7 @@ export const sliceCompras = createSlice({
     tipoTelefones: {},
     usuarios: {},
     minhasRequisicoes: [],
+    arquivos: [],
   },
   reducers: {
     requisicaoSuccess: (state, action) => {
@@ -49,10 +50,14 @@ export const sliceCompras = createSlice({
         users,
         itensReq,
         myReqs,
+        arquivosanexo,
       } = action.payload;
       state.loading = false;
       if (requisicoes !== undefined) {
         state.requisicoes = requisicoes;
+      }
+      if (arquivosanexo !== undefined) {
+        state.arquivos = arquivosanexo;
       }
       if (myReqs !== undefined) {
         state.minhasRequisicoes = myReqs;
@@ -198,6 +203,28 @@ export const getFirstRender = usuario => {
   };
 };
 
+export const getUploadedFiles = idrequisicao => {
+  return async dispatch => {
+    try {
+      const response = await api.get(
+        `requisicao/${idrequisicao}/arquivoanexo/`
+      );
+
+      const { arquivosanexo } = response.data;
+      if (arquivosanexo) {
+        if (arquivosanexo.length >= 0) {
+          await dispatch(requisicaoSuccess({ arquivosanexo }));
+          return arquivosanexo;
+        }
+      }
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha na busca de Anexos. getUploadedFiles()  ${error.message}`
+      );
+    }
+  };
+};
+
 export const getMyOwnReq = usuario => {
   return async dispatch => {
     dispatch(requisicaoRequest({ usuario }));
@@ -324,6 +351,7 @@ export const inserirRequisicao = payload => {
         `usuario/${newRequisicao.idsolicitante}/requisicao/`,
         newRequisicao
       );
+
       dispatch(addRequisicaoSuccess(response.data));
       dispatch(selectAllRequisicao());
       return response.data;

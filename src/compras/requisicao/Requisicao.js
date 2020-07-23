@@ -1,5 +1,6 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable no-return-assign */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Container,
@@ -12,11 +13,13 @@ import {
   Accordion,
 } from 'react-bootstrap';
 import Select from 'react-select';
+
 import SweetAlert from 'react-bootstrap-sweetalert';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { toast } from 'react-toastify';
-
+import { useDropzone } from 'react-dropzone';
+import DeleteForeverSharpIcon from '@material-ui/icons/DeleteForeverSharp';
 import {
   inserirRequisicao,
   atualizarRequisicao,
@@ -83,6 +86,8 @@ export default function Requisicao() {
   const [status, setStatus] = useState('Aberto');
   const [validated, setValidated] = useState(false);
   const [alert, setAlert] = useState(false);
+  const [arquivos, setArquivos] = useState([]);
+  const formData = new FormData();
 
   useEffect(() => {
     const arrayDpto = [];
@@ -142,23 +147,52 @@ export default function Requisicao() {
   }
 
   async function updateRequisicao() {
-    const newRequisicao = {
-      idrequisicao: requisicao.idrequisicao,
-      datareq,
-      finalidade,
-      iddepartamento,
-      iddestinatario,
-      idsolicitante,
-      indicacaouso,
-      justificativa,
-      observacao,
-      orcamentos,
-      prioridade,
-      status,
-    };
+    // FINALIZAR req
+    try {
+      const newRequisicao = {
+        idrequisicao: requisicao.idrequisicao,
+        datareq,
+        finalidade,
+        iddepartamento,
+        iddestinatario,
+        idsolicitante,
+        indicacaouso,
+        justificativa,
+        observacao,
+        orcamentos,
+        prioridade,
+        status,
+      };
 
-    dispatch(atualizarRequisicao(newRequisicao));
-    toast.success('Requisição atualizada!');
+      dispatch(atualizarRequisicao(newRequisicao)).then(() => {
+        try {
+          console.log('arquivos', arquivos.length);
+          if (arquivos.length > 0) {
+            for (let i = 0; i < arquivos.length; i++) {
+              formData.append('arquivos', arquivos[i]);
+            }
+
+            api.post(
+              `requisicao/${requisicao.idrequisicao}/arquivoanexo`,
+              formData,
+              {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              }
+            );
+          } else {
+            return;
+          }
+        } catch (error) {
+          toast.error(`ERRO Upload Requisição ${error.message}`);
+        }
+      });
+
+      toast.success('Requisição atualizada!');
+    } catch (error) {
+      console.error('ERRO: ', error);
+    }
   }
 
   async function deleteRequisicao(e) {
@@ -203,6 +237,38 @@ export default function Requisicao() {
 
   const handleAlert = () => {
     setAlert(true);
+  };
+
+  /* BEGIN UPLOAD FILES SECTION */
+  const onDrop = useCallback(
+    acceptedFiles => {
+      setArquivos([...arquivos, ...acceptedFiles]);
+    },
+    [arquivos]
+  );
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+  });
+
+  const removeFile = file => () => {
+    const newFiles = [...arquivos];
+    newFiles.splice(newFiles.indexOf(file), 1);
+    setArquivos(newFiles);
+  };
+
+  const files = arquivos.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes{' '}
+      <DeleteForeverSharpIcon onClick={removeFile(file)} />
+    </li>
+  ));
+
+  const dropzoneStyle = {
+    width: '100%',
+    height: '20%',
+    border: '1px dashed grey',
+    background: 'lightGrey',
   };
 
   return (
@@ -328,7 +394,7 @@ export default function Requisicao() {
                         p="2"
                         onClick={updateRequisicao}
                       >
-                        Atualizar
+                        Finalizar
                       </Button>
                     </Form.Group>
                     <Form.Group as={Col}>
@@ -447,6 +513,46 @@ export default function Requisicao() {
                       onChange={e => setObservacao(e.target.value)}
                     />
                   </Form.Group>
+
+                  <Form.Row>
+                    <Form.Group as={Col} controlId="editArq">
+                      <Form.Label>Anexar arquivo</Form.Label>
+                      <div>
+                        <Card>
+                          <section>
+                            <div
+                              {...getRootProps({ className: 'dropzone' })}
+                              style={dropzoneStyle}
+                            >
+                              <div align="center">
+                                <span>{files ? ' 📂 ' : ' 📁 '}</span>
+                                <i className="fa fa-cloud-upload" />
+                                <input {...getInputProps()} />
+                                <p>
+                                  Arraste e solte arquivos aqui, ou clique para
+                                  selecionar arquivos
+                                </p>
+                                <p />
+                              </div>
+                            </div>
+
+                            <div>
+                              {files.length > 0 ? (
+                                <div>
+                                  <aside>
+                                    <h5>Arquivos</h5>
+                                    <ul>{files}</ul>
+                                  </aside>
+                                </div>
+                              ) : (
+                                <div />
+                              )}
+                            </div>
+                          </section>
+                        </Card>
+                      </div>
+                    </Form.Group>
+                  </Form.Row>
 
                   {alert ? (
                     <>
