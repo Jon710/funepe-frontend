@@ -5,7 +5,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { format, parseISO } from 'date-fns';
 import pt from 'date-fns/locale/pt';
-
 import history from '../../../services/history';
 import api from '../../../services/api';
 import { formatPrice } from '../../../services/formatPrice';
@@ -18,7 +17,6 @@ export const sliceCompras = createSlice({
     requisicao: {},
     requisicoes: [],
     requisicoesItem: [],
-    orcamentos: {},
     produtos: {},
     fornecedores: {},
     departamentos: {},
@@ -36,7 +34,6 @@ export const sliceCompras = createSlice({
     requisicaoSuccess: (state, action) => {
       const {
         requisicoes,
-        orcamentos,
         produtos,
         empresas,
         fornecedores,
@@ -64,9 +61,6 @@ export const sliceCompras = createSlice({
       }
       if (itensReq !== undefined) {
         state.requisicoesItem = itensReq;
-      }
-      if (orcamentos !== undefined) {
-        state.orcamentos = orcamentos;
       }
       if (users !== undefined) {
         state.usuarios = users;
@@ -129,7 +123,6 @@ export const sliceCompras = createSlice({
     updateFailure: state => {
       state.loading = false;
       state.requisicoes = {};
-      state.orcamentos = {};
     },
     addRequisicaoRequest(state) {
       state.loading = false;

@@ -147,7 +147,6 @@ export default function Requisicao() {
   }
 
   async function updateRequisicao() {
-    // FINALIZAR req
     try {
       const newRequisicao = {
         idrequisicao: requisicao.idrequisicao,
@@ -166,7 +165,6 @@ export default function Requisicao() {
 
       dispatch(atualizarRequisicao(newRequisicao)).then(() => {
         try {
-          console.log('arquivos', arquivos.length);
           if (arquivos.length > 0) {
             for (let i = 0; i < arquivos.length; i++) {
               formData.append('arquivos', arquivos[i]);

@@ -3,7 +3,6 @@
 /* eslint-disable no-unused-vars */
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
-import history from '../../../services/history';
 import api from '../../../services/api';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
@@ -24,6 +23,8 @@ export const sliceContext = createSlice({
     despachaRequisicaoModal: false,
     visualizaHistoricoModal: false,
     visualizaRequisicaoModal: false,
+    orcamentoModal: false,
+    orcamentoPrecosModal: false,
     usuarios: {},
     grupos: {},
     usuariosgrupo: {},
@@ -52,9 +53,13 @@ export const sliceContext = createSlice({
       state.deleteRequisicaoModal = false;
       state.visualizaHistoricoModal = false;
       state.visualizaRequisicaoModal = false;
+      state.orcamentoModal = false;
+      state.orcamentoPrecosModal = false;
     },
     modalOpen: state => {
       state.showModal = true;
+      state.orcamentoModal = true;
+      state.orcamentoPrecosModal = true;
     },
     editModalClose: state => {
       state.editModal = false;
@@ -164,7 +169,7 @@ export const getFirstRenderContext = () => {
 export const selectAllUsuarios = () => {
   return async dispatch => {
     try {
-      const response = await api.get(`usuarios/`);
+      const response = await api.get(`usuarios`);
       const { users } = response.data;
       if (users.length >= 0) {
         await dispatch(contextoSuccess({ users }));
@@ -183,7 +188,7 @@ export const selectAllUsuarios = () => {
 export const selectAllGrupos = () => {
   return async dispatch => {
     try {
-      const response = await api.get(`groups/`);
+      const response = await api.get(`groups`);
       const { groups } = response.data;
       if (groups.length >= 0) {
         await dispatch(contextoSuccess({ groups }));

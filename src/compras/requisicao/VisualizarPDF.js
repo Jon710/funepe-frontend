@@ -22,7 +22,7 @@ export default function VisualizarPDF() {
   doc.setFontStyle('normal');
   doc.setFontSize(10);
   doc.text(`Data: ${requisicao.dataFormatada}`, 193.5, 20, 'right');
-  doc.text('Hora: 10:00:00', 193.5, 25, 'right'); // a fazer
+  // doc.text('Hora: 10:00:00', 193.5, 25, 'right'); // a fazer
   doc.line(20, 27, 195, 27);
 
   doc.addImage(myImage, 'JPEG', 150, 28, 45, 15);

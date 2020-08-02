@@ -32,6 +32,7 @@ export default function Fornecedores() {
   const [rg_ie, setRgIe] = useState();
   const [observacao, setObservacao] = useState('');
   const [prod_servicos, setProdServicos] = useState('');
+  const [emailprincipal, setEmailPrincipal] = useState('');
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -84,9 +85,9 @@ export default function Fornecedores() {
         rg_ie,
         observacao,
         prod_servicos,
+        emailprincipal,
       };
 
-      console.log(novoFornecedor);
       await api
         .post('fornecedor', novoFornecedor)
         .then(() => {
@@ -171,6 +172,7 @@ export default function Fornecedores() {
     setRgIe(forn.rg_ie);
     setObservacao(forn.observacao);
     setProdServicos(forn.prod_servicos);
+    setEmailPrincipal(forn.emailprincipal);
 
     setShowDelete(true);
   }
@@ -192,6 +194,7 @@ export default function Fornecedores() {
       rg_ie,
       observacao,
       prod_servicos,
+      emailprincipal,
     };
 
     await api
@@ -204,7 +207,7 @@ export default function Fornecedores() {
         dispatch(
           showAlertErrorOpen({
             showAlertError: true,
-            alertError: `${error.response.data.error} Algo com a ${nomefantasia}`,
+            alertError: `${error.response.data.error} Algo com o ${nomefantasia}`,
           })
         );
       });
@@ -212,6 +215,7 @@ export default function Fornecedores() {
 
   function handleShowEdit(forn) {
     setShowEdit(true);
+    setIdFornecedor(forn.idfornecedor);
     setCodigoExtra(forn.codigoextra);
     setTipoFornece(forn.tipofornecedor);
     setAtivo(forn.ativo);
@@ -221,6 +225,7 @@ export default function Fornecedores() {
     setRgIe(forn.rg_ie);
     setObservacao(forn.observacao);
     setProdServicos(forn.prod_servicos);
+    setEmailPrincipal(forn.emailprincipal);
   }
 
   function handleCloseEdit() {
@@ -303,6 +308,12 @@ export default function Fornecedores() {
               <br />
               <Form.Control readOnly type="input" defaultValue={tipoFornece} />
               <br />
+              <Form.Control
+                readOnly
+                type="input"
+                defaultValue={emailprincipal}
+              />
+              <br />
               <Form.Control readOnly type="input" defaultValue={ativo} />
               <br />
               <Form.Control readOnly type="input" defaultValue={razaosocial} />
@@ -351,7 +362,7 @@ export default function Fornecedores() {
                         {tipo.descricao}
                       </option>
                     ))
-                  : 'Nenhuma fornecedor cadastrado.'}
+                  : 'Nenhum fornecedor cadastrado.'}
               </Form.Control>
             </Col>
           </Form.Group>
@@ -368,10 +379,24 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
+              Email
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={emailprincipal}
+                onChange={e => setEmailPrincipal(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
               Ativo
             </Form.Label>
             <Col sm="10">
-              <Form.Control value={ativo} />
+              <Form.Control
+                value={ativo}
+                onChange={e => setAtivo(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -379,7 +404,10 @@ export default function Fornecedores() {
               RG/IE
             </Form.Label>
             <Col sm="10">
-              <Form.Control value={rg_ie} />
+              <Form.Control
+                value={rg_ie}
+                onChange={e => setRgIe(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -387,7 +415,10 @@ export default function Fornecedores() {
               Nome Fantasia
             </Form.Label>
             <Col sm="10">
-              <Form.Control value={nomefantasia} />
+              <Form.Control
+                value={nomefantasia}
+                onChange={e => setNomeFantasia(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -395,7 +426,10 @@ export default function Fornecedores() {
               CPF/CNPF
             </Form.Label>
             <Col sm="10">
-              <Form.Control value={cpf_cnpj} />
+              <Form.Control
+                value={cpf_cnpj}
+                onChange={e => setCpfCnpj(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -403,7 +437,10 @@ export default function Fornecedores() {
               Prod/Serviços
             </Form.Label>
             <Col sm="10">
-              <Form.Control value={prod_servicos} />
+              <Form.Control
+                value={prod_servicos}
+                onChange={e => setProdServicos(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -411,7 +448,12 @@ export default function Fornecedores() {
               Observação
             </Form.Label>
             <Col sm="10">
-              <Form.Control as="textarea" rows="2" value={observacao} />
+              <Form.Control
+                as="textarea"
+                rows="2"
+                value={observacao}
+                onChange={e => setObservacao(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -419,7 +461,12 @@ export default function Fornecedores() {
               Razão Social
             </Form.Label>
             <Col sm="10">
-              <Form.Control as="textarea" rows="2" value={razaosocial} />
+              <Form.Control
+                as="textarea"
+                rows="2"
+                value={razaosocial}
+                onChange={e => setRazaoSocial(e.target.value)}
+              />
             </Col>
           </Form.Group>
           <Button type="submit" variant="primary" onClick={handleEdit}>
@@ -449,22 +496,14 @@ export default function Fornecedores() {
               <Form.Control readOnly value={codigoextra} />
             </Col>
           </Form.Group>
-          {/* <Form.Group as={Row}>
+          <Form.Group as={Row}>
             <Form.Label column sm="2">
-              ID Tipo Fornecedor
+              Email
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly value={idtipofornecedor} />
+              <Form.Control readOnly value={emailprincipal} />
             </Col>
-          </Form.Group> */}
-          {/* <Form.Group as={Row}>
-            <Form.Label column sm="2">
-              Tipo Fornecedor
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control readOnly value={tipoFornece} />
-            </Col>
-          </Form.Group>{' '} */}
+          </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
               Ativo
@@ -612,6 +651,18 @@ export default function Fornecedores() {
                 <Form.Control
                   type="text"
                   onChange={e => setNomeFantasia(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Email
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setEmailPrincipal(e.target.value)}
                   required
                 />
               </Col>

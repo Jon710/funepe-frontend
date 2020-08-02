@@ -23,6 +23,7 @@ import TipoEmpresa from '../compras/cadastro/TipoEmpresa';
 import TipoFornecedor from '../compras/cadastro/TipoFornecedor';
 import RequisicaoList from '../compras/requisicao/RequisicaoList';
 import Orcamento from '../compras/requisicao/Orcamento';
+import OrcamentoReq from '../compras/requisicao/OrcamentoReq';
 import MinhaReq from '../compras/requisicao/MinhaReq';
 import VisualizarPDF from '../compras/requisicao/VisualizarPDF';
 
@@ -81,6 +82,7 @@ export default function Routes() {
             <Route path="/formtipoempresa" component={TipoEmpresa} />
             <Route path="/requisicao" component={RequisicaoList} />
             <Route path="/orcamento" component={Orcamento} />
+            <Route path="/orcamentoreq" component={OrcamentoReq} />
             <Route path="/minhareq" component={MinhaReq} />
             <Route path="/pdf" component={VisualizarPDF} />
 

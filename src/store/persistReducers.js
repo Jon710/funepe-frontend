@@ -6,7 +6,7 @@ export default reducers => {
     {
       key: 'funepe-localDB',
       storage,
-      whitelist: ['auth', 'protocolo', 'compras'],
+      whitelist: ['auth', 'protocolo', 'compras', 'orcamentos'],
     },
     reducers
   );

@@ -2,6 +2,7 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Button,
@@ -15,14 +16,16 @@ import {
   DropdownButton,
   ListGroupItem,
   ListGroup,
+  Row,
+  Modal,
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import { parseISO, format } from 'date-fns';
+import Select from 'react-select';
 import { MdFileDownload } from 'react-icons/md';
-
 import {
   getFirstRender,
   selectAllItemRequisicao,
@@ -38,7 +41,14 @@ import {
   visualizaRequisicaoModalOpen,
   visualizaHistoricoModalOpen,
   getFirstRenderContext,
+  modalClose,
+  modalOpen,
 } from '../../redux/features/context/contextSlice';
+import {
+  inserirOrcamento,
+  inserirItemOrcamento,
+  getItensOrcamento,
+} from '../../redux/features/compras/orcamentoSlice';
 import NavBar from './NavBar';
 import Despacho from './Despacho';
 import Historico from './Historico';
@@ -74,7 +84,10 @@ const SpinnerLine = () => (
 export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { requisicoesItem, arquivos } = useSelector(state => state.compras);
+  const { requisicoesItem, arquivos, fornecedores, requisicao } = useSelector(
+    state => state.compras
+  );
+  const { orcamentoModal } = useSelector(state => state.contexto);
   const {
     despachaRequisicaoModal,
     visualizaHistoricoModal,
@@ -86,8 +99,27 @@ export default function RequisicaoList() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [observacao, setObservacao] = useState();
+  const [, setNomeFantasia] = useState('');
+  const [idfornecedor, setIdFornecedor] = useState();
+  const [descricaoFornecedor, setDescricaoFornecedor] = useState('');
+  const [dataorcamento, setDataOrcamento] = useState(new Date());
+  const [endereco, setEndereco] = useState('Rua União');
 
   useEffect(() => {
+    const arrayFornecedores = [];
+
+    async function loadFornecedores() {
+      if (fornecedores.length > 0) {
+        fornecedores.forEach(fornecedor => {
+          arrayFornecedores.push({
+            value: fornecedor.idfornecedor,
+            label: fornecedor.nomefantasia,
+          });
+        });
+      }
+      setDescricaoFornecedor(arrayFornecedores);
+    }
+
     let c = 0;
     function loadRequisicoes() {
       setLoading(true);
@@ -115,6 +147,7 @@ export default function RequisicaoList() {
       }
     }
     loadRequisicoes();
+    loadFornecedores();
   }, [dispatch, count, updatedRequisicao, requisicaoDespachada]);
 
   async function editRequisicao() {
@@ -138,7 +171,23 @@ export default function RequisicaoList() {
     dispatch(visualizaRequisicaoModalOpen());
   }
 
-  async function handleAlterarStatus() {}
+  async function gerarOrcamento(e) {
+    e.preventDefault();
+    dispatch(modalOpen());
+  }
+
+  async function visualizarOrcamento(e) {
+    e.preventDefault();
+
+    dispatch(getItensOrcamento(requisicao.idrequisicao));
+  }
+
+  function onChangeFornecedor(selectedOption) {
+    setIdFornecedor(selectedOption[0].value);
+    setNomeFantasia(selectedOption.label);
+  }
+
+  const handleClose = () => dispatch(modalClose());
 
   const columns = [
     {
@@ -201,14 +250,18 @@ export default function RequisicaoList() {
             <Dropdown.Item as="button" onClick={() => visualizarHistorico()}>
               Visualizar Histórico
             </Dropdown.Item>
-            <Dropdown.Item as="button" onClick={handleAlterarStatus}>
-              Alterar Status
+            <Dropdown.Item as="button" onClick={e => gerarOrcamento(e)}>
+              Gerar Orçamento
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => deleteRequisicao()}>
               Excluir
             </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => editRequisicao()}>
               Editar
+            </Dropdown.Item>
+            <hr />
+            <Dropdown.Item as="button" onClick={e => visualizarOrcamento(e)}>
+              <Link to="/orcamentoreq">Visualizar Orçamentos</Link>
             </Dropdown.Item>
           </DropdownButton>
         );
@@ -341,6 +394,19 @@ export default function RequisicaoList() {
     },
   };
 
+  async function handleInserirOrcamento() {
+    const newOrcamento = {
+      idfornecedor,
+      idrequisicao: requisicao.idrequisicao,
+      idsolicitante: requisicao.idsolicitante,
+      dataorcamento,
+      endereco,
+    };
+
+    dispatch(inserirOrcamento({ newOrcamento }));
+    dispatch(inserirItemOrcamento());
+  }
+
   return (
     <Container>
       <NavBar />
@@ -368,7 +434,7 @@ export default function RequisicaoList() {
                   Solicitar Compras
                 </Button>
               </Form.Group>
-              <Form.Group as={Col} controlId="editArq">
+              <Form.Group as={Col}>
                 <Form.Label />
                 <ExportCSVButton {...props.csvProps} size="lg" block p="2">
                   Export CSV!
@@ -403,6 +469,47 @@ export default function RequisicaoList() {
           </div>
         )}
       </ToolkitProvider>
+
+      <Modal size="lg" show={orcamentoModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Gerar orçamento</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form.Group as={Row}>
+            <Col>
+              <Form.Label sm="2">Selecionar fornecedor</Form.Label>
+            </Col>
+            <Col sm="10">
+              <Select
+                isSearchable
+                isMulti
+                options={descricaoFornecedor}
+                onChange={selectedOption => onChangeFornecedor(selectedOption)}
+                placeholder=""
+              >
+                {fornecedores.length > 0
+                  ? fornecedores.map(forn => (
+                      <option key={forn.idfornecedor} value={forn.nomefantasia}>
+                        {forn.nomefantasia}
+                      </option>
+                    ))
+                  : 'Nenhum fornecedor cadastrado.'}
+              </Select>
+            </Col>
+          </Form.Group>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={handleInserirOrcamento}>
+            Gerar
+          </Button>
+          <Button as={Link} className="Link" to="/formfornecedor">
+            Fornecedor não existe?
+          </Button>
+          <Button variant="secondary" onClick={handleClose}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

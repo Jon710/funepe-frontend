@@ -7,7 +7,6 @@ import api from '../../../services/api';
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 
 /** *************STATE SLICE************** */
-
 export const sliceUsuario = createSlice({
   name: 'usuario',
   initialState: {
@@ -84,14 +83,11 @@ export const {
 export default sliceUsuario.reducer;
 
 // API REQUEST ACTIONS HANDLED WITH REDUX-THUNK MIDDLEWARE BUILT INTO REDUX TOOLKIT -->
-
 /** *************THUNKS************** */
 
 export const getFirstRender = ({ payload }) => {
-  // console.log('Request in getFirstRender:', payload);
   return async dispatch => {
     dispatch(signInRequest({ payload }));
-    // redux-thunk
     try {
       const { username, senha } = payload;
       if (!username) {
@@ -102,17 +98,11 @@ export const getFirstRender = ({ payload }) => {
         username,
         senha,
       });
-      // console.log('signInCall getFirstRender', response.data);
       const { token, user } = response.data;
       if (token) {
         api.defaults.headers.Authorization = `Bearer ${token}`;
         dispatch(signInSuccess({ token, user }));
-        // dispatch(setToken(token));
-        // dispatch({
-        //   type: 'persist/REHYDRATE',
-        //   payload: `Bearer ${token}`,
-        // });
-        console.log('API: ', api);
+
         history.push('/home');
         return;
       }
@@ -120,16 +110,10 @@ export const getFirstRender = ({ payload }) => {
       console.log('error', error.message);
 
       if (!error.response) {
-        console.log(
-          `ERRO: Falha na Conexão com o Servidor de Banco de Dados!  ${error}`
-        );
         toast.error(
           `ERRO: Falha na Conexão com o Servidor de Banco de Dados!.  ${error}`
         );
       } else {
-        console.log(
-          `ERRO: Falha na Autenticação do Usuário, verifique seus dados.  ${error.response.data.message}`
-        );
         toast.error(
           `ERRO: Falha na Autenticação do Usuário, verifique seus dados.  ${error.response.data.message}`
         );
@@ -166,13 +150,9 @@ export const signUp = ({ payload }) => {
 };
 
 export const setToken = token => {
-  console.log('setToken...', token);
   if (!token) return;
 
-  // const { token } = payload.usuario;
-
   if (token) {
-    console.log('setToken.1..', token);
     api.defaults.headers.Authorization = `Bearer ${token}`;
   }
 };
@@ -192,8 +172,6 @@ export const updateProfileRequest = ({ payload }) => {
         rest.oldPassword ? rest : {}
       );
 
-      console.log('updateProfileRequest', profile);
-
       const response = await api.put('usuarios', profile);
 
       toast.success('Perfil atualizado com sucesso!');
@@ -201,7 +179,6 @@ export const updateProfileRequest = ({ payload }) => {
       dispatch(updateSuccess(response.data));
     } catch (error) {
       toast.error(`ERRO:  ${error.response.data.error}`);
-      console.log('ERRO: ', error.response.data.error);
       dispatch(updateFailure());
     }
   };
