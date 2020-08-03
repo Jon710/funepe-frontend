@@ -42,7 +42,7 @@ export default function MinhaReq() {
   );
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { minhasRequisicoes } = useSelector(state => state.compras);
+  // const { minhasRequisicoes } = useSelector(state => state.compras);
   const { requisicaoModal } = useSelector(state => state.contexto);
   const [idrequisicao, setIdRequisicao] = useState();
   const [data, setData] = useState(new Date());
@@ -50,11 +50,22 @@ export default function MinhaReq() {
   const [departamento, setDepartamento] = useState('');
   const [finalidade, setFinalidade] = useState('');
   const [observacao, setObservacao] = useState('');
+  const [requisicoes, setRequisicoes] = useState([]);
 
   useEffect(() => {
     function loadRequisicoes() {
       if (user.idusuario !== 0) {
-        dispatch(getMyOwnReq(user));
+        dispatch(getMyOwnReq(user)).then(response => {
+          console.log('RESPONSE', response);
+          setRequisicoes(
+            response.map(req => ({
+              ...req,
+              dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy', {
+                locale: pt,
+              }),
+            }))
+          );
+        });
       }
     }
     loadRequisicoes();
@@ -96,7 +107,7 @@ export default function MinhaReq() {
           </tr>
         </thead>
         <tbody>
-          {minhasRequisicoes.map(req => (
+          {requisicoes.map(req => (
             <tr key={req.idrequisicao}>
               <td>{req.idrequisicao}</td>
               <td>{req.status}</td>
