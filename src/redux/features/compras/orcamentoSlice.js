@@ -139,7 +139,6 @@ export const inserirItemOrcamento = payload => {
           newItemOrcamento
         );
         await dispatch(orcamentoSuccess(response.data));
-        dispatch(selectAllOrcamentos());
         return response.data;
       }
     } catch (error) {
@@ -174,6 +173,7 @@ export const inserirOrcamento = payload => {
         };
 
         await dispatch(inserirItemOrcamento({ newItemOrcamento }));
+        dispatch(selectAllOrcamentos(newOrcamento.idrequisicao));
       });
       toast.success('Orçamento gerado com sucesso!');
       return response.data;

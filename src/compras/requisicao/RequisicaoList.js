@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-return-assign */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -99,8 +100,9 @@ export default function RequisicaoList() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [observacao, setObservacao] = useState();
-  const [, setNomeFantasia] = useState('');
-  const [idfornecedor, setIdFornecedor] = useState();
+  const [arraySelectedFornecedores, setArraySelectedFornecedores] = useState(
+    []
+  );
   const [descricaoFornecedor, setDescricaoFornecedor] = useState('');
   const [dataorcamento, setDataOrcamento] = useState(new Date());
   const [endereco, setEndereco] = useState('Rua União');
@@ -183,8 +185,7 @@ export default function RequisicaoList() {
   }
 
   function onChangeFornecedor(selectedOption) {
-    setIdFornecedor(selectedOption[0].value);
-    setNomeFantasia(selectedOption.label);
+    setArraySelectedFornecedores(selectedOption);
   }
 
   const handleClose = () => dispatch(modalClose());
@@ -395,16 +396,18 @@ export default function RequisicaoList() {
   };
 
   async function handleInserirOrcamento() {
-    const newOrcamento = {
-      idfornecedor,
-      idrequisicao: requisicao.idrequisicao,
-      idsolicitante: requisicao.idsolicitante,
-      dataorcamento,
-      endereco,
-    };
+    arraySelectedFornecedores.map(fornecedor => {
+      const newOrcamento = {
+        idfornecedor: fornecedor.value,
+        idrequisicao: requisicao.idrequisicao,
+        idsolicitante: requisicao.idsolicitante,
+        dataorcamento,
+        endereco,
+      };
 
-    dispatch(inserirOrcamento({ newOrcamento }));
-    dispatch(inserirItemOrcamento());
+      dispatch(inserirOrcamento({ newOrcamento }));
+      dispatch(inserirItemOrcamento());
+    });
   }
 
   return (
