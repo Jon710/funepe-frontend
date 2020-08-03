@@ -42,9 +42,7 @@ export default function MinhaReq() {
   );
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { minhasRequisicoes, requisicoesItem } = useSelector(
-    state => state.compras
-  );
+  const { minhasRequisicoes } = useSelector(state => state.compras);
   const { requisicaoModal } = useSelector(state => state.contexto);
   const [idrequisicao, setIdRequisicao] = useState();
   const [data, setData] = useState(new Date());
@@ -76,7 +74,6 @@ export default function MinhaReq() {
 
     dispatch(requisicaoModalOpen());
     dispatch(selectAllItemRequisicao(req.idrequisicao));
-    console.log(requisicoesItem);
   }
 
   const handleClose = () => {
