@@ -21,10 +21,10 @@ export default function Produtos() {
   const [idproduto, setIdProduto] = useState();
   const [idunidade, setIdUnidade] = useState();
   const [unidadeDescricao, setUnidadeDescricao] = useState('');
-  const [marcaDescricao, setMarcaDescricao] = useState('');
+  const [, setMarcaDescricao] = useState('');
   // const [categoriaDescricao, setCategoriaDescricao] = useState('');
-  const [valorunitario, setValorUnitario] = useState(0);
-  const [qtdestoque, setQtdEstoque] = useState(0);
+  const [, setValorUnitario] = useState(0);
+  const [, setQtdEstoque] = useState(0);
   const [idmarca, setIdMarca] = useState(3);
   const [descricao, setDescricao] = useState('');
   // const [inativar, setInativar] = useState();
@@ -706,7 +706,7 @@ export default function Produtos() {
         <Modal.Header closeButton>
           <Modal.Title>Novo Produto</Modal.Title>
         </Modal.Header>
-        {showAlertError ? <AlertError /> : null}
+        {/* {showAlertError ? <AlertError /> : null} */}
 
         <Modal.Body>
           <Form
