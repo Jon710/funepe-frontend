@@ -13,7 +13,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
-
 import api from '../../services/api';
 import { selectAllProdutos } from '../../redux/features/compras/comprasSlice';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
@@ -23,15 +22,15 @@ export default function Produtos() {
   const [idunidade, setIdUnidade] = useState();
   const [unidadeDescricao, setUnidadeDescricao] = useState('');
   const [marcaDescricao, setMarcaDescricao] = useState('');
-  const [categoriaDescricao, setCategoriaDescricao] = useState('');
+  // const [categoriaDescricao, setCategoriaDescricao] = useState('');
   const [valorunitario, setValorUnitario] = useState(0);
   const [qtdestoque, setQtdEstoque] = useState(0);
-  const [idmarca, setIdMarca] = useState();
+  const [idmarca, setIdMarca] = useState(3);
   const [descricao, setDescricao] = useState('');
-  const [inativar, setInativar] = useState();
-  const [codigoextra, setCodigoExtra] = useState();
-  const [codigobarra, setCodigoBarra] = useState('');
-  const [idcategoria, setIdCategoria] = useState();
+  // const [inativar, setInativar] = useState();
+  // const [codigoextra, setCodigoExtra] = useState();
+  // const [codigobarra, setCodigoBarra] = useState('');
+  // const [idcategoria, setIdCategoria] = useState();
   const [numeroreferencia, setNumeroReferencia] = useState();
   const [largura, setLargura] = useState();
   const [profundidade, setProfundidade] = useState();
@@ -46,14 +45,14 @@ export default function Produtos() {
   const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
 
-  const { produtos, marcas, unidadeMedidas, categorias } = useSelector(
+  const { produtos, marcas, unidadeMedidas } = useSelector(
     state => state.compras
   );
   const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const arrayCategoria = [];
+    // const arrayCategoria = [];
     const arrayUnidade = [];
     const arrayMarca = [];
 
@@ -69,17 +68,17 @@ export default function Produtos() {
       setUnidadeDescricao(arrayUnidade);
     }
 
-    async function loadSelectCategorias() {
-      if (categorias.length > 0) {
-        categorias.forEach(categoria => {
-          arrayCategoria.push({
-            value: categoria.idcategoria,
-            label: categoria.categoria,
-          });
-        });
-      }
-      setCategoriaDescricao(arrayCategoria);
-    }
+    // async function loadSelectCategorias() {
+    //   if (categorias.length > 0) {
+    //     categorias.forEach(categoria => {
+    //       arrayCategoria.push({
+    //         value: categoria.idcategoria,
+    //         label: categoria.categoria,
+    //       });
+    //     });
+    //   }
+    //   setCategoriaDescricao(arrayCategoria);
+    // }
 
     async function loadSelectMarcas() {
       if (marcas.length > 0) {
@@ -93,21 +92,21 @@ export default function Produtos() {
       setMarcaDescricao(arrayMarca);
     }
     loadSelectMarcas();
-    loadSelectCategorias();
+    // loadSelectCategorias();
     loadSelectUnidades();
-  }, [unidadeMedidas, categorias, marcas]);
+  }, [unidadeMedidas, marcas]);
 
   function onChangeUnidade(selectedOption) {
     setIdUnidade(selectedOption.value);
   }
 
-  function onChangeMarca(selectedOption) {
-    setIdMarca(selectedOption.value);
-  }
+  // function onChangeMarca(selectedOption) {
+  //   setIdMarca(selectedOption.value);
+  // }
 
-  function onChangeCategoria(selectedOption) {
-    setIdCategoria(selectedOption.value);
-  }
+  // function onChangeCategoria(selectedOption) {
+  //   setIdCategoria(selectedOption.value);
+  // }
 
   async function handleCadastrarProdutos(e) {
     const form = e.currentTarget;
@@ -120,22 +119,21 @@ export default function Produtos() {
         idunidade,
         idmarca,
         descricao,
-        inativar,
-        codigoextra,
-        codigobarra,
-        idcategoria,
-        numeroreferencia,
-        largura,
-        profundidade,
-        altura,
-        peso,
-        frete: false,
-        garantia,
-        tipo,
-        valorunitario,
-        qtdestoque,
+        // inativar,
+        // codigoextra,
+        // codigobarra,
+        // idcategoria,
+        // numeroreferencia,
+        // largura,
+        // profundidade,
+        // altura,
+        // peso,
+        // frete: false,
+        // garantia,
+        // tipo,
+        // valorunitario,
+        // qtdestoque,
       };
-      console.log(novoProduto);
 
       await api
         .post('produto', novoProduto)
@@ -170,10 +168,10 @@ export default function Produtos() {
     setIdUnidade(prod.unidademedida.descricao);
     setIdMarca(prod.marca.descricao);
     setDescricao(prod.descricao);
-    setInativar(prod.inativar);
-    setCodigoExtra(prod.codigoextra);
-    setCodigoBarra(prod.codigobarra);
-    setIdCategoria(prod.categoria.categoria);
+    // setInativar(prod.inativar);
+    // setCodigoExtra(prod.codigoextra);
+    // setCodigoBarra(prod.codigobarra);
+    // setIdCategoria(prod.categoria.categoria);
     setNumeroReferencia(prod.numeroreferencia);
     setLargura(prod.largura);
     setProfundidade(prod.profundidade);
@@ -204,7 +202,7 @@ export default function Produtos() {
         dispatch(
           showAlertErrorOpen({
             showAlertError: true,
-            alertError: `${error.response.data.error} Algum erro com id.`,
+            alertError: `${error.response.data.error} Erro com id.`,
           })
         );
       });
@@ -216,10 +214,10 @@ export default function Produtos() {
     setIdUnidade(prod.unidademedida.descricao);
     setIdMarca(prod.marca.descricao);
     setDescricao(prod.descricao);
-    setInativar(prod.inativar);
-    setCodigoExtra(prod.codigoextra);
-    setCodigoBarra(prod.codigobarra);
-    setIdCategoria(prod.categoria.categoria);
+    // setInativar(prod.inativar);
+    // setCodigoExtra(prod.codigoextra);
+    // setCodigoBarra(prod.codigobarra);
+    // setIdCategoria(prod.categoria.categoria);
     setNumeroReferencia(prod.numeroreferencia);
     setLargura(prod.largura);
     setProfundidade(prod.profundidade);
@@ -243,10 +241,10 @@ export default function Produtos() {
       idunidade,
       idmarca,
       descricao,
-      inativar,
-      codigoextra,
-      codigobarra,
-      idcategoria,
+      // inativar,
+      // codigoextra,
+      // codigobarra,
+      // idcategoria,
       numeroreferencia,
       largura,
       profundidade,
@@ -279,10 +277,10 @@ export default function Produtos() {
     setIdUnidade(prod.idunidade);
     setIdMarca(prod.idmarca);
     setDescricao(prod.descricao);
-    setInativar(prod.inativa);
-    setCodigoExtra(prod.codigoextra);
-    setCodigoBarra(prod.codigobarra);
-    setIdCategoria(prod.idcategoria);
+    // setInativar(prod.inativa);
+    // setCodigoExtra(prod.codigoextra);
+    // setCodigoBarra(prod.codigobarra);
+    // setIdCategoria(prod.idcategoria);
     setNumeroReferencia(prod.numeroreferencia);
     setLargura(prod.largura);
     setProfundidade(prod.profundidade);
@@ -307,14 +305,13 @@ export default function Produtos() {
         </Button>
       </div>
       <br />
-      {showAlertError ? <AlertError /> : null}
 
       <Table striped bordered responsive>
         <thead>
           <tr>
             <th>ID Produto</th>
             <th>Descrição</th>
-            <th>Inativa</th>
+            <th>Marca</th>
             <th>Menu</th>
           </tr>
         </thead>
@@ -323,7 +320,7 @@ export default function Produtos() {
             <tr key={produto.idproduto}>
               <td>{produto.idproduto}</td>
               <td>{produto.descricao}</td>
-              <td>{produto.inativar}</td>
+              <td>{produto.marca.descricao}</td>
               <td>
                 <Button
                   className="btn-success"
@@ -366,14 +363,14 @@ export default function Produtos() {
               <br />
               <Form.Control readOnly type="input" defaultValue={descricao} />
               <br />
-              <Form.Control readOnly type="input" defaultValue={inativar} />
+              {/* <Form.Control readOnly type="input" defaultValue={inativar} />
               <br />
               <Form.Control readOnly type="input" defaultValue={codigoextra} />
               <br />
               <Form.Control readOnly type="input" defaultValue={codigobarra} />
               <br />
               <Form.Control readOnly type="input" defaultValue={idcategoria} />
-              <br />
+              <br /> */}
               <Form.Control
                 readOnly
                 type="input"
@@ -420,7 +417,7 @@ export default function Produtos() {
                 />
               </Col>
             </Form.Group>
-            <Form.Group as={Row}>
+            {/* <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Inativar
               </Form.Label>
@@ -431,8 +428,8 @@ export default function Produtos() {
                   required
                 />
               </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
+            </Form.Group> */}
+            {/* <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Código Extra
               </Form.Label>
@@ -457,7 +454,7 @@ export default function Produtos() {
                   required
                 />
               </Col>
-            </Form.Group>
+            </Form.Group> */}
             <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Número Referencia
@@ -598,14 +595,14 @@ export default function Produtos() {
               <Form.Control readOnly value={idmarca} />
             </Col>
           </Form.Group>
-          <Form.Group as={Row}>
+          {/* <Form.Group as={Row}>
             <Form.Label column sm="2">
               Inativar
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={inativar} />
             </Col>
-          </Form.Group>
+          </Form.Group> */}
           <Form.Group as={Row}>
             <Form.Label column sm="2">
               Descrição
@@ -614,7 +611,7 @@ export default function Produtos() {
               <Form.Control readOnly value={descricao} />
             </Col>
           </Form.Group>
-          <Form.Group as={Row}>
+          {/* <Form.Group as={Row}>
             <Form.Label column sm="2">
               Código Extra
             </Form.Label>
@@ -629,15 +626,15 @@ export default function Produtos() {
             <Col sm="10">
               <Form.Control readOnly value={codigobarra} />
             </Col>
-          </Form.Group>
-          <Form.Group as={Row}>
+          </Form.Group> */}
+          {/* <Form.Group as={Row}>
             <Form.Label column sm="2">
               Categoria
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={idcategoria} />
             </Col>
-          </Form.Group>
+          </Form.Group> */}
           <Form.Group as={Row}>
             <Form.Label column sm="2">
               Número Referencia
@@ -709,6 +706,7 @@ export default function Produtos() {
         <Modal.Header closeButton>
           <Modal.Title>Novo Produto</Modal.Title>
         </Modal.Header>
+        {showAlertError ? <AlertError /> : null}
 
         <Modal.Body>
           <Form
@@ -745,20 +743,11 @@ export default function Produtos() {
                 Marca
               </Form.Label>
               <Col sm="10">
-                <Select
-                  isSearchable
-                  options={marcaDescricao}
-                  onChange={selectedOption => onChangeMarca(selectedOption)}
-                  placeholder="Selecione uma marca"
-                >
-                  {marcas.length > 0
-                    ? marcas.map(marca => (
-                        <option key={marca.idmarca} value={marca.descricao}>
-                          {marca.descricao}
-                        </option>
-                      ))
-                    : 'Nenhuma marca cadastrada.'}
-                </Select>
+                <Form.Control
+                  readOnly
+                  defaultValue={marcas[0].descricao}
+                  required
+                />
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -776,50 +765,7 @@ export default function Produtos() {
                 </Form.Control.Feedback>
               </Col>
             </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Inativar
-              </Form.Label>
-              <Col sm="10">
-                <Form.Check
-                  inline
-                  type="radio"
-                  value={1}
-                  label="SIM"
-                  name="formHorizontalRadios"
-                  id="form2"
-                  onChange={e => setInativar(e.target.value)}
-                />
-                <Form.Check
-                  inline
-                  type="radio"
-                  value={0}
-                  label="NÃO"
-                  name="formHorizontalRadios"
-                  id="form2"
-                  onChange={e => setInativar(e.target.value)}
-                />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Código Extra
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  onChange={e => setCodigoExtra(e.target.value)}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
+            {/* <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Código Barra
               </Form.Label>
@@ -833,8 +779,8 @@ export default function Produtos() {
                   Favor preencher os campos.
                 </Form.Control.Feedback>
               </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
+            </Form.Group> */}
+            {/* <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Categoria
               </Form.Label>
@@ -860,7 +806,7 @@ export default function Produtos() {
               <Form.Control.Feedback type="invalid">
                 Favor preencher os campos.
               </Form.Control.Feedback>
-            </Form.Group>
+            </Form.Group> */}
             <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Número Referencia
@@ -869,11 +815,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setNumeroReferencia(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -884,11 +826,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setLargura(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -899,11 +837,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setProfundidade(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -914,11 +848,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setAltura(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -929,11 +859,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setPeso(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -944,11 +870,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setFrete(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -959,11 +881,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setGarantia(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -974,11 +892,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setTipo(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -989,11 +903,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setValorUnitario(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
@@ -1004,11 +914,7 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setQtdEstoque(e.target.value)}
-                  required
                 />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
               </Col>
             </Form.Group>
             <Button type="submit" variant="primary">
