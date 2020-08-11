@@ -49,9 +49,7 @@ export default function Produtos() {
   const [loading, setLoading] = useState(false);
   const [listaProdutos, setListaProdutos] = useState([]);
   const [pesquisaDescricao, setPesquisaDescricao] = useState('');
-  const { produtos, marcas, unidadeMedidas } = useSelector(
-    state => state.compras
-  );
+  const { marcas, unidadeMedidas } = useSelector(state => state.compras);
   const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
 
@@ -328,16 +326,6 @@ export default function Produtos() {
                   </TablerTable.Row>
                 ))}
               </TablerTable.Body>
-              <tfoot>
-                <tr>
-                  <td style={{ textAlign: 'right' }} colSpan="5">
-                    TOTAL DE PRODUTOS
-                  </td>
-                  <td style={{ textAlign: 'left' }} colSpan="1">
-                    {produtos.length}
-                  </td>
-                </tr>
-              </tfoot>
             </TablerTable>
           </Card>
         </>
