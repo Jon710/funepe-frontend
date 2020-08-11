@@ -10,9 +10,8 @@ import {
 } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
-import AlertError from '../../pages/alerts/AlertError';
+// import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
-
 import api from '../../services/api';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
 
@@ -21,58 +20,58 @@ export default function Servicos() {
   const [descricao, setDescricao] = useState('');
   const [inativar, setInativar] = useState();
   const [idcategoria, setIdCategoria] = useState();
-  const [tipo, setTipo] = useState('Serviço');
-  const [show, setShow] = useState(false);
+  const [tipo, setTipo] = useState('');
+  // const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [validated, setValidated] = useState(false);
+  // const [validated, setValidated] = useState(false);
 
   const { produtos } = useSelector(state => state.compras);
-  const { showAlertError } = useSelector(state => state.contexto);
+  // const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
 
-  async function handleCadastrarServico(e) {
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      e.preventDefault();
+  // async function handleCadastrarServico(e) {
+  //   const form = e.currentTarget;
+  //   if (form.checkValidity() === false) {
+  //     e.stopPropagation();
+  //   } else {
+  //     e.preventDefault();
 
-      const novoServico = {
-        idproduto: 1,
-        descricao,
-        inativar,
-        idcategoria: 1,
-      };
+  //     const novoServico = {
+  //       idproduto: 1,
+  //       descricao,
+  //       inativar,
+  //       idcategoria: 1,
+  //     };
 
-      await api
-        .post('produto', novoServico)
-        .then(() => {
-          toast.success('Serviço cadastrado com sucesso!');
+  //     await api
+  //       .post('produto', novoServico)
+  //       .then(() => {
+  //         toast.success('Serviço cadastrado com sucesso!');
 
-          setShow(false);
-        })
-        .catch(error => {
-          console.log(error.response.data.error);
-          //   dispatch(
-          //     showAlertErrorOpen({
-          //       showAlertError: true,
-          //       alertError: `${error.response.data.error}`,
-          //     })
-          //   );
-        });
-    }
+  //         setShow(false);
+  //       })
+  //       .catch(error => {
+  //         console.log(error.response.data.error);
+  //         //   dispatch(
+  //         //     showAlertErrorOpen({
+  //         //       showAlertError: true,
+  //         //       alertError: `${error.response.data.error}`,
+  //         //     })
+  //         //   );
+  //       });
+  //   }
 
-    setValidated(true);
-  }
+  //   setValidated(true);
+  // }
 
-  function handleShowCadastrar() {
-    setShow(true);
-  }
+  // function handleShowCadastrar() {
+  //   setShow(true);
+  // }
 
-  function handleCloseCadastrar() {
-    setShow(false);
-  }
+  // function handleCloseCadastrar() {
+  //   setShow(false);
+  // }
 
   async function handleShowDetalhes(prod, e) {
     e.preventDefault();
@@ -112,13 +111,13 @@ export default function Servicos() {
       });
   }
 
-  function handleShowEdit(prod) {
-    setShowEdit(true);
-    setIdProduto(prod.idproduto);
-    setDescricao(prod.descricao);
-    setInativar(prod.inativa);
-    setIdCategoria(prod.idcategoria);
-  }
+  // function handleShowEdit(prod) {
+  //   setShowEdit(true);
+  //   setIdProduto(prod.idproduto);
+  //   setDescricao(prod.descricao);
+  //   setInativar(prod.inativa);
+  //   setIdCategoria(prod.idcategoria);
+  // }
 
   function handleCloseEdit() {
     setShowEdit(false);
@@ -127,21 +126,20 @@ export default function Servicos() {
   return (
     <Container>
       <NavBar />
-      <br />
-      <div>
+      {/* <div>
         <Button className="btn-success" onClick={handleShowCadastrar}>
           Cadastrar Serviço
         </Button>
-      </div>
+      </div> */}
       <br />
-      {showAlertError ? <AlertError /> : null}
+      {/* {showAlertError ? <AlertError /> : null} */}
 
       <Table striped bordered responsive>
         <thead>
           <tr>
-            <th>ID Produto</th>
+            <th>ID</th>
             <th>Descrição</th>
-            <th>Inativa</th>
+            {/* <th>Inativa</th> */}
             <th>Menu</th>
           </tr>
         </thead>
@@ -150,7 +148,7 @@ export default function Servicos() {
             <tr key={produto.idproduto}>
               <td>{produto.idproduto}</td>
               <td>{produto.descricao}</td>
-              <td>{produto.inativar}</td>
+              {/* <td>{produto.inativar}</td> */}
               <td>
                 <Button
                   className="btn-success"
@@ -158,12 +156,12 @@ export default function Servicos() {
                 >
                   Detalhes
                 </Button>{' '}
-                <Button
+                {/* <Button
                   className="btn-primary"
                   onClick={e => handleShowEdit(produto, e)}
                 >
                   Editar
-                </Button>{' '}
+                </Button>{' '} */}
               </td>
             </tr>
           ))}
@@ -172,7 +170,7 @@ export default function Servicos() {
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar serviço</Modal.Title>
+          <Modal.Title>Editar</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -215,14 +213,14 @@ export default function Servicos() {
               <Form.Control readOnly value={idproduto} />
             </Col>
           </Form.Group>
-          <Form.Group as={Row}>
+          {/* <Form.Group as={Row}>
             <Form.Label column sm="2">
               Inativar
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={inativar} />
             </Col>
-          </Form.Group>
+          </Form.Group> */}
           <Form.Group as={Row}>
             <Form.Label column sm="2">
               Descrição
@@ -231,26 +229,26 @@ export default function Servicos() {
               <Form.Control readOnly value={descricao} />
             </Col>
           </Form.Group>
-          <Form.Group as={Row}>
+          {/* <Form.Group as={Row}>
             <Form.Label column sm="2">
               ID Categoria
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={idcategoria} />
             </Col>
-          </Form.Group>
-          <Form.Group as={Row}>
+          </Form.Group> */}
+          {/* <Form.Group as={Row}>
             <Form.Label column sm="2">
               Tipo
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={tipo} />
             </Col>
-          </Form.Group>
+          </Form.Group> */}
         </Modal.Body>
       </Modal>
 
-      <Modal show={show} onHide={handleCloseCadastrar}>
+      {/* <Modal show={show} onHide={handleCloseCadastrar}>
         <Modal.Header closeButton>
           <Modal.Title>Novo Serviço</Modal.Title>
         </Modal.Header>
@@ -283,7 +281,7 @@ export default function Servicos() {
             </Button>
           </Form>
         </Modal.Body>
-      </Modal>
+      </Modal> */}
     </Container>
   );
 }

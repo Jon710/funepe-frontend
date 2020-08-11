@@ -52,7 +52,9 @@ export default function NavBar() {
             </NavDropdown.Item>
             <NavDropdown.Item href="/formmarca">Marcas</NavDropdown.Item>
             <NavDropdown.Item href="/formproduto">Produtos</NavDropdown.Item>
-            <NavDropdown.Item href="/formservico">Serviços</NavDropdown.Item>
+            <NavDropdown.Item href="/formservico">
+              Ver todos os produtos
+            </NavDropdown.Item>
             <NavDropdown.Item href="/formmedida">
               Unidades de Medida
             </NavDropdown.Item>

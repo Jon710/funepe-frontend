@@ -256,7 +256,7 @@ export default function Produtos() {
       <br />
       <div>
         <Button className="btn-success" onClick={handleShowCadastrar}>
-          Cadastrar Produto
+          Cadastrar Produto/Serviço
         </Button>
       </div>
       <br />
@@ -264,7 +264,7 @@ export default function Produtos() {
       <Card>
         <Card.Header>
           <h4 className="mb-0">
-            <span className="text-success">Pesquisar Produto</span>
+            <span className="text-success">Pesquisar Produto/Serviço</span>
           </h4>
         </Card.Header>
         <Card.Body>
@@ -286,7 +286,7 @@ export default function Produtos() {
                 color="success"
                 onClick={() => handlePesquisarProdutos()}
               >
-                Localizar
+                Buscar
               </Button>
             </Grid.Col>
           </Grid.Row>
