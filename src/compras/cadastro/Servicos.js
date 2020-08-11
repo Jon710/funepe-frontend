@@ -14,7 +14,6 @@ import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
 
 import api from '../../services/api';
-import { selectAllProdutos } from '../../redux/features/compras/comprasSlice';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
 
 export default function Servicos() {
@@ -26,7 +25,6 @@ export default function Servicos() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
 
   const { produtos } = useSelector(state => state.compras);
@@ -50,8 +48,7 @@ export default function Servicos() {
       await api
         .post('produto', novoServico)
         .then(() => {
-          toast.success('Produto cadastrado com sucesso!');
-          dispatch(selectAllProdutos());
+          toast.success('Serviço cadastrado com sucesso!');
 
           setShow(false);
         })
@@ -91,40 +88,6 @@ export default function Servicos() {
     setShowDetalhes(false);
   }
 
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`produto/${idproduto}`)
-      .then(() => {
-        toast.success('Produto deletado!');
-        dispatch(selectAllProdutos());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} Algum erro com id.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(prod, e) {
-    e.preventDefault();
-    setIdProduto(prod.idproduto);
-    setDescricao(prod.descricao);
-    setInativar(prod.inativa);
-    setIdCategoria(prod.idcategoria);
-
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
-  }
-
   async function handleEdit(e) {
     e.preventDefault();
     const editServico = {
@@ -138,7 +101,6 @@ export default function Servicos() {
       .put(`produto/${idproduto}`, editServico)
       .then(() => {
         toast.success('Serviço atualizado com sucesso!');
-        dispatch(selectAllProdutos());
       })
       .catch(error => {
         dispatch(
@@ -202,43 +164,11 @@ export default function Servicos() {
                 >
                   Editar
                 </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(produto, e)}
-                >
-                  Deletar
-                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar este serviço?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control type="input" defaultValue={idproduto} />
-              <br />
-              <Form.Control type="input" defaultValue={descricao} />
-              <br />
-              <Form.Control type="input" defaultValue={inativar} />
-              <br />
-              <Form.Control type="input" defaultValue={idcategoria} />
-              <br />
-              <Form.Control type="input" defaultValue={tipo} />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header closeButton>

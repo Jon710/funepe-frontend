@@ -32,6 +32,7 @@ export const sliceCompras = createSlice({
   },
   reducers: {
     requisicaoSuccess: (state, action) => {
+      // console.log(action.payload);
       const {
         requisicoes,
         produtos,
@@ -158,7 +159,6 @@ export const {
 
 export default sliceCompras.reducer;
 
-// API REQUEST ACTIONS HANDLED WITH REDUX-THUNK MIDDLEWARE BUILT INTO REDUX TOOLKIT -->
 /** *************THUNKS************** */
 export const getFirstRender = usuario => {
   console.log('Compras getFirstRender:', usuario);
@@ -174,7 +174,6 @@ export const getFirstRender = usuario => {
       );
       const { requisicoes } = response.data;
       if (requisicoes.length >= 0) {
-        dispatch(selectAllProdutos());
         dispatch(selectAllFornecedores());
         dispatch(selectAllDepartamentos());
         dispatch(selectAllMarcas());
@@ -248,36 +247,15 @@ export const getMyOwnReq = usuario => {
   };
 };
 
-export const selectAllProdutos = () => {
-  return async dispatch => {
-    try {
-      const response = await api.get(`produto/`);
-      const { produtos } = response.data;
-      if (produtos.length >= 0) {
-        await dispatch(requisicaoSuccess({ produtos }));
-        return;
-      }
-      toast.info('Nenhum Registro Localizado!');
-      return;
-    } catch (error) {
-      toast.error(
-        `ERRO: Falha na busca de Produto (selectAllProduto)!  ${error.message}`
-      );
-    }
-  };
-};
-
 export const selectProdutoByDescricao = descricao => {
   return async () => {
     try {
       const response = await api.get(`produtos/${descricao}`);
       const { listaProdutos } = response.data;
       if (listaProdutos.length >= 0) {
-        history.push('/requisicao');
         return listaProdutos;
       }
       toast.info('Nenhum Registro Localizado!');
-      history.push('/requisicao');
       return;
     } catch (error) {
       toast.error(

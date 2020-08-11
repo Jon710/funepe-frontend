@@ -22,10 +22,9 @@ import { produtoModalClose } from '../../redux/features/context/contextSlice';
 import history from '../../services/history';
 
 export default function Produto() {
+  const dispatch = useDispatch();
   const { produtoModal } = useSelector(state => state.contexto);
   const { requisicao } = useSelector(state => state.compras);
-  const dispatch = useDispatch();
-  console.log('REQUISICAO-Produtos: ', requisicao);
   const [listaProdutos, setListaProdutos] = useState([]);
   const [descricao, setDescricao] = useState('');
   const [count, setCount] = useState(0);
@@ -41,13 +40,11 @@ export default function Produto() {
     let c = 0;
 
     dispatch(selectProdutoByDescricao(descricao)).then(response => {
-      // console.log(response);
       if (response.length > 0) {
         const prods = response.map(produto => ({
           ...produto,
           counter: (c += 1),
         }));
-        // console.log('PRODUTOS: ', prods);
         setListaProdutos(prods);
         setCount(c);
         setSearch(true);
@@ -75,7 +72,6 @@ export default function Produto() {
   }
 
   function checkEnter(e) {
-    console.log(descricao);
     if (e.key === 'Enter') handleProduto();
   }
 
@@ -127,12 +123,6 @@ export default function Produto() {
                   </Button>
                 </Col>
               </Form.Row>
-              {/* <div className="upload-area">
-                <p className="alert alert-success text-center">
-                  <span>Click or Drag an Image Here to Upload</span>
-                  <input type="file" onChange={handleProduto} />
-                </p>
-              </div> */}
             </Card.Body>
           </Card>
 
@@ -196,9 +186,6 @@ export default function Produto() {
             <div />
           )}
         </Modal.Body>
-        {/* <Modal.Footer>
-          <Button onClick={handleClose}>Fechar</Button>
-        </Modal.Footer> */}
       </Modal>
     </Container>
   );

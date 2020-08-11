@@ -1,19 +1,3 @@
-3. yarn add react-router-dom
-4. Criar uma pasta 'pages' e 'routes/index.js' e 'services/history.js'
-5. Instalar o history 'yarn add history'
-6. DEntro da pasta PAGES criar 4 subpastas com index.js: SigIn, SignUp,
-Dashboard e Profile, depois usar snppet rnc nos quatro index.js
-7. No index.js do routes importar todos e criar as rotas
-8. No App.js importar Routes e history
-    <Router history={history}>
-      <Routes />;
-    </Router>
-9. Criar corpo do history.js
-ROTAS PRIVADAS
-1.  yarn add react-router-dom E yarn add reactotron-react-js
-ESTILZAR AUTH
-1. yarn add polished E configurar os estilos styles.js e baixar o LOGO
-fazer isso para LogIn e LogUp
 CONFIGURAR O STORE
 1. Auth do usuario será feito pelo redux - token jwt que precisa ser enviado,
 tem de estar em um lugar que todos tenhm acesso na applicacao
@@ -24,7 +8,7 @@ tem de estar em um lugar que todos tenhm acesso na applicacao
   >MODULES
     >AUTH
       >ACTIONS.js
-      >REDUCER.js - sempre será uma funcao, e contem bilbioteca immer para manipula estados
+      >REDUCER.js - sempre será uma funcao, e contem lib immer para manipula estados
       >SAGAS.js
     >ROOTREDUCER.js - vai unir todos os reducers do modules (metodo combineReducers())
     >ROOTSAGA.js - vai unir todos os sagas do modules
@@ -50,17 +34,9 @@ REQUISCOES AUTENTICADAS
 1. No SAGAS.js do AUTH fazer chamada da API na propriedade dos HEADERS;
 api.defaults.headers.Authorization = `Bearer ${token}`;
 2. No INDEX.js do Dashboard importar a API para testar api.get('appointments');
-CONFIGURAR O HEADER
-1. Estilizar o Wrapper do HEADER -  CRIAR UMA PASTA components COM O HEADER
-2. API Adorable - api.adorable.io para criar avatar
-NOTIFICACOES
-1. Criar pasta NOTIFICATIONS em components
-2. Instalar yarn add react-icons
-3. Instalar yarn add react-perfect-scrollbar
-4. Importar no GLOBALS.js import 'react-perfect-scrollbar/dist/css/styles.css';
-5. yarn add date-fns@next
+
 LOGOUT
-1. Defino uam action em AUTH = signOut(), e no REDUCER do AUTH eu vou ouvir
+1. Defino uma action em AUTH = signOut(), e no REDUCER do AUTH eu vou ouvir
 essa ACTION - case '@auth/SIGN_OUT', e no REDUCER do USER eu vou ouvir essa action
 tambem - case '@user/SIGN_OUT' e coloco Profile = null;
 2. Depois no SAGAS.js de AUTH vou ouvir essa ACTION e usar o history e redirecionar

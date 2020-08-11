@@ -1,27 +1,30 @@
+/* eslint-disable no-return-assign */
 import React, { useState, useEffect } from 'react';
 import {
-  Table,
   Container,
   Button,
   Modal,
   Form,
+  FormControl,
   Row,
   Col,
+  Card,
 } from 'react-bootstrap';
+import { Grid, Table as TablerTable } from 'tabler-react';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import Select from 'react-select';
 import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
 import api from '../../services/api';
-import { selectAllProdutos } from '../../redux/features/compras/comprasSlice';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
+import { selectProdutoByDescricao } from '../../redux/features/compras/comprasSlice';
 
 export default function Produtos() {
   const [idproduto, setIdProduto] = useState();
   const [idunidade, setIdUnidade] = useState();
   const [unidadeDescricao, setUnidadeDescricao] = useState('');
-  const [, setMarcaDescricao] = useState('');
+  const [marcaDescricao, setMarcaDescricao] = useState('');
   // const [categoriaDescricao, setCategoriaDescricao] = useState('');
   const [, setValorUnitario] = useState(0);
   const [, setQtdEstoque] = useState(0);
@@ -42,9 +45,10 @@ export default function Produtos() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
-
+  const [loading, setLoading] = useState(false);
+  const [listaProdutos, setListaProdutos] = useState([]);
+  const [pesquisaDescricao, setPesquisaDescricao] = useState('');
   const { produtos, marcas, unidadeMedidas } = useSelector(
     state => state.compras
   );
@@ -96,14 +100,15 @@ export default function Produtos() {
     loadSelectUnidades();
   }, [unidadeMedidas, marcas]);
 
-  function onChangeUnidade(selectedOption) {
-    setIdUnidade(selectedOption.value);
-  }
+  const onChangeUnidade = selectedOption => setIdUnidade(selectedOption.value);
+  const handleShowCadastrar = () => setShow(true);
+  const handleCloseCadastrar = () => setShow(false);
+  const handleCloseDetalhes = () => setShowDetalhes(false);
+  const handleCloseEdit = () => setShowEdit(false);
 
   // function onChangeMarca(selectedOption) {
   //   setIdMarca(selectedOption.value);
   // }
-
   // function onChangeCategoria(selectedOption) {
   //   setIdCategoria(selectedOption.value);
   // }
@@ -139,7 +144,6 @@ export default function Produtos() {
         .post('produto', novoProduto)
         .then(() => {
           toast.success('Produto cadastrado com sucesso!');
-          dispatch(selectAllProdutos());
           setShow(false);
         })
         .catch(error => {
@@ -154,20 +158,11 @@ export default function Produtos() {
     setValidated(true);
   }
 
-  function handleShowCadastrar() {
-    setShow(true);
-  }
-
-  function handleCloseCadastrar() {
-    setShow(false);
-  }
-
-  async function handleShowDetalhes(prod, e) {
-    e.preventDefault();
+  async function handleShowDetalhes(prod) {
     setIdProduto(prod.idproduto);
-    setIdUnidade(prod.unidademedida.descricao);
-    setIdMarca(prod.marca.descricao);
-    setDescricao(prod.descricao);
+    setUnidadeDescricao(prod.unidade);
+    setMarcaDescricao(prod.marca);
+    setDescricao(prod.produto);
     // setInativar(prod.inativar);
     // setCodigoExtra(prod.codigoextra);
     // setCodigoBarra(prod.codigobarra);
@@ -180,58 +175,7 @@ export default function Produtos() {
     setFrete(prod.frete);
     setGarantia(prod.garantia);
     setPeso(prod.peso);
-
     setShowDetalhes(true);
-  }
-
-  function handleCloseDetalhes() {
-    setShowDetalhes(false);
-  }
-
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`produto/${idproduto}`)
-      .then(() => {
-        toast.success('Produto deletado!');
-        dispatch(selectAllProdutos());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} Erro com id.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(prod, e) {
-    e.preventDefault();
-    setIdProduto(prod.idproduto);
-    setIdUnidade(prod.unidademedida.descricao);
-    setIdMarca(prod.marca.descricao);
-    setDescricao(prod.descricao);
-    // setInativar(prod.inativar);
-    // setCodigoExtra(prod.codigoextra);
-    // setCodigoBarra(prod.codigobarra);
-    // setIdCategoria(prod.categoria.categoria);
-    setNumeroReferencia(prod.numeroreferencia);
-    setLargura(prod.largura);
-    setProfundidade(prod.profundidade);
-    setAltura(prod.altura);
-    setPeso(prod.peso);
-    setFrete(prod.frete);
-    setGarantia(prod.garantia);
-    setPeso(prod.peso);
-
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
   }
 
   async function handleEdit(e) {
@@ -259,7 +203,6 @@ export default function Produtos() {
       .put(`produto/${idproduto}`, editProduto)
       .then(() => {
         toast.success('Produto atualizado com sucesso!');
-        dispatch(selectAllProdutos());
       })
       .catch(error => {
         dispatch(
@@ -272,11 +215,12 @@ export default function Produtos() {
   }
 
   function handleShowEdit(prod) {
-    setShowEdit(true);
     setIdProduto(prod.idproduto);
     setIdUnidade(prod.idunidade);
+    setUnidadeDescricao(prod.unidade);
     setIdMarca(prod.idmarca);
-    setDescricao(prod.descricao);
+    setMarcaDescricao(prod.marca);
+    setDescricao(prod.produto);
     // setInativar(prod.inativa);
     // setCodigoExtra(prod.codigoextra);
     // setCodigoBarra(prod.codigobarra);
@@ -289,10 +233,23 @@ export default function Produtos() {
     setFrete(prod.frete);
     setGarantia(prod.garantia);
     setPeso(prod.peso);
+    setShowEdit(true);
   }
 
-  function handleCloseEdit() {
-    setShowEdit(false);
+  function handlePesquisarProdutos() {
+    dispatch(selectProdutoByDescricao(pesquisaDescricao)).then(response => {
+      if (response.length > 0) {
+        const prods = response.map(produto => ({
+          ...produto,
+        }));
+        setListaProdutos(prods);
+        setLoading(true);
+      }
+    });
+  }
+
+  function checkEnter(e) {
+    if (e.key === 'Enter') handlePesquisarProdutos();
   }
 
   return (
@@ -306,97 +263,87 @@ export default function Produtos() {
       </div>
       <br />
 
-      <Table striped bordered responsive>
-        <thead>
-          <tr>
-            <th>ID Produto</th>
-            <th>Descrição</th>
-            <th>Marca</th>
-            <th>Menu</th>
-          </tr>
-        </thead>
-        <tbody>
-          {produtos.map(produto => (
-            <tr key={produto.idproduto}>
-              <td>{produto.idproduto}</td>
-              <td>{produto.descricao}</td>
-              <td>{produto.marca.descricao}</td>
-              <td>
-                <Button
-                  className="btn-success"
-                  onClick={e => handleShowDetalhes(produto, e)}
-                >
-                  Detalhes
-                </Button>{' '}
-                <Button
-                  className="btn-primary"
-                  onClick={e => handleShowEdit(produto, e)}
-                >
-                  Editar
-                </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(produto, e)}
-                >
-                  Deletar
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar este produto?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control readOnly type="input" defaultValue={idproduto} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={idunidade} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={idmarca} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={descricao} />
-              <br />
-              {/* <Form.Control readOnly type="input" defaultValue={inativar} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={codigoextra} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={codigobarra} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={idcategoria} />
-              <br /> */}
-              <Form.Control
-                readOnly
-                type="input"
-                defaultValue={numeroreferencia}
+      <Card>
+        <Card.Header>
+          <h4 className="mb-0">
+            <span className="text-success">Pesquisar Produto</span>
+          </h4>
+        </Card.Header>
+        <Card.Body>
+          <Grid.Row>
+            <Grid.Col sm={10}>
+              <FormControl
+                style={{ textTransform: 'uppercase' }}
+                value={pesquisaDescricao}
+                required
+                type="text"
+                placeholder="Descrição"
+                onChange={e => setPesquisaDescricao(e.target.value)}
+                onKeyPress={e => checkEnter(e)}
               />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={largura} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={profundidade} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={altura} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={peso} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={frete} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={garantia} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={tipo} />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
+            </Grid.Col>
+            <Grid.Col sm={2}>
+              <Button
+                type="button"
+                color="success"
+                onClick={() => handlePesquisarProdutos()}
+              >
+                Localizar
+              </Button>
+            </Grid.Col>
+          </Grid.Row>
+        </Card.Body>
+      </Card>
+      <br />
+
+      {loading ? (
+        <>
+          <Card>
+            <TablerTable responsive="sm" bordered="true" hover="true" size="sm">
+              <TablerTable.Header>
+                <TablerTable.Row>
+                  <TablerTable.ColHeader>ID</TablerTable.ColHeader>
+                  <TablerTable.ColHeader>Descrição</TablerTable.ColHeader>
+                  <TablerTable.ColHeader>Marca</TablerTable.ColHeader>
+                  <TablerTable.ColHeader>Menu</TablerTable.ColHeader>
+                </TablerTable.Row>
+              </TablerTable.Header>
+              <TablerTable.Body>
+                {listaProdutos.map(produto => (
+                  <TablerTable.Row key={produto.idproduto}>
+                    <TablerTable.Col>{produto.idproduto}</TablerTable.Col>
+                    <TablerTable.Col>{produto.produto}</TablerTable.Col>
+                    <TablerTable.Col>{produto.marca}</TablerTable.Col>
+                    <TablerTable.Col>
+                      <Button onClick={() => handleShowEdit(produto)}>
+                        Editar
+                      </Button>{' '}
+                      <Button
+                        variant="success"
+                        onClick={() => handleShowDetalhes(produto)}
+                      >
+                        Detalhes
+                      </Button>
+                    </TablerTable.Col>
+                  </TablerTable.Row>
+                ))}
+              </TablerTable.Body>
+              <tfoot>
+                <tr>
+                  <td style={{ textAlign: 'right' }} colSpan="5">
+                    TOTAL DE PRODUTOS
+                  </td>
+                  <td style={{ textAlign: 'left' }} colSpan="1">
+                    {produtos.length}
+                  </td>
+                </tr>
+              </tfoot>
+            </TablerTable>
+          </Card>
+        </>
+      ) : (
+        <div />
+      )}
 
       <Modal show={showEdit} onHide={handleCloseEdit} size="lg">
         <Modal.Header closeButton>
@@ -413,6 +360,32 @@ export default function Produtos() {
                   type="text"
                   value={descricao}
                   onChange={e => setDescricao(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Marca
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={marcaDescricao}
+                  onChange={e => setMarcaDescricao(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Unidade Medida
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  value={unidadeDescricao}
+                  onChange={e => setUnidadeDescricao(e.target.value)}
                   required
                 />
               </Col>
@@ -584,7 +557,7 @@ export default function Produtos() {
               Unidade de Medida
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly value={idunidade} />
+              <Form.Control readOnly value={unidadeDescricao} />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -592,7 +565,7 @@ export default function Produtos() {
               Marca
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly value={idmarca} />
+              <Form.Control readOnly value={marcaDescricao} />
             </Col>
           </Form.Group>
           {/* <Form.Group as={Row}>
@@ -706,7 +679,7 @@ export default function Produtos() {
         <Modal.Header closeButton>
           <Modal.Title>Novo Produto</Modal.Title>
         </Modal.Header>
-        {/* {showAlertError ? <AlertError /> : null} */}
+        {showAlertError ? <AlertError /> : null}
 
         <Modal.Body>
           <Form
