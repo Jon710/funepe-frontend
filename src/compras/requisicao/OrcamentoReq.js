@@ -234,7 +234,7 @@ export default function OrcamentoReq() {
           </div>
         )}
       </ToolkitProvider>
-      .
+
       <Modal size="lg" show={orcamentoPrecosModal} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Menor Preço</Modal.Title>
