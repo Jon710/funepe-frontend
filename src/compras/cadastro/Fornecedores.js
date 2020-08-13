@@ -20,7 +20,6 @@ import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
 
 export default function Fornecedores() {
   const [idfornecedor, setIdFornecedor] = useState();
-  const [codigoextra, setCodigoExtra] = useState();
   const [idtipofornecedor, setIdTipoFornecedor] = useState();
   const [descricao, setDescricao] = useState('');
   const [descricaoTipoFornecedor, setDescricaoTipoFornecedor] = useState('');
@@ -33,10 +32,10 @@ export default function Fornecedores() {
   const [observacao, setObservacao] = useState('');
   const [prod_servicos, setProdServicos] = useState('');
   const [emailprincipal, setEmailPrincipal] = useState('');
+  const [endereco, setEndereco] = useState('');
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
 
   const { fornecedores, tipoFornecedores } = useSelector(
@@ -76,7 +75,6 @@ export default function Fornecedores() {
 
       const novoFornecedor = {
         idtipofornecedor,
-        codigoextra,
         ativo,
         tipofornecedor: tipoFornece,
         razaosocial,
@@ -86,6 +84,7 @@ export default function Fornecedores() {
         observacao,
         prod_servicos,
         emailprincipal,
+        endereco,
       };
 
       await api
@@ -121,7 +120,6 @@ export default function Fornecedores() {
     e.preventDefault();
     setDescricaoTipoFornecedor(forn.tipofornece.descricao);
     setIdFornecedor(forn.idfornecedor);
-    setCodigoExtra(forn.codigoextra);
     setIdTipoFornecedor(forn.idtipofornecedor);
     setTipoFornece(forn.tipofornecedor);
     setAtivo(forn.ativo);
@@ -139,52 +137,9 @@ export default function Fornecedores() {
     setShowDetalhes(false);
   }
 
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`fornecedor/${idfornecedor}`)
-      .then(() => {
-        toast.success('Fornecedor deletado!');
-        dispatch(selectAllFornecedores());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} Algum erro com id.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(forn, e) {
-    e.preventDefault();
-    setIdFornecedor(forn.idfornecedor);
-    setCodigoExtra(forn.codigoextra);
-    setIdTipoFornecedor(forn.idtipofornecedor);
-    setTipoFornece(forn.tipofornecedor);
-    setAtivo(forn.ativo);
-    setRazaoSocial(forn.razaosocial);
-    setNomeFantasia(forn.nomefantasia);
-    setCpfCnpj(forn.cpf_cnpj);
-    setRgIe(forn.rg_ie);
-    setObservacao(forn.observacao);
-    setProdServicos(forn.prod_servicos);
-    setEmailPrincipal(forn.emailprincipal);
-
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
-  }
-
   async function handleEdit(e) {
     e.preventDefault();
     const editFornecedor = {
-      codigoextra,
       idtipofornecedor,
       tipofornecedor: tipoFornece,
       ativo,
@@ -216,7 +171,6 @@ export default function Fornecedores() {
   function handleShowEdit(forn) {
     setShowEdit(true);
     setIdFornecedor(forn.idfornecedor);
-    setCodigoExtra(forn.codigoextra);
     setTipoFornece(forn.tipofornecedor);
     setAtivo(forn.ativo);
     setRazaoSocial(forn.razaosocial);
@@ -261,7 +215,6 @@ export default function Fornecedores() {
               <td>{fornecedor.ativo}</td>
               <td>{fornecedor.razaosocial}</td>
               <td>{fornecedor.nomefantasia}</td>
-
               <td>
                 <Button
                   className="btn-success"
@@ -275,69 +228,11 @@ export default function Fornecedores() {
                 >
                   Editar
                 </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(fornecedor, e)}
-                >
-                  Deletar
-                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar este fornecedor?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control readOnly type="input" defaultValue={idfornecedor} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={codigoextra} />
-              <br />
-              <Form.Control
-                readOnly
-                type="input"
-                defaultValue={idtipofornecedor}
-              />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={tipoFornece} />
-              <br />
-              <Form.Control
-                readOnly
-                type="input"
-                defaultValue={emailprincipal}
-              />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={ativo} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={razaosocial} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={nomefantasia} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={cpf_cnpj} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={rg_ie} />
-              <br />
-              <Form.Control readOnly type="input" defaultValue={observacao} />
-              <br />
-              <Form.Control
-                readOnly
-                type="input"
-                defaultValue={prod_servicos}
-              />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
 
       <Modal show={showEdit} onHide={handleCloseEdit} size="lg">
         <Modal.Header closeButton>
@@ -368,23 +263,23 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
-              Código Extra
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control
-                value={codigoextra}
-                onChange={e => setCodigoExtra(e.target.value)}
-              />
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row}>
-            <Form.Label column sm="2">
               Email
             </Form.Label>
             <Col sm="10">
               <Form.Control
                 value={emailprincipal}
                 onChange={e => setEmailPrincipal(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Endereço
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={endereco}
+                onChange={e => setEndereco(e.target.value)}
               />
             </Col>
           </Form.Group>
@@ -490,18 +385,18 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
-              Código Extra
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control readOnly value={codigoextra} />
-            </Col>
-          </Form.Group>
-          <Form.Group as={Row}>
-            <Form.Label column sm="2">
               Email
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={emailprincipal} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Endereço
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control readOnly value={endereco} />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -609,18 +504,6 @@ export default function Fornecedores() {
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
-                Código Extra
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  onChange={e => setCodigoExtra(e.target.value)}
-                  required
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
                 Ativo
               </Form.Label>
               <Col sm="10">
@@ -657,11 +540,23 @@ export default function Fornecedores() {
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
-                Email
+                Endereço
               </Form.Label>
               <Col sm="10">
                 <Form.Control
                   type="text"
+                  onChange={e => setEndereco(e.target.value)}
+                  required
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Email
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="email"
                   onChange={e => setEmailPrincipal(e.target.value)}
                   required
                 />

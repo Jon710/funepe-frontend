@@ -17,7 +17,6 @@ export default function Marcas() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
   const dispatch = useDispatch();
 
@@ -70,37 +69,6 @@ export default function Marcas() {
 
   function handleCloseDetalhes() {
     setShowDetalhes(false);
-  }
-
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`marca/${idmarca}`)
-      .then(() => {
-        toast.success('Marca deletada!');
-        dispatch(selectAllMarcas());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} Algum erro com id marca.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(marca, e) {
-    e.preventDefault();
-    setDescricaoMarca(marca.descricao);
-    setIdMarca(marca.idmarca);
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
   }
 
   async function handleEdit(e) {
@@ -172,39 +140,11 @@ export default function Marcas() {
                 >
                   Editar
                 </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(marca, e)}
-                >
-                  Deletar
-                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar esta marca?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control
-                readOnly
-                type="input"
-                defaultValue={descricaoMarca}
-              />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header closeButton>

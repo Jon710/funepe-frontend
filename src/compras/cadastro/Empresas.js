@@ -45,9 +45,7 @@ export default function Empresas() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
-
   const { empresas, tipoEmpresas } = useSelector(state => state.compras);
   const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
@@ -148,54 +146,6 @@ export default function Empresas() {
 
   function handleCloseDetalhes() {
     setShowDetalhes(false);
-  }
-
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`empresa/${idempresa}`)
-      .then(() => {
-        toast.success('Empresa deletada!');
-        dispatch(selectAllEmpresas());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} Algum erro com id marca.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(empresa, e) {
-    e.preventDefault();
-    setIdEmpresa(empresa.idempresa);
-    setIdTipoEmpresa(empresa.idtipoempresa);
-    setAtivo(empresa.ativo);
-    setMatriz(empresa.matriz);
-    setDescricao(empresa.descricao);
-    setRazaoSocial(empresa.razaosocial);
-    setNomeFantasia(empresa.nomefantasia);
-    setCnpj(empresa.cnpj);
-    setInscricaoEstadual(empresa.inscricaoestadual);
-    setInscricaoMunicipal(empresa.inscricaomunicipal);
-    setDataAbertura(empresa.dataabertura);
-    setObservacao(empresa.observacao);
-    setLogradouro(empresa.logradouro);
-    setNumero(empresa.numero);
-    setBairro(empresa.bairro);
-    setComplemento(empresa.complemento);
-    setCep(empresa.cep);
-    setCidade(empresa.cidade);
-    setEstado(empresa.estado);
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
   }
 
   async function handleEdit(e) {
@@ -310,71 +260,11 @@ export default function Empresas() {
                 >
                   Editar
                 </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(empresa, e)}
-                >
-                  Deletar
-                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar esta empresa?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control type="input" defaultValue={idempresa} />
-              <br />
-              <Form.Control type="input" defaultValue={idtipoempresa} />
-              <br />
-              <Form.Control type="input" defaultValue={ativo} />
-              <br />
-              <Form.Control type="input" defaultValue={matriz} />
-              <br />
-              <Form.Control type="input" defaultValue={descricao} />
-              <br />
-              <Form.Control type="input" defaultValue={razaosocial} />
-              <br />
-              <Form.Control type="input" defaultValue={nomefantasia} />
-              <br />
-              <Form.Control type="input" defaultValue={cnpj} />
-              <br />
-              <Form.Control type="input" defaultValue={inscricaoestadual} />
-              <br />
-              <Form.Control type="input" defaultValue={inscricaomunicipal} />
-              <br />
-              <Form.Control type="input" defaultValue={dataabertura} />
-              <br />
-              <Form.Control type="input" defaultValue={observacao} />
-              <br />
-              <Form.Control type="input" defaultValue={logradouro} />
-              <br />
-              <Form.Control type="input" defaultValue={numero} />
-              <br />
-              <Form.Control type="input" defaultValue={bairro} />
-              <br />
-              <Form.Control type="input" defaultValue={complemento} />
-              <br />
-              <Form.Control type="input" defaultValue={cep} />
-              <br />
-              <Form.Control type="input" defaultValue={cidade} />
-              <br />
-              <Form.Control type="input" defaultValue={estado} />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
 
       <Modal show={showEdit} onHide={handleCloseEdit} size="lg">
         <Modal.Header closeButton>

@@ -98,7 +98,11 @@ export default function Produtos() {
     loadSelectUnidades();
   }, [unidadeMedidas, marcas]);
 
-  const onChangeUnidade = selectedOption => setIdUnidade(selectedOption.value);
+  function onChangeUnidade(selectedOption) {
+    setIdUnidade(selectedOption.value);
+    console.log(selectedOption);
+  }
+
   const handleShowCadastrar = () => setShow(true);
   const handleCloseCadastrar = () => setShow(false);
   const handleCloseDetalhes = () => setShowDetalhes(false);
@@ -215,7 +219,7 @@ export default function Produtos() {
   function handleShowEdit(prod) {
     setIdProduto(prod.idproduto);
     setIdUnidade(prod.idunidade);
-    setUnidadeDescricao(prod.unidade);
+    setUnidadeDescricao(unidadeDescricao);
     setIdMarca(prod.idmarca);
     setMarcaDescricao(prod.marca);
     setDescricao(prod.produto);
@@ -231,6 +235,9 @@ export default function Produtos() {
     setFrete(prod.frete);
     setGarantia(prod.garantia);
     setPeso(prod.peso);
+    console.log(prod.unidade); // AQ TA CERTO!!
+    console.log(unidadeMedidas); // AQ TB TA CERTO!!
+
     setShowEdit(true);
   }
 
@@ -249,6 +256,8 @@ export default function Produtos() {
   function checkEnter(e) {
     if (e.key === 'Enter') handlePesquisarProdutos();
   }
+
+  console.log(unidadeDescricao);
 
   return (
     <Container>
@@ -302,7 +311,9 @@ export default function Produtos() {
                 <TablerTable.Row>
                   <TablerTable.ColHeader>ID</TablerTable.ColHeader>
                   <TablerTable.ColHeader>Descrição</TablerTable.ColHeader>
-                  <TablerTable.ColHeader>Marca</TablerTable.ColHeader>
+                  <TablerTable.ColHeader>
+                    Unidade de Medida
+                  </TablerTable.ColHeader>
                   <TablerTable.ColHeader>Menu</TablerTable.ColHeader>
                 </TablerTable.Row>
               </TablerTable.Header>
@@ -311,7 +322,7 @@ export default function Produtos() {
                   <TablerTable.Row key={produto.idproduto}>
                     <TablerTable.Col>{produto.idproduto}</TablerTable.Col>
                     <TablerTable.Col>{produto.produto}</TablerTable.Col>
-                    <TablerTable.Col>{produto.marca}</TablerTable.Col>
+                    <TablerTable.Col>{produto.unidade}</TablerTable.Col>
                     <TablerTable.Col>
                       <Button onClick={() => handleShowEdit(produto)}>
                         Editar
@@ -337,8 +348,28 @@ export default function Produtos() {
         <Modal.Header closeButton>
           <Modal.Title>Editar produto</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
-          <Form>
+          <Form noValidate validated={validated} onSubmit={handleEdit}>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Unidade de Medida
+              </Form.Label>
+              <Col sm="10">
+                <Select
+                  singleOption
+                  options={unidadeDescricao}
+                  onChange={selectedOption => onChangeUnidade(selectedOption)}
+                  placeholder="Selecione uma unidade"
+                >
+                  {unidadeMedidas.map(unidade => (
+                    <option key={unidade.idunidade} value={unidade.descricao}>
+                      {unidade.descricao}
+                    </option>
+                  ))}
+                </Select>
+              </Col>
+            </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Descrição
@@ -361,19 +392,6 @@ export default function Produtos() {
                   type="text"
                   value={marcaDescricao}
                   onChange={e => setMarcaDescricao(e.target.value)}
-                  required
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Unidade Medida
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  value={unidadeDescricao}
-                  onChange={e => setUnidadeDescricao(e.target.value)}
                   required
                 />
               </Col>
@@ -520,10 +538,10 @@ export default function Produtos() {
                 />
               </Col>
             </Form.Group>
+            <Button type="submit" variant="primary">
+              Atualizar
+            </Button>
           </Form>
-          <Button type="submit" variant="primary" onClick={handleEdit}>
-            Atualizar
-          </Button>
         </Modal.Body>
       </Modal>
 
