@@ -17,7 +17,6 @@ export default function Categoria() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
   const dispatch = useDispatch();
 
@@ -59,37 +58,6 @@ export default function Categoria() {
 
   function handleCloseCadastrar() {
     setShow(false);
-  }
-
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`categoria/${idcategoria}`)
-      .then(() => {
-        toast.success('Categoria deletada!');
-        dispatch(selectAllCategorias());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} ID ${idcategoria} está relacionado com outro Produto.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(cat, e) {
-    e.preventDefault();
-    setCategoria(cat.categoria);
-    setIdCategoria(cat.idcategoria);
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
   }
 
   async function handleShowDetalhes(cat, e) {
@@ -170,35 +138,11 @@ export default function Categoria() {
                 >
                   Editar
                 </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(c, e)}
-                >
-                  Deletar
-                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar esta categoria?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control readOnly type="input" defaultValue={categoria} />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header closeButton>

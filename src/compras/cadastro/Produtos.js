@@ -98,11 +98,7 @@ export default function Produtos() {
     loadSelectUnidades();
   }, [unidadeMedidas, marcas]);
 
-  function onChangeUnidade(selectedOption) {
-    setIdUnidade(selectedOption.value);
-    console.log(selectedOption);
-  }
-
+  const onChangeUnidade = selectedOption => setIdUnidade(selectedOption.value);
   const handleShowCadastrar = () => setShow(true);
   const handleCloseCadastrar = () => setShow(false);
   const handleCloseDetalhes = () => setShowDetalhes(false);
@@ -235,9 +231,6 @@ export default function Produtos() {
     setFrete(prod.frete);
     setGarantia(prod.garantia);
     setPeso(prod.peso);
-    console.log(prod.unidade); // AQ TA CERTO!!
-    console.log(unidadeMedidas); // AQ TB TA CERTO!!
-
     setShowEdit(true);
   }
 
@@ -256,8 +249,6 @@ export default function Produtos() {
   function checkEnter(e) {
     if (e.key === 'Enter') handlePesquisarProdutos();
   }
-
-  console.log(unidadeDescricao);
 
   return (
     <Container>

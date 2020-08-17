@@ -32,12 +32,12 @@ export default function Fornecedores() {
   const [observacao, setObservacao] = useState('');
   const [prod_servicos, setProdServicos] = useState('');
   const [emailprincipal, setEmailPrincipal] = useState('');
+  const [inscricaomunicipal, setInscricaoMunicipal] = useState('');
   const [endereco, setEndereco] = useState('');
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [validated, setValidated] = useState(false);
-
   const { fornecedores, tipoFornecedores } = useSelector(
     state => state.compras
   );
@@ -62,9 +62,12 @@ export default function Fornecedores() {
     loadSelectTipoForn();
   }, [tipoFornecedores]);
 
-  function onChangeTipoForn(selectedOption) {
+  const onChangeTipoForn = selectedOption =>
     setIdTipoFornecedor(selectedOption.value);
-  }
+  const handleCloseEdit = () => setShowEdit(false);
+  const handleCloseDetalhes = () => setShowDetalhes(false);
+  const handleShowCadastrar = () => setShow(true);
+  const handleCloseCadastrar = () => setShow(false);
 
   async function handleCadastrarFornecedor(e) {
     const form = e.currentTarget;
@@ -77,14 +80,15 @@ export default function Fornecedores() {
         idtipofornecedor,
         ativo,
         tipofornecedor: tipoFornece,
-        razaosocial,
-        nomefantasia,
-        cpf_cnpj,
-        rg_ie,
-        observacao,
+        // razaosocial,
+        // nomefantasia,
+        // cpf_cnpj,
+        // rg_ie,
+        // observacao,
         prod_servicos,
-        emailprincipal,
-        endereco,
+        // inscricaomunicipal,
+        // emailprincipal,
+        // endereco,
       };
 
       await api
@@ -97,23 +101,15 @@ export default function Fornecedores() {
         })
         .catch(error => {
           console.log(error.response.data.error);
-          // dispatch(
-          //   showAlertErrorOpen({
-          //     showAlertError: true,
-          //     alertError: `${error.response.data.error}`,
-          //   })
-          // );
+          dispatch(
+            showAlertErrorOpen({
+              showAlertError: true,
+              alertError: `${error.response.data.error}`,
+            })
+          );
         });
     }
     setValidated(true);
-  }
-
-  function handleShowCadastrar() {
-    setShow(true);
-  }
-
-  function handleCloseCadastrar() {
-    setShow(false);
   }
 
   async function handleShowDetalhes(forn, e) {
@@ -122,6 +118,7 @@ export default function Fornecedores() {
     setIdFornecedor(forn.idfornecedor);
     setIdTipoFornecedor(forn.idtipofornecedor);
     setTipoFornece(forn.tipofornecedor);
+    setInscricaoMunicipal(forn.inscricaomunicipal);
     setAtivo(forn.ativo);
     setRazaoSocial(forn.razaosocial);
     setNomeFantasia(forn.nomefantasia);
@@ -133,20 +130,18 @@ export default function Fornecedores() {
     setShowDetalhes(true);
   }
 
-  function handleCloseDetalhes() {
-    setShowDetalhes(false);
-  }
-
   async function handleEdit(e) {
     e.preventDefault();
     const editFornecedor = {
       idtipofornecedor,
       tipofornecedor: tipoFornece,
       ativo,
+      inscricaomunicipal,
       razaosocial,
       nomefantasia,
       cpf_cnpj,
       rg_ie,
+      endereco,
       observacao,
       prod_servicos,
       emailprincipal,
@@ -174,16 +169,13 @@ export default function Fornecedores() {
     setTipoFornece(forn.tipofornecedor);
     setAtivo(forn.ativo);
     setRazaoSocial(forn.razaosocial);
+    setInscricaoMunicipal(forn.inscricaomunicipal);
     setNomeFantasia(forn.nomefantasia);
     setCpfCnpj(forn.cpf_cnpj);
     setRgIe(forn.rg_ie);
     setObservacao(forn.observacao);
     setProdServicos(forn.prod_servicos);
     setEmailPrincipal(forn.emailprincipal);
-  }
-
-  function handleCloseEdit() {
-    setShowEdit(false);
   }
 
   return (
@@ -196,14 +188,12 @@ export default function Fornecedores() {
         </Button>
       </div>
       <br />
-      {showAlertError ? <AlertError /> : null}
 
       <Table striped bordered responsive>
         <thead>
           <tr>
             <th>Tipo de Fornecedor</th>
-            <th>Ativo</th>
-            <th>Razão Social</th>
+            <th>Observação</th>
             <th>Nome Fantasia</th>
             <th>Menu</th>
           </tr>
@@ -212,8 +202,7 @@ export default function Fornecedores() {
           {fornecedores.map(fornecedor => (
             <tr key={fornecedor.idfornecedor}>
               <td>{fornecedor.tipofornece.descricao}</td>
-              <td>{fornecedor.ativo}</td>
-              <td>{fornecedor.razaosocial}</td>
+              <td>{fornecedor.observacao}</td>
               <td>{fornecedor.nomefantasia}</td>
               <td>
                 <Button
@@ -302,6 +291,17 @@ export default function Fornecedores() {
               <Form.Control
                 value={rg_ie}
                 onChange={e => setRgIe(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Inscrição Municipal
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={rg_ie}
+                onChange={e => setInscricaoMunicipal(e.target.value)}
               />
             </Col>
           </Form.Group>
@@ -417,6 +417,14 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
+              Inscrição Municipal
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control readOnly value={inscricaomunicipal} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
               Nome Fantasia
             </Form.Label>
             <Col sm="10">
@@ -472,6 +480,8 @@ export default function Fornecedores() {
         <Modal.Header closeButton>
           <Modal.Title>Novo Fornecedor</Modal.Title>
         </Modal.Header>
+        {showAlertError ? <AlertError /> : null}
+
         <Modal.Body>
           <Form
             noValidate
@@ -487,7 +497,7 @@ export default function Fornecedores() {
                   isSearchable
                   options={descricao}
                   onChange={selectedOption => onChangeTipoForn(selectedOption)}
-                  placeholder="Selecione um tipo de fornecedor"
+                  placeholder="Selecione o tipo de fornecedor"
                 >
                   {tipoFornecedores.length > 0
                     ? tipoFornecedores.map(tipo => (
@@ -502,17 +512,34 @@ export default function Fornecedores() {
                 </Select>
               </Col>
             </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Ativo
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  onChange={e => setAtivo(e.target.value)}
-                  required
-                />
-              </Col>
+            <Form.Group>
+              <fieldset>
+                <Form.Group as={Row}>
+                  <Form.Label as="legend" column sm={2}>
+                    Ativo
+                  </Form.Label>
+                  <Col sm={10}>
+                    <Form.Check
+                      inline
+                      value="Sim"
+                      type="checkbox"
+                      label="SIM"
+                      name="formCheckbox"
+                      id="form1"
+                      onChange={e => setAtivo(e.target.value)}
+                    />
+                    <Form.Check
+                      inline
+                      type="checkbox"
+                      value="Não"
+                      label="NÃO"
+                      name="formCheckbox"
+                      id="form2"
+                      onChange={e => setAtivo(e.target.value)}
+                    />
+                  </Col>
+                </Form.Group>
+              </fieldset>
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
@@ -522,7 +549,6 @@ export default function Fornecedores() {
                 <Form.Control
                   type="text"
                   onChange={e => setRazaoSocial(e.target.value)}
-                  required
                 />
               </Col>
             </Form.Group>
@@ -534,7 +560,6 @@ export default function Fornecedores() {
                 <Form.Control
                   type="text"
                   onChange={e => setNomeFantasia(e.target.value)}
-                  required
                 />
               </Col>
             </Form.Group>
@@ -546,7 +571,6 @@ export default function Fornecedores() {
                 <Form.Control
                   type="text"
                   onChange={e => setEndereco(e.target.value)}
-                  required
                 />
               </Col>
             </Form.Group>
@@ -558,7 +582,6 @@ export default function Fornecedores() {
                 <Form.Control
                   type="email"
                   onChange={e => setEmailPrincipal(e.target.value)}
-                  required
                 />
               </Col>
             </Form.Group>
@@ -570,7 +593,6 @@ export default function Fornecedores() {
                 <Form.Control
                   type="text"
                   onChange={e => setCpfCnpj(e.target.value)}
-                  required
                 />
               </Col>
             </Form.Group>
@@ -582,54 +604,69 @@ export default function Fornecedores() {
                 <Form.Control
                   type="text"
                   onChange={e => setRgIe(e.target.value)}
-                  required
                 />
               </Col>
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
-                Observacão
+                Inscrição Municipal
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  type="text"
+                  onChange={e => setInscricaoMunicipal(e.target.value)}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Observação
               </Form.Label>
               <Col sm="10">
                 <Form.Control
                   type="text"
                   onChange={e => setObservacao(e.target.value)}
-                  required
                 />
               </Col>
             </Form.Group>
             <Form.Group>
-              <Col>
-                <Form.Check
-                  inline
-                  value="P"
-                  type="radio"
-                  label="Produto"
-                  name="formHorizontalRadios"
-                  id="form1"
-                  onChange={e => setProdServicos(e.target.value)}
-                />
-                <Form.Check
-                  inline
-                  type="radio"
-                  value="S"
-                  label="Serviço"
-                  name="formHorizontalRadios"
-                  id="form2"
-                  onChange={e => setProdServicos(e.target.value)}
-                />
-                <Form.Check
-                  inline
-                  type="radio"
-                  label="Ambos"
-                  value="A"
-                  name="formHorizontalRadios"
-                  id="form3"
-                  onChange={e => setProdServicos(e.target.value)}
-                />
-              </Col>
+              <fieldset>
+                <Form.Group as={Row}>
+                  <Form.Label as="legend" column sm={2}>
+                    Selecione
+                  </Form.Label>
+                  <Col sm={10}>
+                    <Form.Check
+                      inline
+                      value="Produto"
+                      type="checkbox"
+                      label="Produto"
+                      name="formHorizontalRadios"
+                      id="form1"
+                      onChange={e => setProdServicos(e.target.value)}
+                    />
+                    <Form.Check
+                      inline
+                      type="checkbox"
+                      value="Serviço"
+                      label="Serviço"
+                      name="formHorizontalRadios"
+                      id="form2"
+                      onChange={e => setProdServicos(e.target.value)}
+                    />
+                    <Form.Check
+                      inline
+                      type="checkbox"
+                      label="Ambos"
+                      value="Ambos"
+                      name="formHorizontalRadios"
+                      id="form3"
+                      onChange={e => setProdServicos(e.target.value)}
+                    />
+                  </Col>
+                </Form.Group>
+              </fieldset>
             </Form.Group>
-
             <Form.Control.Feedback type="invalid">
               Favor preencher os campos.
             </Form.Control.Feedback>

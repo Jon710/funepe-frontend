@@ -17,7 +17,6 @@ export default function TipoTelefone() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
   const dispatch = useDispatch();
 
@@ -70,37 +69,6 @@ export default function TipoTelefone() {
 
   function handleCloseDetalhes() {
     setShowDetalhes(false);
-  }
-
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`tipotelefone/${idtipotelefone}`)
-      .then(() => {
-        toast.success('Tipo de Telefone deletado!');
-        dispatch(selectAllTipoTelefones());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} Algum erro com id.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(tipotel, e) {
-    e.preventDefault();
-    setDescricao(tipotel.descricao);
-    setIdTipoTelefone(tipotel.idtipotelefone);
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
   }
 
   async function handleEdit(e) {
@@ -172,35 +140,11 @@ export default function TipoTelefone() {
                 >
                   Editar
                 </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(tipotel, e)}
-                >
-                  Deletar
-                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar este tipo de telefone?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control type="input" defaultValue={descricao} />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header closeButton>
