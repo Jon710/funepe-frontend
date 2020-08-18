@@ -70,46 +70,46 @@ export default function Fornecedores() {
   const handleCloseCadastrar = () => setShow(false);
 
   async function handleCadastrarFornecedor(e) {
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      e.preventDefault();
+    // const form = e.currentTarget;
+    // if (form.checkValidity() === false) {
+    //   e.stopPropagation();
+    // } else {
+    e.preventDefault();
 
-      const novoFornecedor = {
-        idtipofornecedor,
-        ativo,
-        tipofornecedor: tipoFornece,
-        // razaosocial,
-        // nomefantasia,
-        // cpf_cnpj,
-        // rg_ie,
-        // observacao,
-        prod_servicos,
-        // inscricaomunicipal,
-        // emailprincipal,
-        // endereco,
-      };
+    const novoFornecedor = {
+      idtipofornecedor,
+      ativo,
+      tipofornecedor: tipoFornece,
+      razaosocial,
+      nomefantasia,
+      cpf_cnpj,
+      rg_ie,
+      observacao,
+      prod_servicos,
+      inscricaomunicipal,
+      emailprincipal,
+      endereco,
+    };
 
-      await api
-        .post('fornecedor', novoFornecedor)
-        .then(() => {
-          toast.success('Fornecedor cadastrado com sucesso!');
-          dispatch(selectAllFornecedores());
+    await api
+      .post('fornecedor', novoFornecedor)
+      .then(() => {
+        toast.success('Fornecedor cadastrado com sucesso!');
+        dispatch(selectAllFornecedores());
 
-          setShow(false);
-        })
-        .catch(error => {
-          console.log(error.response.data.error);
-          dispatch(
-            showAlertErrorOpen({
-              showAlertError: true,
-              alertError: `${error.response.data.error}`,
-            })
-          );
-        });
-    }
-    setValidated(true);
+        setShow(false);
+      })
+      .catch(error => {
+        console.log(error.response.data.error);
+        dispatch(
+          showAlertErrorOpen({
+            showAlertError: true,
+            alertError: `${error.response.data.error}`,
+          })
+        );
+      });
+    // }
+    // setValidated(true);
   }
 
   async function handleShowDetalhes(forn, e) {
@@ -484,8 +484,8 @@ export default function Fornecedores() {
 
         <Modal.Body>
           <Form
-            noValidate
-            validated={validated}
+            // noValidate
+            // validated={validated}
             onSubmit={handleCadastrarFornecedor}
           >
             <Form.Group as={Row}>
@@ -667,9 +667,9 @@ export default function Fornecedores() {
                 </Form.Group>
               </fieldset>
             </Form.Group>
-            <Form.Control.Feedback type="invalid">
+            {/* <Form.Control.Feedback type="invalid">
               Favor preencher os campos.
-            </Form.Control.Feedback>
+            </Form.Control.Feedback> */}
             <Button type="submit" variant="primary">
               Criar
             </Button>
