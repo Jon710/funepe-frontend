@@ -1,29 +1,15 @@
 /* eslint-disable no-return-assign */
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Table,
-  Form,
-  Card,
-  Button,
-  Col,
-  Container,
-  Modal,
-  FormControl,
-} from 'react-bootstrap';
-
+import { Table, Form, Button, Col, Container } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   selectProdutoByDescricao,
   inserirItemRequisicao,
-  selectAllItemRequisicao,
 } from '../../redux/features/compras/comprasSlice';
-import { produtoModalClose } from '../../redux/features/context/contextSlice';
-import history from '../../services/history';
 
 export default function Produto() {
   const dispatch = useDispatch();
-  const { produtoModal } = useSelector(state => state.contexto);
   const { requisicao } = useSelector(state => state.compras);
   const [listaProdutos, setListaProdutos] = useState([]);
   const [descricao, setDescricao] = useState('');
@@ -31,10 +17,6 @@ export default function Produto() {
   const [search, setSearch] = useState(false);
   const [qtde, setQtde] = useState(1);
   const textInput = useRef(null);
-
-  useEffect(() => {
-    textInput.current.focus();
-  }, []);
 
   async function handleProduto() {
     let c = 0;
@@ -52,8 +34,7 @@ export default function Produto() {
     });
   }
 
-  async function handleAddItemProduto(produto) {
-    dispatch(produtoModalClose());
+  function handleAddItemProduto(produto) {
     const newItemProduto = {
       datauso: new Date(),
       desconto: 0.0,
@@ -67,126 +48,91 @@ export default function Produto() {
       valorunitario: produto.valorunitario,
     };
 
-    await dispatch(inserirItemRequisicao(newItemProduto));
-    await dispatch(selectAllItemRequisicao(requisicao.idrequisicao));
+    dispatch(inserirItemRequisicao(newItemProduto));
   }
 
   function checkEnter(e) {
     if (e.key === 'Enter') handleProduto();
   }
 
-  const handleClose = () => {
-    dispatch(produtoModalClose());
-    history.push('/requisicao');
-  };
-
   return (
     <Container>
-      <Modal
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        variant="danger"
-        dialogClassName="modal-danger"
-        animation
-        show={produtoModal}
-        onHide={handleClose}
-      >
-        <Modal.Body>
-          <Card bg="success">
-            <Card.Header>
-              <Card.Title id="contained-modal-title-vcenter">
-                Localizar Produtos
-              </Card.Title>
-            </Card.Header>
-            <Card.Body>
-              <Form.Row>
-                <Col sm={10}>
-                  <Form.Control
-                    style={{ textTransform: 'uppercase' }}
-                    value={descricao}
-                    required
-                    ref={textInput}
-                    type="text"
-                    placeholder="Descrição do Produto"
-                    onChange={e => setDescricao(e.target.value)}
-                    onKeyPress={e => checkEnter(e)}
-                  />
-                </Col>
-                <Col sm={2}>
-                  <Button
-                    type="button"
-                    variant="success"
-                    onClick={() => handleProduto(descricao)}
-                  >
-                    Localizar
-                  </Button>
-                </Col>
-              </Form.Row>
-            </Card.Body>
-          </Card>
+      <Form.Row>
+        <Col sm={10}>
+          <Form.Control
+            style={{ textTransform: 'uppercase' }}
+            value={descricao}
+            required
+            ref={textInput}
+            type="text"
+            placeholder="Descrição"
+            onChange={e => setDescricao(e.target.value)}
+            onKeyPress={e => checkEnter(e)}
+          />
+        </Col>
+        <Col sm={2}>
+          <Button
+            type="button"
+            variant="primary"
+            onClick={() => handleProduto(descricao)}
+          >
+            Buscar
+          </Button>
+        </Col>
+      </Form.Row>
+      <br />
+      {search ? (
+        <Table responsive="md" size="md" bordered hover variant="success">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Produto</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listaProdutos.map(p => (
+              <tr key={p.idproduto}>
+                <td>{p.idproduto}</td>
+                <td>{p.produto}</td>
+                <td>
+                  <Form inline>
+                    <Col xs="auto" className="my-1">
+                      <Form.Control
+                        type="number"
+                        className="mr-sm-2"
+                        value={qtde}
+                        onChange={e => setQtde(e.target.value)}
+                      />
+                    </Col>
 
-          {search ? (
-            <Card>
-              <Col sm>
-                <Table
-                  responsive="sm"
-                  striped
-                  bordered
-                  hover
-                  size="sm"
-                  variant="success"
-                >
-                  <thead>
-                    <tr>
-                      <th>ID</th>
-                      <th>Produto</th>
-                      <th>Ação</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listaProdutos.map(p => (
-                      <tr key={p.idproduto}>
-                        <td>{p.idproduto}</td>
-                        <td>{p.descricao}</td>
-                        <td>
-                          <Form inline>
-                            <FormControl
-                              type="number"
-                              placeholder="Quantidade"
-                              className="mr-sm-2"
-                              value={qtde}
-                              onChange={e => setQtde(e.target.value)}
-                            />
-                            <Button
-                              variant="success"
-                              onClick={() => handleAddItemProduto(p)}
-                            >
-                              Add
-                            </Button>
-                          </Form>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td style={{ textAlign: 'right' }} colSpan="2">
-                        TOTAL DE PRODUTOS
-                      </td>
-                      <td style={{ textAlign: 'left' }} colSpan="1">
-                        {count}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </Table>
-              </Col>
-            </Card>
-          ) : (
-            <div />
-          )}
-        </Modal.Body>
-      </Modal>
+                    <Col xs="auto" className="my-1">
+                      <Button
+                        variant="success"
+                        onClick={() => handleAddItemProduto(p)}
+                      >
+                        Add
+                      </Button>
+                    </Col>
+                  </Form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td style={{ textAlign: 'right' }} colSpan="2">
+                PRODUTOS ENCONTRADOS
+              </td>
+              <td style={{ textAlign: 'left' }} colSpan="1">
+                {count}
+              </td>
+            </tr>
+          </tfoot>
+        </Table>
+      ) : (
+        <div />
+      )}
     </Container>
   );
 }

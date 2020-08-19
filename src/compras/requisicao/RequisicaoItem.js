@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import {
@@ -7,17 +7,44 @@ import {
   Container,
   OverlayTrigger,
   Tooltip,
+  Form,
 } from 'react-bootstrap';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import ListIcon from '@material-ui/icons/List';
 import { green } from '@material-ui/core/colors';
+import { toast } from 'react-toastify';
+import api from '../../services/api';
 
 export default function RequisicaoItem() {
+  const [observacao, setObservacao] = useState('');
   const { requisicoesItem } = useSelector(state => state.compras);
 
   function handleDeleteProduto(item) {
     console.log('ITEM: ', item);
+  }
+
+  async function handleObservacaoProduto(item) {
+    const observacaoDoProduto = {
+      observacao,
+    };
+
+    await api
+      .put(
+        `requisicao/${item.idrequisicao}/itemrequisicao/${item.iditemrequisicao}`,
+        observacaoDoProduto
+      )
+      .then(() => {
+        toast.success('Observação salva!');
+      })
+      .catch(error => {
+        console.log(error);
+        // dispatch(
+        //   showAlertErrorOpen({
+        //     showAlertError: true,
+        //     alertError: `${error.response.data.error}`,
+        //   })
+        // );
+      });
   }
 
   return (
@@ -35,10 +62,8 @@ export default function RequisicaoItem() {
             <tr>
               <th>ID</th>
               <th>Descrição</th>
-              <th>UN</th>
               <th>Qtde</th>
-              <th>V.Unit</th>
-              <th>V.Total</th>
+              <th>Observação</th>
               <th>#</th>
             </tr>
           </thead>
@@ -47,10 +72,15 @@ export default function RequisicaoItem() {
               <tr key={item.iditemrequisicao}>
                 <td>{item.idproduto}</td>
                 <td>{item.produto.descricao}</td>
-                <td>{item.unidade}</td>
                 <td>{item.quantidade}</td>
-                <td>{item.vlrUnit}</td>
-                <td>{item.vlrTotal}</td>
+                <td>
+                  <Form.Control
+                    defaultValue={item.observacao}
+                    onChange={e => setObservacao(e.target.value)}
+                    as="textarea"
+                    rows="2"
+                  />
+                </td>
                 <td align="center" style={{ whiteSpace: 'nowrap' }}>
                   <OverlayTrigger
                     placement="top"
@@ -68,19 +98,13 @@ export default function RequisicaoItem() {
                     placement="top"
                     delay={{ show: 250, hide: 100 }}
                     overlay={
-                      <Tooltip id={item.iditemrequisicao}>
-                        Novo Atendimento
-                      </Tooltip>
+                      <Tooltip id={item.iditemrequisicao}>Salvar</Tooltip>
                     }
                   >
-                    <EditIcon style={{ color: green[500] }} />
-                  </OverlayTrigger>
-                  <OverlayTrigger
-                    placement="top"
-                    delay={{ show: 250, hide: 100 }}
-                    overlay={<Tooltip id={item.iditemrequisicao}>Menu</Tooltip>}
-                  >
-                    <ListIcon />
+                    <EditIcon
+                      style={{ color: green[500] }}
+                      onClick={() => handleObservacaoProduto(item)}
+                    />
                   </OverlayTrigger>
                 </td>
               </tr>

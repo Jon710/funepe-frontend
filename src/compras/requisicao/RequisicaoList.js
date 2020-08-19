@@ -37,7 +37,6 @@ import {
 import {
   requisicaoModalOpen,
   editRequisicaoModalOpen,
-  deleteRequisicaoModalOpen,
   despachaRequisicaoModalOpen,
   visualizaRequisicaoModalOpen,
   visualizaHistoricoModalOpen,
@@ -156,10 +155,6 @@ export default function RequisicaoList() {
     dispatch(editRequisicaoModalOpen());
   }
 
-  async function deleteRequisicao() {
-    dispatch(deleteRequisicaoModalOpen());
-  }
-
   async function despachaRequisicao() {
     dispatch(despachaRequisicaoModalOpen());
   }
@@ -254,9 +249,6 @@ export default function RequisicaoList() {
             <Dropdown.Item as="button" onClick={e => gerarOrcamento(e)}>
               Gerar Orçamento
             </Dropdown.Item>
-            <Dropdown.Item as="button" onClick={() => deleteRequisicao()}>
-              Excluir
-            </Dropdown.Item>
             <Dropdown.Item as="button" onClick={() => editRequisicao()}>
               Editar
             </Dropdown.Item>
@@ -321,7 +313,7 @@ export default function RequisicaoList() {
         {requisicoesItem.length > 0 ? (
           <Card>
             <Card.Body>
-              <Card.Title>Produtos:</Card.Title>
+              <Card.Title>Produtos/Serviços:</Card.Title>
               <Table
                 responsive="sm"
                 striped
@@ -335,8 +327,7 @@ export default function RequisicaoList() {
                     <th>ID</th>
                     <th>Produto</th>
                     <th>Qtde</th>
-                    <th>V.Unit</th>
-                    <th>V.Tot</th>
+                    <th>Observação</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -345,8 +336,7 @@ export default function RequisicaoList() {
                       <td>{item.idproduto}</td>
                       <td>{item.produto.descricao}</td>
                       <td>{item.quantidade}</td>
-                      <td>{item.vlrUnit}</td>
-                      <td>{item.vlrTotal}</td>
+                      <td>{item.observacao}</td>
                     </tr>
                   ))}
                 </tbody>

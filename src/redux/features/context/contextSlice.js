@@ -13,13 +13,11 @@ export const sliceContext = createSlice({
     editModal: false,
     despachoModal: false,
     anotacaoModal: false,
-    produtoModal: false,
     requisicaoModal: false,
     uploadPercentage: 0,
     showAlertError: false,
     alertError: '',
     editRequisicaoModal: false,
-    deleteRequisicaoModal: false,
     despachaRequisicaoModal: false,
     visualizaHistoricoModal: false,
     visualizaRequisicaoModal: false,
@@ -50,7 +48,6 @@ export const sliceContext = createSlice({
     },
     modalClose: state => {
       state.showModal = false;
-      state.deleteRequisicaoModal = false;
       state.visualizaHistoricoModal = false;
       state.visualizaRequisicaoModal = false;
       state.orcamentoModal = false;
@@ -81,16 +78,9 @@ export const sliceContext = createSlice({
     anotacaoModalOpen: state => {
       state.anotacaoModal = true;
     },
-    produtoModalClose: state => {
-      state.produtoModal = false;
-    },
-    produtoModalOpen: state => {
-      state.produtoModal = true;
-    },
     requisicaoModalClose: state => {
       state.requisicaoModal = false;
       state.editRequisicaoModal = false;
-      state.deleteRequisicaoModal = false;
       state.updatedRequisicao = true;
     },
     requisicaoModalOpen: state => {
@@ -99,9 +89,6 @@ export const sliceContext = createSlice({
     editRequisicaoModalOpen: state => {
       state.editRequisicaoModal = true;
       state.updatedRequisicao = false;
-    },
-    deleteRequisicaoModalOpen: state => {
-      state.deleteRequisicaoModal = true;
     },
     despachaRequisicaoModalOpen: state => {
       state.despachaRequisicaoModal = true;
@@ -138,12 +125,9 @@ export const {
   despachoModalClose,
   anotacaoModalOpen,
   anotacaoModalClose,
-  produtoModalOpen,
-  produtoModalClose,
   requisicaoModalOpen,
   requisicaoModalClose,
   editRequisicaoModalOpen,
-  deleteRequisicaoModalOpen,
   despachaRequisicaoModalOpen,
   visualizaHistoricoModalOpen,
   visualizaRequisicaoModalOpen,

@@ -37,7 +37,6 @@ export default function Fornecedores() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [validated, setValidated] = useState(false);
   const { fornecedores, tipoFornecedores } = useSelector(
     state => state.compras
   );
@@ -70,10 +69,6 @@ export default function Fornecedores() {
   const handleCloseCadastrar = () => setShow(false);
 
   async function handleCadastrarFornecedor(e) {
-    // const form = e.currentTarget;
-    // if (form.checkValidity() === false) {
-    //   e.stopPropagation();
-    // } else {
     e.preventDefault();
 
     const novoFornecedor = {
@@ -108,8 +103,6 @@ export default function Fornecedores() {
           })
         );
       });
-    // }
-    // setValidated(true);
   }
 
   async function handleShowDetalhes(forn, e) {
@@ -667,9 +660,6 @@ export default function Fornecedores() {
                 </Form.Group>
               </fieldset>
             </Form.Group>
-            {/* <Form.Control.Feedback type="invalid">
-              Favor preencher os campos.
-            </Form.Control.Feedback> */}
             <Button type="submit" variant="primary">
               Criar
             </Button>

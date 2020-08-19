@@ -18,6 +18,7 @@ import {
   orcamentoSuccess,
   selectAllOrcamentos,
   getItensOrcamento,
+  selectAllItemOrcamento,
 } from '../../redux/features/compras/orcamentoSlice';
 import {
   modalOpen,
@@ -40,7 +41,7 @@ const SpinnerLine = () => (
 
 export default function OrcamentoReq() {
   const dispatch = useDispatch();
-  const { orcamentosItem, orcamentos } = useSelector(state => state.orcamentos);
+  const { orcamentos, orcamentosItem } = useSelector(state => state.orcamentos);
   const { orcamentoPrecosModal } = useSelector(state => state.contexto);
   const { requisicao } = useSelector(state => state.compras);
   const [loading, setLoading] = useState(true);
@@ -132,6 +133,7 @@ export default function OrcamentoReq() {
     onSelect: rowIndex => {
       const orcs = { rowIndex };
       dispatch(getItensOrcamento(requisicao.idrequisicao));
+      dispatch(selectAllItemOrcamento(rowIndex.idorcamento));
       dispatch(orcamentoSuccess(orcs));
     },
     headerColumnStyle: status => {

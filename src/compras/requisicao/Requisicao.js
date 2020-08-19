@@ -8,12 +8,10 @@ import {
   Col,
   Button,
   Card,
-  Row,
   Modal,
   Accordion,
 } from 'react-bootstrap';
 import Select from 'react-select';
-
 import SweetAlert from 'react-bootstrap-sweetalert';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -24,31 +22,20 @@ import {
   inserirRequisicao,
   atualizarRequisicao,
   addRequisicaoRequest,
-  selectAllRequisicao,
 } from '../../redux/features/compras/comprasSlice';
 import Produto from '../modal/Produto';
 import RequisicaoItem from './RequisicaoItem';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {
-  produtoModalOpen,
-  requisicaoModalClose,
-  showAlertErrorOpen,
-  modalClose,
-} from '../../redux/features/context/contextSlice';
+import { requisicaoModalClose } from '../../redux/features/context/contextSlice';
 import history from '../../services/history';
 import api from '../../services/api';
-import AlertError from '../../pages/alerts/AlertError';
 
 export default function Requisicao() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const {
-    produtoModal,
-    requisicaoModal,
-    editRequisicaoModal,
-    deleteRequisicaoModal,
-    showAlertError,
-  } = useSelector(state => state.contexto);
+  const { requisicaoModal, editRequisicaoModal } = useSelector(
+    state => state.contexto
+  );
   const { departamentos, requisicao } = useSelector(state => state.compras);
   const colourStyles = {
     option: provided => ({
@@ -87,6 +74,7 @@ export default function Requisicao() {
   const [validated, setValidated] = useState(false);
   const [alert, setAlert] = useState(false);
   const [arquivos, setArquivos] = useState([]);
+  const [eventKey, setEventKey] = useState('0');
   const formData = new FormData();
 
   useEffect(() => {
@@ -119,6 +107,7 @@ export default function Requisicao() {
     setIdDestin(user.idusuario);
     setJustificativa('');
     setOrcam('');
+    setEventKey('0');
     const newRequisicao = {
       datareq,
       finalidade,
@@ -193,28 +182,6 @@ export default function Requisicao() {
     }
   }
 
-  async function deleteRequisicao(e) {
-    e.preventDefault();
-
-    await api
-      .delete(
-        `/usuario/${requisicao.idsolicitante}/requisicao/${requisicao.idrequisicao}`
-      )
-      .then(() => {
-        toast.success('Requisição excluída!');
-        dispatch(selectAllRequisicao());
-        dispatch(modalClose());
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error}`,
-          })
-        );
-      });
-  }
-
   function handleDtRequisicao(dtReq) {
     setValidated(true);
     setDtReq(dtReq);
@@ -233,9 +200,7 @@ export default function Requisicao() {
     history.push('/requisicao');
   };
 
-  const handleAlert = () => {
-    setAlert(true);
-  };
+  const handleAlert = () => setAlert(true);
 
   /* BEGIN UPLOAD FILES SECTION */
   const onDrop = useCallback(
@@ -319,17 +284,6 @@ export default function Requisicao() {
                         onChange={e => setStatus(e.target.value)}
                       >
                         <option value="Aberta">Aberta</option>
-                        <option value="Em cotação">Em cotação</option>
-                        <option value="Aguardando autorização">
-                          Aguardando autorização
-                        </option>
-                        <option value="Autorizada">Autorizada</option>
-                        <option value="Retirar no almoxarifado">
-                          Retirar no almoxarifado
-                        </option>
-                        <option value="Cancelada">Cancelada</option>
-                        <option value="Negada">Negada</option>
-                        <option value="Finalizada">Finalizada</option>
                       </Form.Control>
                     </Form.Group>
                   </Form.Row>
@@ -355,7 +309,6 @@ export default function Requisicao() {
                       />
                     </Form.Group>
                   </Form.Row>
-
                   <Form.Row>
                     <Form.Group as={Col} controlId="editAssunto">
                       <Form.Label>Finalidade/Justificativa</Form.Label>
@@ -413,89 +366,32 @@ export default function Requisicao() {
                         <Accordion.Toggle
                           as={Button}
                           variant="link"
-                          eventKey="0"
+                          eventKey={eventKey}
+                          onClick={() => {
+                            if (
+                              typeof requisicao.idrequisicao === 'undefined'
+                            ) {
+                              setEventKey('1');
+                              handleAlert();
+                            } else {
+                              console.log('else accordion', eventKey);
+                            }
+                          }}
                         >
-                          Localizar Produto
+                          Localizar Produto/Serviço
                         </Accordion.Toggle>
                       </Card.Header>
-                      <Accordion.Collapse eventKey="0">
-                        <div>
-                          <Card className="text-center mb-2">
-                            <Card.Header>
-                              <Card.Title>Produtos</Card.Title>
-                              <Row>
-                                <Col xs={6} md={4}>
-                                  <Button
-                                    block
-                                    variant="success"
-                                    onClick={() => {
-                                      if (
-                                        typeof requisicao.idrequisicao ===
-                                        'undefined'
-                                      ) {
-                                        handleAlert();
-                                      } else {
-                                        dispatch(produtoModalOpen());
-                                      }
-                                    }}
-                                  >
-                                    Localizar
-                                  </Button>
-                                </Col>
-                              </Row>
-                            </Card.Header>
-                            <Card.Body>
-                              {produtoModal ? <Produto /> : <></>}
-                              <RequisicaoItem />
-                            </Card.Body>
-                          </Card>
-                        </div>
-                      </Accordion.Collapse>
-                    </Card>
-                  </Accordion>
-                  <Accordion>
-                    <Card>
-                      <Card.Header>
-                        <Accordion.Toggle
-                          as={Button}
-                          variant="link"
-                          eventKey="0"
-                        >
-                          Localizar Serviço
-                        </Accordion.Toggle>
-                      </Card.Header>
-                      <Accordion.Collapse eventKey="0">
-                        <div>
-                          <Card className="text-center mb-2">
-                            <Card.Header>
-                              <Card.Title>Serviços</Card.Title>
-                              <Row>
-                                <Col xs={6} md={4}>
-                                  <Button
-                                    block
-                                    variant="success"
-                                    onClick={() => {
-                                      if (
-                                        typeof requisicao.idrequisicao ===
-                                        'undefined'
-                                      ) {
-                                        handleAlert();
-                                      } else {
-                                        dispatch(produtoModalOpen());
-                                      }
-                                    }}
-                                  >
-                                    Localizar
-                                  </Button>
-                                </Col>
-                              </Row>
-                            </Card.Header>
-                            <Card.Body>
-                              {produtoModal ? <Produto /> : <></>}
-                              <RequisicaoItem />
-                            </Card.Body>
-                          </Card>
-                        </div>
+
+                      <Accordion.Collapse eventKey={eventKey}>
+                        <Card className="text-center mb-2">
+                          <Card.Header>
+                            <Produto />
+                          </Card.Header>
+
+                          <Card.Body>
+                            <RequisicaoItem />
+                          </Card.Body>
+                        </Card>
                       </Accordion.Collapse>
                     </Card>
                   </Accordion>
@@ -687,83 +583,13 @@ export default function Requisicao() {
                           variant="link"
                           eventKey="0"
                         >
-                          Localizar Produto
+                          Ver Produtos/Serviços
                         </Accordion.Toggle>
                       </Card.Header>
                       <Accordion.Collapse eventKey="0">
                         <div>
                           <Card className="text-center mb-2">
-                            <Card.Header>
-                              <Card.Title>Produtos</Card.Title>
-                              <Row>
-                                <Col xs={6} md={4}>
-                                  <Button
-                                    block
-                                    variant="success"
-                                    onClick={() => {
-                                      if (
-                                        typeof requisicao.idrequisicao ===
-                                        'undefined'
-                                      ) {
-                                        handleAlert();
-                                      } else {
-                                        dispatch(produtoModalOpen());
-                                      }
-                                    }}
-                                  >
-                                    Localizar
-                                  </Button>
-                                </Col>
-                              </Row>
-                            </Card.Header>
                             <Card.Body>
-                              {produtoModal ? <Produto /> : <></>}
-                              <RequisicaoItem />
-                            </Card.Body>
-                          </Card>
-                        </div>
-                      </Accordion.Collapse>
-                    </Card>
-                  </Accordion>
-                  <Accordion>
-                    <Card>
-                      <Card.Header>
-                        <Accordion.Toggle
-                          as={Button}
-                          variant="link"
-                          eventKey="0"
-                        >
-                          Localizar Serviço
-                        </Accordion.Toggle>
-                      </Card.Header>
-                      <Accordion.Collapse eventKey="0">
-                        <div>
-                          <Card className="text-center mb-2">
-                            <Card.Header>
-                              <Card.Title>Serviços</Card.Title>
-                              <Row>
-                                <Col xs={6} md={4}>
-                                  <Button
-                                    block
-                                    variant="success"
-                                    onClick={() => {
-                                      if (
-                                        typeof requisicao.idrequisicao ===
-                                        'undefined'
-                                      ) {
-                                        handleAlert();
-                                      } else {
-                                        dispatch(produtoModalOpen());
-                                      }
-                                    }}
-                                  >
-                                    Localizar
-                                  </Button>
-                                </Col>
-                              </Row>
-                            </Card.Header>
-                            <Card.Body>
-                              {produtoModal ? <Produto /> : <></>}
                               <RequisicaoItem />
                             </Card.Body>
                           </Card>
@@ -782,98 +608,6 @@ export default function Requisicao() {
                       onChange={e => setObservacao(e.target.value)}
                     />
                   </Form.Group>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Modal.Body>
-        </Modal>
-      ) : null}
-
-      {deleteRequisicaoModal ? (
-        <Modal
-          variant="danger"
-          dialogClassName="modal-danger"
-          size="lg"
-          animation
-          show={deleteRequisicaoModal}
-          onHide={handleClose}
-        >
-          <Modal.Body>
-            <Card>
-              {showAlertError ? <AlertError /> : null}
-              <Card.Header>
-                <Card.Title>DELETAR REQUISIÇÃO</Card.Title>
-              </Card.Header>
-              <Card.Body>
-                <Form noValidate validated={validated}>
-                  <Form.Row>
-                    <Form.Group as={Col}>
-                      <Form.Label>Nº Requisição</Form.Label>
-                      <Form.Control readOnly value={requisicao.idrequisicao} />
-                    </Form.Group>
-                    <Form.Group as={Col}>
-                      <Form.Label>Data</Form.Label>
-                      <Form.Control readOnly value={requisicao.dataFormatada} />
-                    </Form.Group>
-                    <Form.Group as={Col} controlId="editNrProtocolo">
-                      <Form.Label>Status</Form.Label>
-                      <Form.Control
-                        as="select"
-                        readOnly
-                        value="Aberto"
-                        onChange={e => setStatus(e.target.value)}
-                      >
-                        <option value="Aberto">Aberto</option>
-                        <option value="Retirar no almoxarifado">
-                          Retirar no almoxarifado
-                        </option>
-                        <option value="Em cotação">Em cotação</option>
-                        <option value="Finalizado">Finalizado</option>
-                      </Form.Control>
-                    </Form.Group>
-                  </Form.Row>
-                  <Form.Row>
-                    <Form.Group as={Col}>
-                      <Form.Label>Departamento</Form.Label>
-                      <Form.Control readOnly value={editDepartamento} />
-                    </Form.Group>
-                  </Form.Row>
-
-                  <Form.Row>
-                    <Form.Group as={Col}>
-                      <Form.Label>Finalidade/Justificativa</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows="3"
-                        defaultValue={finalidade}
-                      />
-                    </Form.Group>
-                  </Form.Row>
-                  <hr />
-                  <Form.Row>
-                    <Form.Group as={Col} id="salvar">
-                      <Button
-                        variant="primary"
-                        size="lg"
-                        block
-                        p="2"
-                        onClick={deleteRequisicao}
-                      >
-                        Excluir
-                      </Button>
-                    </Form.Group>
-                    <Form.Group as={Col}>
-                      <Button
-                        variant="danger"
-                        size="lg"
-                        block
-                        p="2"
-                        onClick={handleClose}
-                      >
-                        Fechar
-                      </Button>
-                    </Form.Group>
-                  </Form.Row>
                 </Form>
               </Card.Body>
             </Card>

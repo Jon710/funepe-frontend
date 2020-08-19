@@ -1,32 +1,66 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Table } from 'react-bootstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import BootstrapTable from 'react-bootstrap-table-next';
+import { getItensOrcamentoProduto } from '../../redux/features/compras/orcamentoSlice';
 
 export default function PriceTable() {
-  const { orcamentoItensReq } = useSelector(state => state.orcamentos);
+  const dispatch = useDispatch();
+  const { orcamentoItensProduto, orcamentoItensReq } = useSelector(
+    state => state.orcamentos
+  );
+  const { requisicao } = useSelector(state => state.compras);
+
+  const columns = [
+    {
+      dataField: 'idproduto',
+      text: 'ID Produto',
+    },
+    {
+      dataField: 'descricao',
+      text: 'Produto',
+    },
+    {
+      dataField: 'nomefantasia',
+      text: 'Fornecedor',
+    },
+    {
+      dataField: 'vlrTotal',
+      text: 'Menor Preço',
+    },
+  ];
+
+  const selectRow = {
+    mode: 'checkbox',
+    clickToSelect: true,
+    clickToExpand: true,
+    onSelect: rowIndex => {
+      dispatch(
+        getItensOrcamentoProduto(requisicao.idrequisicao, rowIndex.idproduto)
+      );
+    },
+  };
+
+  const expandRow = {
+    renderer: () => (
+      <div>
+        <b>FORNECEDORES</b>
+        {orcamentoItensProduto.map(item => (
+          <p>
+            {item.nomefantasia} - {item.vlrTotal}
+          </p>
+        ))}
+      </div>
+    ),
+    showExpandColumn: true,
+  };
 
   return (
-    <Table striped bordered hover>
-      <thead>
-        <tr>
-          <th>Descrição Produto</th>
-          <th>Fornecedor</th>
-          <th>Quantidade</th>
-          <th>Valor Unitário</th>
-          <th>Valor Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        {orcamentoItensReq.map(item => (
-          <tr key={item.idorcamento}>
-            <td>{item.descricao}</td>
-            <td>{item.nomefantasia}</td>
-            <td>{item.quantidade}</td>
-            <td>{item.vlrUnit}</td>
-            <td>{item.vlrTotal}</td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+    <BootstrapTable
+      keyField="id"
+      data={orcamentoItensReq}
+      columns={columns}
+      expandRow={expandRow}
+      selectRow={selectRow}
+    />
   );
 }

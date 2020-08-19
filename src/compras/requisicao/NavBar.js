@@ -74,7 +74,7 @@ export default function NavBar() {
           </Nav.Link>
         </Nav>
         <Navbar.Text>
-          Logado:{' '}
+          USUÁRIO:{' '}
           <a href="/login">
             {user.username !== undefined
               ? `${user.username.toUpperCase()}`

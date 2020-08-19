@@ -16,6 +16,7 @@ export const sliceOrcamentos = createSlice({
     orcamentos: [],
     orcamento: {},
     orcamentoItensReq: [],
+    orcamentoItensProduto: [],
   },
   reducers: {
     orcamentoSuccess: (state, action) => {
@@ -24,6 +25,7 @@ export const sliceOrcamentos = createSlice({
         orcamento,
         orcamentoReq,
         itensOrcamentoReq,
+        itensOrcamentoReqProduto,
       } = action.payload;
       state.loading = false;
       if (itemOrcamento !== undefined) {
@@ -31,6 +33,9 @@ export const sliceOrcamentos = createSlice({
       }
       if (itensOrcamentoReq !== undefined) {
         state.orcamentoItensReq = itensOrcamentoReq;
+      }
+      if (itensOrcamentoReqProduto !== undefined) {
+        state.orcamentoItensProduto = itensOrcamentoReqProduto;
       }
       if (orcamentoReq !== undefined) {
         state.orcamentos = orcamentoReq;
@@ -95,6 +100,31 @@ export const getItensOrcamento = requisicao_id => {
       }
     } catch (error) {
       toast.error(`ERRO: Falha ao buscar item orçamento.   ${error.message}`);
+    }
+  };
+};
+
+export const getItensOrcamentoProduto = (requisicao_id, produto_id) => {
+  return async dispatch => {
+    try {
+      const response = await api.get(
+        `/orcamento/${requisicao_id}/itensorcamentoreq/${produto_id}`
+      );
+      const { itensOrcamentoProduto } = response.data;
+      const itensOrcamentoReqProduto = itensOrcamentoProduto.map(item => ({
+        ...item,
+        vlrUnit: formatPrice(item.valorunitario),
+        vlrTotal: formatPrice(item.valortotal),
+      }));
+
+      if (itensOrcamentoReqProduto.length >= 0) {
+        await dispatch(orcamentoSuccess({ itensOrcamentoReqProduto }));
+        return;
+      }
+    } catch (error) {
+      toast.error(
+        `ERRO: Falha ao buscar item orçamento relacionado ao produto.   ${error.message}`
+      );
     }
   };
 };

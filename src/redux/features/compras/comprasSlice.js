@@ -364,6 +364,9 @@ export const inserirItemRequisicao = payload => {
       );
       dispatch(addRequisicaoSuccess(response.data));
       dispatch(selectAllRequisicao());
+      dispatch(selectAllItemRequisicao(newRequisicao.idrequisicao));
+
+      toast.success('Produto adicionado!');
       return response.data;
     } catch (error) {
       toast.error(
