@@ -3,6 +3,8 @@ import {
   Table,
   Container,
   Button,
+  Dropdown,
+  DropdownButton,
   Modal,
   Form,
   Row,
@@ -188,6 +190,8 @@ export default function Fornecedores() {
             <th>Tipo de Fornecedor</th>
             <th>Observação</th>
             <th>Nome Fantasia</th>
+            <th>Razão Social</th>
+            <th>CNPJ</th>
             <th>Menu</th>
           </tr>
         </thead>
@@ -197,19 +201,23 @@ export default function Fornecedores() {
               <td>{fornecedor.tipofornece.descricao}</td>
               <td>{fornecedor.observacao}</td>
               <td>{fornecedor.nomefantasia}</td>
+              <td>{fornecedor.razaosocial}</td>
+              <td>{fornecedor.cpf_cnpj}</td>
               <td>
-                <Button
-                  className="btn-success"
-                  onClick={e => handleShowDetalhes(fornecedor, e)}
-                >
-                  Detalhes
-                </Button>{' '}
-                <Button
-                  className="btn-primary"
-                  onClick={e => handleShowEdit(fornecedor, e)}
-                >
-                  Editar
-                </Button>{' '}
+                <DropdownButton drop="left" size="sm" title="Opções">
+                  <Dropdown.Item
+                    as="button"
+                    onClick={e => handleShowDetalhes(fornecedor, e)}
+                  >
+                    Detalhes
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    as="button"
+                    onClick={e => handleShowEdit(fornecedor, e)}
+                  >
+                    Editar
+                  </Dropdown.Item>
+                </DropdownButton>
               </td>
             </tr>
           ))}
