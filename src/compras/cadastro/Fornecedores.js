@@ -27,6 +27,9 @@ export default function Fornecedores() {
   const [descricaoTipoFornecedor, setDescricaoTipoFornecedor] = useState('');
   const [tipoFornece, setTipoFornece] = useState(1);
   const [ativo, setAtivo] = useState();
+  const [cep, setCep] = useState('');
+  const [cidade, setCidade] = useState('');
+  const [estado, setEstado] = useState('');
   const [razaosocial, setRazaoSocial] = useState('');
   const [nomefantasia, setNomeFantasia] = useState('');
   const [cpf_cnpj, setCpfCnpj] = useState();
@@ -173,6 +176,18 @@ export default function Fornecedores() {
     setEmailPrincipal(forn.emailprincipal);
   }
 
+  async function preencheCep() {
+    await fetch(`https://viacep.com.br/ws/${cep}/json/`)
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        setEndereco(data.logradouro);
+        setCidade(data.localidade);
+        setEstado(data.uf);
+      })
+      .catch(error => Error(`Erro no CEP: ${error}`));
+  }
+
   return (
     <Container>
       <NavBar />
@@ -264,12 +279,46 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
+              CEP
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                onBlur={() => preencheCep()}
+                value={cep}
+                onChange={e => setCep(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
               Endereço
             </Form.Label>
             <Col sm="10">
               <Form.Control
                 value={endereco}
                 onChange={e => setEndereco(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Cidade
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={cidade}
+                onChange={e => setCidade(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Estado
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={estado}
+                onChange={e => setEstado(e.target.value)}
               />
             </Col>
           </Form.Group>
@@ -394,10 +443,34 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
+              CEP
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control readOnly value={cep} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
               Endereço
             </Form.Label>
             <Col sm="10">
               <Form.Control readOnly value={endereco} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Cidade
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control readOnly value={cidade} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Estado
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control readOnly value={estado} />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -484,11 +557,7 @@ export default function Fornecedores() {
         {showAlertError ? <AlertError /> : null}
 
         <Modal.Body>
-          <Form
-            // noValidate
-            // validated={validated}
-            onSubmit={handleCadastrarFornecedor}
-          >
+          <Form onSubmit={handleCadastrarFornecedor}>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Tipo de Fornecedor
@@ -566,12 +635,50 @@ export default function Fornecedores() {
             </Form.Group>
             <Form.Group as={Row}>
               <Form.Label column sm="2">
+                CEP
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  onBlur={() => preencheCep()}
+                  value={cep}
+                  type="text"
+                  onChange={e => setCep(e.target.value)}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
                 Endereço
               </Form.Label>
               <Col sm="10">
                 <Form.Control
+                  value={endereco}
                   type="text"
                   onChange={e => setEndereco(e.target.value)}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Cidade
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  value={cidade}
+                  type="text"
+                  onChange={e => setCidade(e.target.value)}
+                />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Estado
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control
+                  value={estado}
+                  type="text"
+                  onChange={e => setEstado(e.target.value)}
                 />
               </Col>
             </Form.Group>
