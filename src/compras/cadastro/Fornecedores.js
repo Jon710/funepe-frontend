@@ -66,11 +66,22 @@ export default function Fornecedores() {
     loadSelectTipoForn();
   }, [tipoFornecedores]);
 
+  function limpaCamposCPF() {
+    setCep('');
+    setEndereco('');
+    setEstado('');
+    setCidade('');
+  }
+
   const onChangeTipoForn = selectedOption =>
     setIdTipoFornecedor(selectedOption.value);
   const handleCloseEdit = () => setShowEdit(false);
   const handleCloseDetalhes = () => setShowDetalhes(false);
-  const handleShowCadastrar = () => setShow(true);
+
+  function handleShowCadastrar() {
+    setShow(true);
+    limpaCamposCPF();
+  }
   const handleCloseCadastrar = () => setShow(false);
 
   async function handleCadastrarFornecedor(e) {
@@ -162,6 +173,7 @@ export default function Fornecedores() {
   }
 
   function handleShowEdit(forn) {
+    limpaCamposCPF();
     setShowEdit(true);
     setIdFornecedor(forn.idfornecedor);
     setTipoFornece(forn.tipofornecedor);
@@ -174,13 +186,16 @@ export default function Fornecedores() {
     setObservacao(forn.observacao);
     setProdServicos(forn.prod_servicos);
     setEmailPrincipal(forn.emailprincipal);
+    setCep(forn.cep);
+    setEndereco(forn.endereco);
+    setEstado(forn.estado);
+    setCidade(forn.cidade);
   }
 
   async function preencheCep() {
     await fetch(`https://viacep.com.br/ws/${cep}/json/`)
       .then(response => response.json())
       .then(data => {
-        console.log(data);
         setEndereco(data.logradouro);
         setCidade(data.localidade);
         setEstado(data.uf);
