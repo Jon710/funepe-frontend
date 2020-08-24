@@ -77,12 +77,12 @@ export default function Fornecedores() {
     setIdTipoFornecedor(selectedOption.value);
   const handleCloseEdit = () => setShowEdit(false);
   const handleCloseDetalhes = () => setShowDetalhes(false);
+  const handleCloseCadastrar = () => setShow(false);
 
   function handleShowCadastrar() {
     setShow(true);
     limpaCamposCPF();
   }
-  const handleCloseCadastrar = () => setShow(false);
 
   async function handleCadastrarFornecedor(e) {
     e.preventDefault();
@@ -121,8 +121,9 @@ export default function Fornecedores() {
       });
   }
 
-  async function handleShowDetalhes(forn, e) {
-    e.preventDefault();
+  function handleShowDetalhes(forn) {
+    setShowDetalhes(true);
+
     setDescricaoTipoFornecedor(forn.tipofornece.descricao);
     setIdFornecedor(forn.idfornecedor);
     setIdTipoFornecedor(forn.idtipofornecedor);
@@ -135,8 +136,11 @@ export default function Fornecedores() {
     setRgIe(forn.rg_ie);
     setObservacao(forn.observacao);
     setProdServicos(forn.prod_servicos);
-
-    setShowDetalhes(true);
+    setCep(forn.cep);
+    setEndereco(forn.endereco);
+    setEstado(forn.estado);
+    setCidade(forn.cidade);
+    setEmailPrincipal(forn.emailprincipal);
   }
 
   async function handleEdit(e) {
@@ -151,6 +155,9 @@ export default function Fornecedores() {
       cpf_cnpj,
       rg_ie,
       endereco,
+      estado,
+      cidade,
+      cep,
       observacao,
       prod_servicos,
       emailprincipal,
@@ -173,7 +180,6 @@ export default function Fornecedores() {
   }
 
   function handleShowEdit(forn) {
-    limpaCamposCPF();
     setShowEdit(true);
     setIdFornecedor(forn.idfornecedor);
     setTipoFornece(forn.tipofornecedor);
