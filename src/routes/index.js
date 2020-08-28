@@ -65,6 +65,7 @@ export default function Routes() {
       />
       <Switch>
         <Route path="/" exact component={Auth} />
+        <Route path="/mailtoforn" component={EmailParaFornecedor} />
 
         {signed ? (
           <>
@@ -89,7 +90,6 @@ export default function Routes() {
             <Route path="/pdf" component={VisualizarPDF} />
             <Route path="/meuperfil" component={Perfil} />
             <Route path="/usuario" component={Usuario} />
-            <Route path="/mailtoforn" component={EmailParaFornecedor} />
           </>
         ) : (
           <Redirect to="/" />
