@@ -27,6 +27,7 @@ import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.m
 import { parseISO, format } from 'date-fns';
 import Select from 'react-select';
 import { MdFileDownload } from 'react-icons/md';
+import { toast } from 'react-toastify';
 import {
   getFirstRender,
   selectAllItemRequisicao,
@@ -43,6 +44,7 @@ import {
   getFirstRenderContext,
   modalClose,
   modalOpen,
+  showAlertErrorOpen,
 } from '../../redux/features/context/contextSlice';
 import {
   inserirOrcamento,
@@ -53,6 +55,7 @@ import NavBar from './NavBar';
 import Despacho from './Despacho';
 import Historico from './Historico';
 import VisualizarPDF from './VisualizarPDF';
+import api from '../../services/api';
 
 const CaptionElement = () => (
   <h3
@@ -385,7 +388,27 @@ export default function RequisicaoList() {
     },
   };
 
-  async function handleInserirOrcamento() {
+  async function enviarEmail(idforn) {
+    const fornecedor = {
+      idfornecedor: idforn,
+    };
+
+    await api
+      .post('sendmail', fornecedor)
+      .then(() => {
+        toast.success('E-mail enviado para o fornecedor!');
+      })
+      .catch(error => {
+        dispatch(
+          showAlertErrorOpen({
+            showAlertError: true,
+            alertError: `${error.response.data.error}`,
+          })
+        );
+      });
+  }
+
+  function handleGerarOrcamento() {
     arraySelectedFornecedores.map(fornecedor => {
       const newOrcamento = {
         idfornecedor: fornecedor.value,
@@ -397,6 +420,7 @@ export default function RequisicaoList() {
 
       dispatch(inserirOrcamento({ newOrcamento }));
       dispatch(inserirItemOrcamento());
+      enviarEmail(fornecedor.value);
     });
   }
 
@@ -492,7 +516,7 @@ export default function RequisicaoList() {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={handleInserirOrcamento}>
+          <Button variant="success" onClick={() => handleGerarOrcamento()}>
             Gerar
           </Button>
           <Button as={Link} className="Link" to="/formfornecedor">

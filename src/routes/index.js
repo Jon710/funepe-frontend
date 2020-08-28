@@ -26,6 +26,8 @@ import Orcamento from '../compras/requisicao/Orcamento';
 import OrcamentoReq from '../compras/requisicao/OrcamentoReq';
 import MinhaReq from '../compras/requisicao/MinhaReq';
 import VisualizarPDF from '../compras/requisicao/VisualizarPDF';
+import Perfil from '../pages/usuario/Perfil/index';
+import EmailParaFornecedor from '../compras/requisicao/EmailParaFornecedor';
 
 import { signOut } from '../store/modules/auth/actions';
 
@@ -85,8 +87,9 @@ export default function Routes() {
             <Route path="/orcamentoreq" component={OrcamentoReq} />
             <Route path="/minhareq" component={MinhaReq} />
             <Route path="/pdf" component={VisualizarPDF} />
-
+            <Route path="/meuperfil" component={Perfil} />
             <Route path="/usuario" component={Usuario} />
+            <Route path="/mailtoforn" component={EmailParaFornecedor} />
           </>
         ) : (
           <Redirect to="/" />

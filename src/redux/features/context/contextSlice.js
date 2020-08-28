@@ -153,7 +153,7 @@ export const getFirstRenderContext = () => {
 export const selectAllUsuarios = () => {
   return async dispatch => {
     try {
-      const response = await api.get(`usuarios`);
+      const response = await api.get('usuarios');
       const { users } = response.data;
       if (users.length >= 0) {
         await dispatch(contextoSuccess({ users }));
