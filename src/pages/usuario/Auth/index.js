@@ -10,10 +10,10 @@ export default function Auth() {
 
   function handleSubmit(event) {
     event.preventDefault();
-    const username = event.currentTarget.elements.formUsername.value;
+    const cpfusuario = event.currentTarget.elements.formUsername.value;
     const senha = event.currentTarget.elements.formBasicSenha.value;
 
-    dispatch(signInRequest(username, senha));
+    dispatch(signInRequest(cpfusuario, senha));
   }
 
   return (
@@ -34,14 +34,10 @@ export default function Auth() {
                     />
                   </div>
                   <Form.Group controlId="formUsername">
-                    <Form.Label>Nome de usuário</Form.Label>
-                    <Form.Control
-                      required
-                      type="text"
-                      placeholder="Nome de Usuário"
-                    />
+                    <Form.Label>CPF do Usuário</Form.Label>
+                    <Form.Control required type="text" placeholder="CPF" />
                     <Form.Control.Feedback type="invalid">
-                      Digite seu nome de usuário.
+                      Digite seu CPF.
                     </Form.Control.Feedback>
                   </Form.Group>
 
@@ -59,11 +55,6 @@ export default function Auth() {
                   <div className="text-center p-1">
                     <Button variant="primary" type="submit" block>
                       Acessar
-                    </Button>
-                  </div>
-                  <div className="text-center p-1">
-                    <Button variant="warning" block>
-                      Primeiro Acesso?
                     </Button>
                   </div>
                 </div>

@@ -2,24 +2,26 @@ import { takeLatest, call, put, all } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import history from '../../../services/history';
+import apiAuth from '../../../services/apiAuth';
 import api from '../../../services/api';
 
 import { signInSuccess, signFailure } from './actions';
 
 export function* signIn({ payload }) {
   try {
-    const { username, senha } = payload;
-    const response = yield call(api.post, 'sessions', {
-      username,
+    const { cpfusuario, senha } = payload;
+    const response = yield call(apiAuth.post, 'sessions', {
+      cpfusuario,
       senha,
     });
 
     const { token, user } = response.data;
-    api.defaults.headers.Authorization = `Bearer ${token}`;
+
     yield put(signInSuccess(token, user));
+
     history.push('/home');
   } catch (err) {
-    toast.error('Falha na auth, verifique seus dados');
+    toast.error('Falha na autenticação, verifique seus dados');
     yield put(signFailure());
   }
 }
@@ -30,6 +32,7 @@ export function setToken({ payload }) {
   const { token } = payload.auth;
 
   if (token) {
+    apiAuth.defaults.headers.Authorization = `Bearer ${token}`;
     api.defaults.headers.Authorization = `Bearer ${token}`;
   }
 }

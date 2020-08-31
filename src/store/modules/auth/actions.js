@@ -1,7 +1,7 @@
-export function signInRequest(username, senha) {
+export function signInRequest(cpfusuario, senha) {
   return {
     type: '@auth/SIGN_IN_REQUEST',
-    payload: { username, senha },
+    payload: { cpfusuario, senha },
   };
 }
 
@@ -12,10 +12,10 @@ export function signInSuccess(token, user) {
   };
 }
 
-export function signUpRequest(username, senha) {
+export function signUpRequest(cpfusuario, senha) {
   return {
     type: '@auth/SIGN_UP_REQUEST',
-    payload: { username, senha },
+    payload: { cpfusuario, senha },
   };
 }
 
