@@ -37,6 +37,7 @@ export default function Fornecedores() {
   const [observacao, setObservacao] = useState('');
   const [prod_servicos, setProdServicos] = useState('');
   const [emailprincipal, setEmailPrincipal] = useState('');
+  const [telefone, setTelefone] = useState();
   const [inscricaomunicipal, setInscricaoMunicipal] = useState('');
   const [endereco, setEndereco] = useState('');
   const [show, setShow] = useState(false);
@@ -100,6 +101,7 @@ export default function Fornecedores() {
       inscricaomunicipal,
       emailprincipal,
       endereco,
+      telefone,
     };
 
     await api
@@ -141,6 +143,7 @@ export default function Fornecedores() {
     setEstado(forn.estado);
     setCidade(forn.cidade);
     setEmailPrincipal(forn.emailprincipal);
+    setTelefone(forn.telefone);
   }
 
   async function handleEdit(e) {
@@ -161,6 +164,7 @@ export default function Fornecedores() {
       observacao,
       prod_servicos,
       emailprincipal,
+      telefone,
     };
 
     await api
@@ -196,6 +200,7 @@ export default function Fornecedores() {
     setEndereco(forn.endereco);
     setEstado(forn.estado);
     setCidade(forn.cidade);
+    setTelefone(forn.telefone);
   }
 
   async function preencheCep() {
@@ -389,6 +394,17 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
+              Telefone
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={telefone}
+                onChange={e => setTelefone(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
               CPF/CNPF
             </Form.Label>
             <Col sm="10">
@@ -528,6 +544,14 @@ export default function Fornecedores() {
           </Form.Group>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
+              Telefone
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control value={telefone} readOnly />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
               CPF/CNPF
             </Form.Label>
             <Col sm="10">
@@ -652,6 +676,14 @@ export default function Fornecedores() {
                   type="text"
                   onChange={e => setNomeFantasia(e.target.value)}
                 />
+              </Col>
+            </Form.Group>
+            <Form.Group as={Row}>
+              <Form.Label column sm="2">
+                Telefone
+              </Form.Label>
+              <Col sm="10">
+                <Form.Control onChange={e => setTelefone(e.target.value)} />
               </Col>
             </Form.Group>
             <Form.Group as={Row}>

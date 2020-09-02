@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Nav, Navbar } from 'react-bootstrap';
 
 import { signOut } from '../../store/modules/auth/actions';
 import logo from '../../assets/logo-funepe.jpg';
@@ -29,18 +29,6 @@ export default function NavBar() {
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <NavDropdown title="Configurações" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/usuario">Usuários</NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="/tipoarquivo">
-              Tipos de Arquivos
-            </NavDropdown.Item>
-            <NavDropdown.Item href="/tipodocumento">
-              Tipos de Documentos
-            </NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="/cadastros">Cadastros</NavDropdown.Item>
-          </NavDropdown>
           <Nav.Link onClick={handleSignOut} href="/">
             Sair
           </Nav.Link>

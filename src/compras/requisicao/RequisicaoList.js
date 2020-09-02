@@ -26,8 +26,10 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import { parseISO, format } from 'date-fns';
 import Select from 'react-select';
+
 import { MdFileDownload } from 'react-icons/md';
 import { toast } from 'react-toastify';
+import AlertError from '../../pages/alerts/AlertError';
 import {
   getFirstRender,
   selectAllItemRequisicao,
@@ -90,7 +92,9 @@ export default function RequisicaoList() {
   const { requisicoesItem, arquivos, fornecedores, requisicao } = useSelector(
     state => state.compras
   );
-  const { orcamentoModal } = useSelector(state => state.contexto);
+  const { orcamentoModal, showAlertError } = useSelector(
+    state => state.contexto
+  );
   const {
     despachaRequisicaoModal,
     visualizaHistoricoModal,
@@ -388,28 +392,8 @@ export default function RequisicaoList() {
     },
   };
 
-  async function enviarEmail(idforn) {
-    const fornecedor = {
-      idfornecedor: idforn,
-    };
-
-    await api
-      .post('sendmail', fornecedor)
-      .then(() => {
-        toast.success('E-mail enviado para o fornecedor!');
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error}`,
-          })
-        );
-      });
-  }
-
   function handleGerarOrcamento() {
-    arraySelectedFornecedores.map(fornecedor => {
+    arraySelectedFornecedores.map(async fornecedor => {
       const newOrcamento = {
         idfornecedor: fornecedor.value,
         idrequisicao: requisicao.idrequisicao,
@@ -418,9 +402,25 @@ export default function RequisicaoList() {
         endereco,
       };
 
-      dispatch(inserirOrcamento({ newOrcamento }));
-      dispatch(inserirItemOrcamento());
-      enviarEmail(fornecedor.value);
+      const forn = {
+        idfornecedor: fornecedor.value,
+      };
+
+      await api
+        .post('sendmail', forn)
+        .then(() => {
+          toast.success('E-mail enviado para o fornecedor!');
+          dispatch(inserirOrcamento({ newOrcamento }));
+          dispatch(inserirItemOrcamento());
+        })
+        .catch(error => {
+          dispatch(
+            showAlertErrorOpen({
+              showAlertError: true,
+              alertError: `${error.response.data.error}`,
+            })
+          );
+        });
     });
   }
 
@@ -491,6 +491,8 @@ export default function RequisicaoList() {
         <Modal.Header closeButton>
           <Modal.Title>Gerar orçamento</Modal.Title>
         </Modal.Header>
+        {showAlertError ? <AlertError /> : null}
+
         <Modal.Body>
           <Form.Group as={Row}>
             <Col>
