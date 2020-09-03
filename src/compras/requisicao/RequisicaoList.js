@@ -392,7 +392,7 @@ export default function RequisicaoList() {
     },
   };
 
-  function handleGerarOrcamento() {
+  function handleEnviarEmail() {
     arraySelectedFornecedores.map(async fornecedor => {
       const newOrcamento = {
         idfornecedor: fornecedor.value,
@@ -417,10 +417,25 @@ export default function RequisicaoList() {
           dispatch(
             showAlertErrorOpen({
               showAlertError: true,
-              alertError: `${error.response.data.error}`,
+              alertError: `${error.response.data.error} Deseja gerar orçamento assim mesmo?`,
             })
           );
         });
+    });
+  }
+
+  function handleGerarOrcamento() {
+    arraySelectedFornecedores.map(async fornecedor => {
+      const newOrcamento = {
+        idfornecedor: fornecedor.value,
+        idrequisicao: requisicao.idrequisicao,
+        idsolicitante: requisicao.idsolicitante,
+        dataorcamento,
+        endereco,
+      };
+
+      dispatch(inserirOrcamento({ newOrcamento }));
+      dispatch(inserirItemOrcamento());
     });
   }
 
@@ -491,7 +506,16 @@ export default function RequisicaoList() {
         <Modal.Header closeButton>
           <Modal.Title>Gerar orçamento</Modal.Title>
         </Modal.Header>
-        {showAlertError ? <AlertError /> : null}
+        {showAlertError ? (
+          <Card>
+            <Card.Header>
+              <AlertError />
+              <Button block onClick={handleGerarOrcamento}>
+                SIM
+              </Button>
+            </Card.Header>
+          </Card>
+        ) : null}
 
         <Modal.Body>
           <Form.Group as={Row}>
@@ -518,7 +542,7 @@ export default function RequisicaoList() {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={() => handleGerarOrcamento()}>
+          <Button variant="success" onClick={() => handleEnviarEmail()}>
             Gerar
           </Button>
           <Button as={Link} className="Link" to="/formfornecedor">

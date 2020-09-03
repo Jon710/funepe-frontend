@@ -8,6 +8,10 @@ import {
   Table,
   Modal,
   Button,
+  Dropdown,
+  DropdownButton,
+  Form,
+  Col,
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -41,10 +45,13 @@ const SpinnerLine = () => (
 
 export default function OrcamentoReq() {
   const dispatch = useDispatch();
-  const { orcamentos, orcamentosItem } = useSelector(state => state.orcamentos);
+  const { orcamentos, orcamentosItem, orcamentoItensProduto } = useSelector(
+    state => state.orcamentos
+  );
   const { orcamentoPrecosModal } = useSelector(state => state.contexto);
   const { requisicao } = useSelector(state => state.compras);
   const [loading, setLoading] = useState(true);
+  const [show, setShow] = useState(false);
   const CaptionElement = () => (
     <h3
       style={{
@@ -87,7 +94,13 @@ export default function OrcamentoReq() {
     dispatch(modalOpen());
   }
 
-  const handleClose = () => dispatch(modalClose());
+  const handleClose = () => {
+    dispatch(modalClose());
+    setShow(false);
+  };
+
+  const handleShow = () => setShow(true);
+  const handleSalvarProduto = () => {}; // ALGO AQUI
 
   const columns = [
     {
@@ -121,7 +134,16 @@ export default function OrcamentoReq() {
       text: 'Menu',
       dataField: 'idrequisicao',
       formatter: () => {
-        return <Button onClick={handleCompararPrecos}>Obter preços</Button>;
+        return (
+          <DropdownButton drop="left" size="sm" title="Opções">
+            <Dropdown.Item as="button" onClick={handleShow}>
+              Alterar preços
+            </Dropdown.Item>
+            <Dropdown.Item as="button" onClick={handleCompararPrecos}>
+              Obter preços
+            </Dropdown.Item>
+          </DropdownButton>
+        );
       },
     },
   ];
@@ -245,6 +267,52 @@ export default function OrcamentoReq() {
           <PriceTable />
         </Modal.Body>
         <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Fechar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal size="lg" show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Alterar Preço</Modal.Title>
+        </Modal.Header>
+        <Modal.Body align="center">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>ID Produto</th>
+                <th>Produto</th>
+                <th>Fornecedor</th>
+                <th>Preço</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orcamentoItensProduto.map(item => (
+                <tr key={item.idorcamento}>
+                  <td>{item.idproduto}</td>
+                  <td>{item.descricao}</td>
+                  <td>{item.nomefantasia}</td>
+                  <td>
+                    <Form.Group as={Col}>
+                      <Form.Control
+                        onBlur={handleSalvarProduto}
+                        as="textarea"
+                        rows="1"
+                        // value={observacao}
+                        // onChange={e => setObservacao(e.target.value)}
+                      />
+                    </Form.Group>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleSalvarProduto}>
+            Salvar
+          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Fechar
           </Button>

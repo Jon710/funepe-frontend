@@ -6,7 +6,6 @@ import { showAlertErrorClose } from '../../redux/features/context/contextSlice';
 export default function AlertError() {
   const { showAlertError, alertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
-  console.log(alertError);
 
   function handleCloseAlert() {
     dispatch(showAlertErrorClose({ showAlertError: false, alertError: '' }));
