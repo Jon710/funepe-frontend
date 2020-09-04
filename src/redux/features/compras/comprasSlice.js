@@ -35,7 +35,7 @@ export const sliceCompras = createSlice({
       // console.log(action.payload);
       const {
         requisicoes,
-        produtos,
+        listaProdutos,
         empresas,
         fornecedores,
         departamentos,
@@ -69,8 +69,8 @@ export const sliceCompras = createSlice({
       if (empresas !== undefined) {
         state.empresas = empresas;
       }
-      if (produtos !== undefined) {
-        state.produtos = produtos;
+      if (listaProdutos !== undefined) {
+        state.produtos = listaProdutos;
       }
       if (fornecedores !== undefined) {
         state.fornecedores = fornecedores;
@@ -176,6 +176,7 @@ export const getFirstRender = usuario => {
       if (requisicoes.length >= 0) {
         dispatch(selectAllFornecedores());
         dispatch(selectAllDepartamentos());
+        dispatch(selectAllProdutos());
         dispatch(selectAllMarcas());
         dispatch(selectAllCategorias());
         dispatch(selectAllUnidadeMedidas());
@@ -411,6 +412,27 @@ export const selectAllDepartamentos = () => {
       toast.error(
         `ERRO: Falha na busca de Departamentos (selectAllDepartamentos)!  ${error.message}`
       );
+    }
+  };
+};
+
+export const selectAllProdutos = () => {
+  console.log('oi');
+
+  return async dispatch => {
+    try {
+      const response = await api.get('produtos');
+      console.log(response.data);
+      const { listaProdutos } = response.data;
+      if (listaProdutos.length >= 0) {
+        await dispatch(requisicaoSuccess({ listaProdutos }));
+        return listaProdutos;
+      }
+
+      toast.info('Nenhum Registro Localizado!');
+      return;
+    } catch (error) {
+      toast.error(`ERRO: Falha na busca de Produtos!  ${error.message}`);
     }
   };
 };

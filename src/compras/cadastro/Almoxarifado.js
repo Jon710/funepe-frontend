@@ -10,68 +10,21 @@ import {
 } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
-// import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
 import api from '../../services/api';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
 
-export default function Servicos() {
+export default function Almoxarifado() {
   const [idproduto, setIdProduto] = useState();
   const [descricao, setDescricao] = useState('');
   const [inativar, setInativar] = useState();
   const [idcategoria, setIdCategoria] = useState();
   const [tipo, setTipo] = useState('');
-  // const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  // const [validated, setValidated] = useState(false);
 
   const { produtos } = useSelector(state => state.compras);
-  // const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
-
-  // async function handleCadastrarServico(e) {
-  //   const form = e.currentTarget;
-  //   if (form.checkValidity() === false) {
-  //     e.stopPropagation();
-  //   } else {
-  //     e.preventDefault();
-
-  //     const novoServico = {
-  //       idproduto: 1,
-  //       descricao,
-  //       inativar,
-  //       idcategoria: 1,
-  //     };
-
-  //     await api
-  //       .post('produto', novoServico)
-  //       .then(() => {
-  //         toast.success('Serviço cadastrado com sucesso!');
-
-  //         setShow(false);
-  //       })
-  //       .catch(error => {
-  //         console.log(error.response.data.error);
-  //         //   dispatch(
-  //         //     showAlertErrorOpen({
-  //         //       showAlertError: true,
-  //         //       alertError: `${error.response.data.error}`,
-  //         //     })
-  //         //   );
-  //       });
-  //   }
-
-  //   setValidated(true);
-  // }
-
-  // function handleShowCadastrar() {
-  //   setShow(true);
-  // }
-
-  // function handleCloseCadastrar() {
-  //   setShow(false);
-  // }
 
   async function handleShowDetalhes(prod, e) {
     e.preventDefault();
@@ -111,35 +64,22 @@ export default function Servicos() {
       });
   }
 
-  // function handleShowEdit(prod) {
-  //   setShowEdit(true);
-  //   setIdProduto(prod.idproduto);
-  //   setDescricao(prod.descricao);
-  //   setInativar(prod.inativa);
-  //   setIdCategoria(prod.idcategoria);
-  // }
-
   function handleCloseEdit() {
     setShowEdit(false);
   }
 
+  console.log(produtos);
+
   return (
     <Container>
       <NavBar />
-      {/* <div>
-        <Button className="btn-success" onClick={handleShowCadastrar}>
-          Cadastrar Serviço
-        </Button>
-      </div> */}
       <br />
-      {/* {showAlertError ? <AlertError /> : null} */}
 
       <Table striped bordered responsive>
         <thead>
           <tr>
             <th>ID</th>
             <th>Descrição</th>
-            {/* <th>Inativa</th> */}
             <th>Menu</th>
           </tr>
         </thead>
@@ -147,8 +87,7 @@ export default function Servicos() {
           {produtos.map(produto => (
             <tr key={produto.idproduto}>
               <td>{produto.idproduto}</td>
-              <td>{produto.descricao}</td>
-              {/* <td>{produto.inativar}</td> */}
+              <td>{produto.produto}</td>
               <td>
                 <Button
                   className="btn-success"
@@ -156,12 +95,6 @@ export default function Servicos() {
                 >
                   Detalhes
                 </Button>{' '}
-                {/* <Button
-                  className="btn-primary"
-                  onClick={e => handleShowEdit(produto, e)}
-                >
-                  Editar
-                </Button>{' '} */}
               </td>
             </tr>
           ))}
@@ -213,14 +146,6 @@ export default function Servicos() {
               <Form.Control readOnly value={idproduto} />
             </Col>
           </Form.Group>
-          {/* <Form.Group as={Row}>
-            <Form.Label column sm="2">
-              Inativar
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control readOnly value={inativar} />
-            </Col>
-          </Form.Group> */}
           <Form.Group as={Row}>
             <Form.Label column sm="2">
               Descrição
@@ -229,59 +154,8 @@ export default function Servicos() {
               <Form.Control readOnly value={descricao} />
             </Col>
           </Form.Group>
-          {/* <Form.Group as={Row}>
-            <Form.Label column sm="2">
-              ID Categoria
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control readOnly value={idcategoria} />
-            </Col>
-          </Form.Group> */}
-          {/* <Form.Group as={Row}>
-            <Form.Label column sm="2">
-              Tipo
-            </Form.Label>
-            <Col sm="10">
-              <Form.Control readOnly value={tipo} />
-            </Col>
-          </Form.Group> */}
         </Modal.Body>
       </Modal>
-
-      {/* <Modal show={show} onHide={handleCloseCadastrar}>
-        <Modal.Header closeButton>
-          <Modal.Title>Novo Serviço</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form
-            noValidate
-            validated={validated}
-            onSubmit={handleCadastrarServico}
-          >
-            <Form.Group controlId="validationProd">
-              <Form.Control
-                type="text"
-                placeholder="Descrição"
-                onChange={e => setDescricao(e.target.value)}
-                required
-              />
-              <br />
-              <Form.Control
-                type="text"
-                placeholder="Inativar"
-                onChange={e => setInativar(e.target.value)}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Favor preencher os campos.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Button type="submit" variant="primary">
-              Criar
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal> */}
     </Container>
   );
 }

@@ -16,7 +16,7 @@ import Fornecedores from '../compras/cadastro/Fornecedores';
 import Categoria from '../compras/cadastro/Categoria';
 import Marcas from '../compras/cadastro/Marcas';
 import Produtos from '../compras/cadastro/Produtos';
-import Servicos from '../compras/cadastro/Servicos';
+import Almoxarifado from '../compras/cadastro/Almoxarifado';
 import UnidadeMedida from '../compras/cadastro/UnidadeMedida';
 import TipoTelefone from '../compras/cadastro/TipoTelefone';
 import TipoEmpresa from '../compras/cadastro/TipoEmpresa';
@@ -78,7 +78,7 @@ export default function Routes() {
             <Route path="/formfornecedor" component={Fornecedores} />
             <Route path="/formcategoria" component={Categoria} />
             <Route path="/formmarca" component={Marcas} />
-            <Route path="/formservico" component={Servicos} />
+            <Route path="/almoxarifado" component={Almoxarifado} />
             <Route path="/formproduto" component={Produtos} />
             <Route path="/formtipotel" component={TipoTelefone} />
             <Route path="/formtipoforn" component={TipoFornecedor} />

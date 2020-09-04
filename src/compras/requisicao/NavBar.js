@@ -6,6 +6,8 @@ import { signOut } from '../../store/modules/auth/actions';
 import logo from '../../assets/logo-funepe.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+import { selectAllProdutos } from '../../redux/features/compras/comprasSlice';
+
 export default function NavBar() {
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
@@ -14,6 +16,10 @@ export default function NavBar() {
   function handleSignOut() {
     dispatch(signOut());
   }
+
+  // function handleAllProdutos() {
+  //   dispatch(selectAllProdutos());
+  // }
 
   return (
     <Navbar bg="success" expand="lg">
@@ -52,8 +58,8 @@ export default function NavBar() {
             </NavDropdown.Item>
             <NavDropdown.Item href="/formmarca">Marcas</NavDropdown.Item>
             <NavDropdown.Item href="/formproduto">Produtos</NavDropdown.Item>
-            <NavDropdown.Item href="/formservico">
-              Ver todos os produtos
+            <NavDropdown.Item href="/almoxarifado">
+              Controle de Almoxarifado
             </NavDropdown.Item>
             <NavDropdown.Item href="/formmedida">
               Unidades de Medida
