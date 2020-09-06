@@ -417,13 +417,11 @@ export const selectAllDepartamentos = () => {
 };
 
 export const selectAllProdutos = () => {
-  console.log('oi');
-
   return async dispatch => {
     try {
       const response = await api.get('produtos');
-      console.log(response.data);
       const { listaProdutos } = response.data;
+
       if (listaProdutos.length >= 0) {
         await dispatch(requisicaoSuccess({ listaProdutos }));
         return listaProdutos;

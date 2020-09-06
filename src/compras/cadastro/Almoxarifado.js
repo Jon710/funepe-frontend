@@ -12,74 +12,73 @@ import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import NavBar from '../requisicao/NavBar';
 import api from '../../services/api';
+import AlertError from '../../pages/alerts/AlertError';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
+import { selectAllProdutos } from '../../redux/features/compras/comprasSlice';
+import { formatPrice } from '../../services/formatPrice';
 
 export default function Almoxarifado() {
   const [idproduto, setIdProduto] = useState();
   const [descricao, setDescricao] = useState('');
-  const [inativar, setInativar] = useState();
-  const [idcategoria, setIdCategoria] = useState();
-  const [tipo, setTipo] = useState('');
-  const [showDetalhes, setShowDetalhes] = useState(false);
+  const [unidade, setUnidade] = useState('');
+  const [valor, setValor] = useState();
+  const [quantidade, setQuantidade] = useState();
   const [showEdit, setShowEdit] = useState(false);
-
   const { produtos } = useSelector(state => state.compras);
+  const { showAlertError } = useSelector(state => state.contexto);
   const dispatch = useDispatch();
 
-  async function handleShowDetalhes(prod, e) {
-    e.preventDefault();
-    setIdProduto(prod.idproduto);
-    setDescricao(prod.descricao);
-    setInativar(prod.inativar);
-    setIdCategoria(prod.idcategoria);
-
-    setShowDetalhes(true);
-  }
-
-  function handleCloseDetalhes() {
-    setShowDetalhes(false);
-  }
+  const handleCloseEdit = () => setShowEdit(false);
 
   async function handleEdit(e) {
     e.preventDefault();
-    const editServico = {
+    const editProduto = {
       idproduto,
       descricao,
-      inativar,
-      idcategoria,
+      unidade,
+      valorunitario: valor,
+      qtdestoque: quantidade,
     };
 
     await api
-      .put(`produto/${idproduto}`, editServico)
+      .put(`produtos/${idproduto}`, editProduto)
       .then(() => {
-        toast.success('Serviço atualizado com sucesso!');
+        toast.success('Produto atualizado!');
+        dispatch(selectAllProdutos());
       })
       .catch(error => {
         dispatch(
           showAlertErrorOpen({
             showAlertError: true,
-            alertError: `${error.response.data.error} Problema com a ${descricao}`,
+            alertError: `${error.response.data.error}`,
           })
         );
       });
   }
 
-  function handleCloseEdit() {
-    setShowEdit(false);
-  }
+  function handleShowEdit(prod, e) {
+    e.preventDefault();
+    setIdProduto(prod.idproduto);
+    setDescricao(prod.produto);
+    setUnidade(prod.unidade);
+    setValor(prod.valor);
+    setQuantidade(prod.quantidade);
 
-  console.log(produtos);
+    setShowEdit(true);
+  }
 
   return (
     <Container>
       <NavBar />
       <br />
-
       <Table striped bordered responsive>
         <thead>
           <tr>
             <th>ID</th>
             <th>Descrição</th>
+            <th>Unidade</th>
+            <th>Valor</th>
+            <th>Quantidade</th>
             <th>Menu</th>
           </tr>
         </thead>
@@ -88,12 +87,15 @@ export default function Almoxarifado() {
             <tr key={produto.idproduto}>
               <td>{produto.idproduto}</td>
               <td>{produto.produto}</td>
+              <td>{produto.unidade}</td>
+              <td>{formatPrice(Number(produto.valor))}</td>
+              <td>{produto.quantidade}</td>
               <td>
                 <Button
-                  className="btn-success"
-                  onClick={e => handleShowDetalhes(produto, e)}
+                  className="primary"
+                  onClick={e => handleShowEdit(produto, e)}
                 >
-                  Detalhes
+                  Editar
                 </Button>{' '}
               </td>
             </tr>
@@ -101,49 +103,19 @@ export default function Almoxarifado() {
         </tbody>
       </Table>
 
-      <Modal show={showEdit} onHide={handleCloseEdit}>
+      <Modal show={showEdit} onHide={handleCloseEdit} size="lg">
         <Modal.Header closeButton>
           <Modal.Title>Editar</Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control
-                type="input"
-                value={descricao}
-                onChange={e => setDescricao(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={inativar}
-                onChange={e => setInativar(e.target.value)}
-              />
-              <br />
-              <Form.Control
-                type="input"
-                value={tipo}
-                onChange={e => setTipo(e.target.value)}
-              />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="primary" onClick={handleEdit}>
-            Atualizar
-          </Button>
-        </Modal.Body>
-      </Modal>
+        {showAlertError ? <AlertError /> : null}
 
-      <Modal show={showDetalhes} onHide={handleCloseDetalhes} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Detalhes</Modal.Title>
-        </Modal.Header>
         <Modal.Body>
           <Form.Group as={Row}>
             <Form.Label column sm="2">
-              ID
+              ID Produto
             </Form.Label>
             <Col sm="10">
-              <Form.Control readOnly value={idproduto} />
+              <Form.Control value={idproduto} readOnly />
             </Col>
           </Form.Group>
           <Form.Group as={Row}>
@@ -154,6 +126,40 @@ export default function Almoxarifado() {
               <Form.Control readOnly value={descricao} />
             </Col>
           </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Unidade
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control readOnly value={unidade} />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Valor
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={valor}
+                onChange={e => setValor(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Form.Group as={Row}>
+            <Form.Label column sm="2">
+              Quantidade
+            </Form.Label>
+            <Col sm="10">
+              <Form.Control
+                value={quantidade}
+                type="number"
+                onChange={e => setQuantidade(e.target.value)}
+              />
+            </Col>
+          </Form.Group>
+          <Button type="submit" variant="primary" onClick={handleEdit}>
+            Atualizar
+          </Button>
         </Modal.Body>
       </Modal>
     </Container>

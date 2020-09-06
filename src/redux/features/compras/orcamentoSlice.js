@@ -57,7 +57,6 @@ export default sliceOrcamentos.reducer;
 
 // API REQUEST ACTIONS HANDLED WITH REDUX-THUNK MIDDLEWARE BUILT INTO REDUX TOOLKIT -->
 /** *************THUNKS************** */
-
 export const selectAllItemOrcamento = orcamento_id => {
   return async dispatch => {
     try {
