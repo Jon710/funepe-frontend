@@ -17,7 +17,6 @@ export default function UnidadeMedida() {
   const [show, setShow] = useState(false);
   const [showDetalhes, setShowDetalhes] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
   const [validated, setValidated] = useState(false);
   const dispatch = useDispatch();
 
@@ -59,37 +58,6 @@ export default function UnidadeMedida() {
 
   function handleCloseCadastrar() {
     setShow(false);
-  }
-
-  async function handleDelete(e) {
-    e.preventDefault();
-
-    await api
-      .delete(`unidademedida/${idunidade}`)
-      .then(() => {
-        toast.success('Categoria deletada!');
-        dispatch(selectAllUnidadeMedidas());
-        setShowDelete(false);
-      })
-      .catch(error => {
-        dispatch(
-          showAlertErrorOpen({
-            showAlertError: true,
-            alertError: `${error.response.data.error} ID ${idunidade} está relacionado com outro Produto.`,
-          })
-        );
-      });
-  }
-
-  function handleShowDelete(unidade, e) {
-    e.preventDefault();
-    setDescricaoUnidade(unidade.descricao);
-    setIdUnidade(unidade.idunidade);
-    setShowDelete(true);
-  }
-
-  function handleCloseDelete() {
-    setShowDelete(false);
   }
 
   async function handleShowDetalhes(unidade, e) {
@@ -172,39 +140,11 @@ export default function UnidadeMedida() {
                 >
                   Editar
                 </Button>{' '}
-                <Button
-                  className="btn-danger"
-                  onClick={e => handleShowDelete(unidade, e)}
-                >
-                  Deletar
-                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <Modal show={showDelete} onHide={handleCloseDelete}>
-        <Modal.Header closeButton>
-          <Modal.Title as="h5">
-            Tem certeza que deseja deletar esta unidade de medida?
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Control
-                readOnly
-                type="input"
-                defaultValue={descricaoUnidade}
-              />
-            </Form.Group>
-          </Form>
-          <Button type="submit" variant="danger" onClick={handleDelete}>
-            Confirmar
-          </Button>
-        </Modal.Body>
-      </Modal>
 
       <Modal show={showEdit} onHide={handleCloseEdit}>
         <Modal.Header closeButton>
