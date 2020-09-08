@@ -7,7 +7,6 @@ import { parseISO, format } from 'date-fns';
 import api from '../../../services/api';
 import { formatPrice } from '../../../services/formatPrice';
 
-// createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 export const sliceOrcamentos = createSlice({
   name: 'orcamentos',
   initialState: {
@@ -20,6 +19,7 @@ export const sliceOrcamentos = createSlice({
   },
   reducers: {
     orcamentoSuccess: (state, action) => {
+      // console.log(action.payload);
       const {
         itemOrcamento,
         orcamento,

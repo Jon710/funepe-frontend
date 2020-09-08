@@ -16,7 +16,9 @@ import {
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
+import { toast } from 'react-toastify';
 import PriceTable from './PriceTable';
+import AlertError from '../../pages/alerts/AlertError';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import {
   orcamentoSuccess,
@@ -27,8 +29,10 @@ import {
 import {
   modalOpen,
   modalClose,
+  showAlertErrorOpen,
 } from '../../redux/features/context/contextSlice';
 import NavBar from './NavBar';
+import api from '../../services/api';
 
 const SpinnerLine = () => (
   <>
@@ -45,12 +49,13 @@ const SpinnerLine = () => (
 
 export default function OrcamentoReq() {
   const dispatch = useDispatch();
-  const { orcamentos, orcamentosItem, orcamentoItensProduto } = useSelector(
-    state => state.orcamentos
+  const { orcamentos, orcamentosItem } = useSelector(state => state.orcamentos);
+  const { orcamentoPrecosModal, showAlertError } = useSelector(
+    state => state.contexto
   );
-  const { orcamentoPrecosModal } = useSelector(state => state.contexto);
   const { requisicao } = useSelector(state => state.compras);
   const [loading, setLoading] = useState(true);
+  const [valorunitario, setValorUnitario] = useState();
   const [show, setShow] = useState(false);
   const CaptionElement = () => (
     <h3
@@ -67,27 +72,12 @@ export default function OrcamentoReq() {
   );
 
   useEffect(() => {
-    //   // const arrayFornecedores = [];
-
-    //   // async function loadFornecedores() {
-    //   //   if (fornecedores.length > 0) {
-    //   //     fornecedores.forEach(fornecedor => {
-    //   //       arrayFornecedores.push({
-    //   //         value: fornecedor.idfornecedor,
-    //   //         label: fornecedor.nomefantasia,
-    //   //       });
-    //   //     });
-    //   //   }
-    //   //   setDescricaoFornecedor(arrayFornecedores);
-    //   // }
-
     function loadOrcamentos() {
       setLoading(true);
       dispatch(selectAllOrcamentos(requisicao.idrequisicao));
       setLoading(false);
     }
     loadOrcamentos();
-    // loadFornecedores();
   }, [dispatch, requisicao.idrequisicao]);
 
   function handleCompararPrecos() {
@@ -100,7 +90,30 @@ export default function OrcamentoReq() {
   };
 
   const handleShow = () => setShow(true);
-  const handleSalvarProduto = () => {}; // ALGO AQUI
+
+  async function handleSalvarProduto(item) {
+    const saveProduto = {
+      valorunitario,
+    };
+
+    await api
+      .put(
+        `orcamento/${item.idorcamento}/itemorcamento/${item.iditemorcamento}`,
+        saveProduto
+      )
+      .then(() => {
+        toast.success('Produto atualizado!');
+        dispatch(selectAllItemOrcamento(item.idorcamento));
+      })
+      .catch(error => {
+        dispatch(
+          showAlertErrorOpen({
+            showAlertError: true,
+            alertError: `${error.response.data.error}`,
+          })
+        );
+      });
+  }
 
   const columns = [
     {
@@ -277,30 +290,32 @@ export default function OrcamentoReq() {
         <Modal.Header closeButton>
           <Modal.Title>Alterar Preço</Modal.Title>
         </Modal.Header>
+        {showAlertError ? <AlertError /> : null}
         <Modal.Body align="center">
           <Table striped bordered hover>
             <thead>
               <tr>
-                <th>ID Produto</th>
+                <th>ID</th>
                 <th>Produto</th>
                 <th>Fornecedor</th>
                 <th>Preço</th>
+                <th>Alterar</th>
               </tr>
             </thead>
             <tbody>
-              {orcamentoItensProduto.map(item => (
+              {orcamentosItem.map(item => (
                 <tr key={item.idorcamento}>
                   <td>{item.idproduto}</td>
-                  <td>{item.descricao}</td>
-                  <td>{item.nomefantasia}</td>
+                  <td>{item.produto.descricao}</td>
+                  <td>{item.orcamento.fornecedor.nomefantasia}</td>
+                  <td>{item.vlrUnit}</td>
                   <td>
                     <Form.Group as={Col}>
                       <Form.Control
-                        onBlur={handleSalvarProduto}
+                        onBlur={() => handleSalvarProduto(item)}
                         as="textarea"
                         rows="1"
-                        // value={observacao}
-                        // onChange={e => setObservacao(e.target.value)}
+                        onChange={e => setValorUnitario(e.target.value)}
                       />
                     </Form.Group>
                   </td>
@@ -310,9 +325,6 @@ export default function OrcamentoReq() {
           </Table>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={handleSalvarProduto}>
-            Salvar
-          </Button>
           <Button variant="secondary" onClick={handleClose}>
             Fechar
           </Button>
