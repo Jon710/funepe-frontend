@@ -26,7 +26,6 @@ import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import { parseISO, format } from 'date-fns';
 import Select from 'react-select';
-
 import { MdFileDownload } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import AlertError from '../../pages/alerts/AlertError';
@@ -110,8 +109,6 @@ export default function RequisicaoList() {
     []
   );
   const [descricaoFornecedor, setDescricaoFornecedor] = useState('');
-  const [dataorcamento, setDataOrcamento] = useState(new Date());
-  const [endereco, setEndereco] = useState('Rua União');
 
   useEffect(() => {
     const arrayFornecedores = [];
@@ -158,39 +155,18 @@ export default function RequisicaoList() {
     loadFornecedores();
   }, [dispatch, count, updatedRequisicao, requisicaoDespachada]);
 
-  async function editRequisicao() {
-    dispatch(editRequisicaoModalOpen());
-  }
-
-  async function despachaRequisicao() {
-    dispatch(despachaRequisicaoModalOpen());
-  }
-
-  async function visualizarHistorico() {
-    dispatch(visualizaHistoricoModalOpen());
-  }
-
-  async function visualizarRequisicao(e) {
-    e.preventDefault();
-    dispatch(visualizaRequisicaoModalOpen());
-  }
-
-  async function gerarOrcamento(e) {
-    e.preventDefault();
-    dispatch(modalOpen());
-  }
-
-  async function visualizarOrcamento(e) {
-    e.preventDefault();
-
+  const visualizarHistorico = () => dispatch(visualizaHistoricoModalOpen());
+  const visualizarRequisicao = () => dispatch(visualizaRequisicaoModalOpen());
+  const despachaRequisicao = () => dispatch(despachaRequisicaoModalOpen());
+  const gerarOrcamento = () => dispatch(modalOpen());
+  const handleClose = () => dispatch(modalClose());
+  const editRequisicao = () => dispatch(editRequisicaoModalOpen());
+  const visualizarOrcamento = () =>
     dispatch(getItensOrcamento(requisicao.idrequisicao));
-  }
 
   function onChangeFornecedor(selectedOption) {
     setArraySelectedFornecedores(selectedOption);
   }
-
-  const handleClose = () => dispatch(modalClose());
 
   const columns = [
     {
@@ -398,8 +374,7 @@ export default function RequisicaoList() {
         idfornecedor: fornecedor.value,
         idrequisicao: requisicao.idrequisicao,
         idsolicitante: requisicao.idsolicitante,
-        dataorcamento,
-        endereco,
+        dataorcamento: new Date(),
       };
 
       const forn = {
@@ -430,8 +405,7 @@ export default function RequisicaoList() {
         idfornecedor: fornecedor.value,
         idrequisicao: requisicao.idrequisicao,
         idsolicitante: requisicao.idsolicitante,
-        dataorcamento,
-        endereco,
+        dataorcamento: new Date(),
       };
 
       dispatch(inserirOrcamento({ newOrcamento }));
