@@ -65,10 +65,12 @@ export default function Despacho() {
     async function loadGrupos() {
       if (grupos.length > 0) {
         grupos.forEach(grupo => {
-          arrayGrupos.push({
-            value: grupo.idgrupo,
-            label: grupo.descricaogrupo,
-          });
+          if (grupo.idgrupo === 21 || grupo.idgrupo === 3) {
+            arrayGrupos.push({
+              value: grupo.idgrupo,
+              label: grupo.descricaogrupo,
+            });
+          }
         });
       }
       setSelectGrupo(arrayGrupos);
@@ -163,10 +165,10 @@ export default function Despacho() {
                         isSearchable
                         styles={colourStyles}
                         options={selectGrupo}
+                        placeholder="Selecione..."
                         onChange={selectedOption =>
                           onChangeGrupo(selectedOption)
                         }
-                        defaultValue={{ label: 'Compras', value: 21 }}
                         theme={theme => ({
                           ...theme,
                           colors: {
