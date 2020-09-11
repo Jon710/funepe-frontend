@@ -25,15 +25,10 @@ export default function Produtos() {
   const [idunidade, setIdUnidade] = useState();
   const [unidadeDescricao, setUnidadeDescricao] = useState('');
   const [marcaDescricao, setMarcaDescricao] = useState('');
-  // const [categoriaDescricao, setCategoriaDescricao] = useState('');
   const [, setValorUnitario] = useState(0);
   const [, setQtdEstoque] = useState(0);
   const [idmarca, setIdMarca] = useState(3);
   const [descricao, setDescricao] = useState('');
-  // const [inativar, setInativar] = useState();
-  // const [codigoextra, setCodigoExtra] = useState();
-  // const [codigobarra, setCodigoBarra] = useState('');
-  // const [idcategoria, setIdCategoria] = useState();
   const [numeroreferencia, setNumeroReferencia] = useState();
   const [largura, setLargura] = useState();
   const [profundidade, setProfundidade] = useState();
@@ -104,13 +99,6 @@ export default function Produtos() {
   const handleCloseDetalhes = () => setShowDetalhes(false);
   const handleCloseEdit = () => setShowEdit(false);
 
-  // function onChangeMarca(selectedOption) {
-  //   setIdMarca(selectedOption.value);
-  // }
-  // function onChangeCategoria(selectedOption) {
-  //   setIdCategoria(selectedOption.value);
-  // }
-
   async function handleCadastrarProdutos(e) {
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
@@ -161,10 +149,6 @@ export default function Produtos() {
     setUnidadeDescricao(prod.unidade);
     setMarcaDescricao(prod.marca);
     setDescricao(prod.produto);
-    // setInativar(prod.inativar);
-    // setCodigoExtra(prod.codigoextra);
-    // setCodigoBarra(prod.codigobarra);
-    // setIdCategoria(prod.categoria.categoria);
     setNumeroReferencia(prod.numeroreferencia);
     setLargura(prod.largura);
     setProfundidade(prod.profundidade);
@@ -183,10 +167,6 @@ export default function Produtos() {
       idunidade,
       idmarca,
       descricao,
-      // inativar,
-      // codigoextra,
-      // codigobarra,
-      // idcategoria,
       numeroreferencia,
       largura,
       profundidade,
@@ -198,7 +178,7 @@ export default function Produtos() {
     };
 
     await api
-      .put(`produto/${idproduto}`, editProduto)
+      .put(`produtos/${idproduto}`, editProduto)
       .then(() => {
         toast.success('Produto atualizado com sucesso!');
       })
@@ -206,7 +186,7 @@ export default function Produtos() {
         dispatch(
           showAlertErrorOpen({
             showAlertError: true,
-            alertError: `${error.response.data.error} Algo com a ${descricao}`,
+            alertError: `${error.response.data.error}`,
           })
         );
       });
@@ -219,10 +199,6 @@ export default function Produtos() {
     setIdMarca(prod.idmarca);
     setMarcaDescricao(prod.marca);
     setDescricao(prod.produto);
-    // setInativar(prod.inativa);
-    // setCodigoExtra(prod.codigoextra);
-    // setCodigoBarra(prod.codigobarra);
-    // setIdCategoria(prod.idcategoria);
     setNumeroReferencia(prod.numeroreferencia);
     setLargura(prod.largura);
     setProfundidade(prod.profundidade);
@@ -387,44 +363,6 @@ export default function Produtos() {
                 />
               </Col>
             </Form.Group>
-            {/* <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Inativar
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  value={inativar}
-                  onChange={e => setInativar(e.target.value)}
-                  required
-                />
-              </Col>
-            </Form.Group> */}
-            {/* <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Código Extra
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  value={codigoextra}
-                  onChange={e => setCodigoExtra(e.target.value)}
-                  required
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Código Barra
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  value={codigobarra}
-                  onChange={e => setCodigoBarra(e.target.value)}
-                  required
-                />
-              </Col>
-            </Form.Group> */}
             <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Número Referencia

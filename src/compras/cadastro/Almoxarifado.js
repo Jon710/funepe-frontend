@@ -33,9 +33,6 @@ export default function Almoxarifado() {
   async function handleEdit(e) {
     e.preventDefault();
     const editProduto = {
-      idproduto,
-      descricao,
-      unidade,
       valorunitario: valor,
       qtdestoque: quantidade,
     };
