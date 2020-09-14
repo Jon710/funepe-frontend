@@ -25,8 +25,6 @@ export default function Produtos() {
   const [idunidade, setIdUnidade] = useState();
   const [unidadeDescricao, setUnidadeDescricao] = useState('');
   const [marcaDescricao, setMarcaDescricao] = useState('');
-  const [, setValorUnitario] = useState(0);
-  const [, setQtdEstoque] = useState(0);
   const [idmarca, setIdMarca] = useState(3);
   const [descricao, setDescricao] = useState('');
   const [numeroreferencia, setNumeroReferencia] = useState();
@@ -110,24 +108,18 @@ export default function Produtos() {
         idunidade,
         idmarca,
         descricao,
-        // inativar,
-        // codigoextra,
-        // codigobarra,
-        // idcategoria,
-        // numeroreferencia,
-        // largura,
-        // profundidade,
-        // altura,
-        // peso,
-        // frete: false,
-        // garantia,
-        // tipo,
-        // valorunitario,
-        // qtdestoque,
+        numeroreferencia,
+        largura,
+        profundidade,
+        altura,
+        peso,
+        frete,
+        garantia,
+        tipo,
       };
 
       await api
-        .post('produto', novoProduto)
+        .post('produtos', novoProduto)
         .then(() => {
           toast.success('Produto cadastrado com sucesso!');
           setShow(false);
@@ -673,48 +665,6 @@ export default function Produtos() {
                 </Form.Control.Feedback>
               </Col>
             </Form.Group>
-            {/* <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Código Barra
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  onChange={e => setCodigoBarra(e.target.value)}
-                  required
-                />
-                <Form.Control.Feedback type="invalid">
-                  Favor preencher os campos.
-                </Form.Control.Feedback>
-              </Col>
-            </Form.Group> */}
-            {/* <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Categoria
-              </Form.Label>
-              <Col sm="10">
-                <Select
-                  isSearchable
-                  options={categoriaDescricao}
-                  onChange={selectedOption => onChangeCategoria(selectedOption)}
-                  placeholder="Selecione uma categoria"
-                >
-                  {categorias.length > 0
-                    ? categorias.map(categoria => (
-                        <option
-                          key={categoria.idcategoria}
-                          value={categoria.categoria}
-                        >
-                          {categoria.categoria}
-                        </option>
-                      ))
-                    : 'Nenhuma categoria cadastrada.'}
-                </Select>
-              </Col>
-              <Form.Control.Feedback type="invalid">
-                Favor preencher os campos.
-              </Form.Control.Feedback>
-            </Form.Group> */}
             <Form.Group as={Row}>
               <Form.Label column sm="2">
                 Número Referencia
@@ -800,28 +750,6 @@ export default function Produtos() {
                 <Form.Control
                   type="text"
                   onChange={e => setTipo(e.target.value)}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Valor Unitário
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  onChange={e => setValorUnitario(e.target.value)}
-                />
-              </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-              <Form.Label column sm="2">
-                Estoque
-              </Form.Label>
-              <Col sm="10">
-                <Form.Control
-                  type="text"
-                  onChange={e => setQtdEstoque(e.target.value)}
                 />
               </Col>
             </Form.Group>
