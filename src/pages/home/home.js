@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Container, Form, Col, Nav, Card } from 'react-bootstrap';
 import {
   IoMdAttach,
@@ -11,10 +12,14 @@ import {
   IoIosAppstore,
   IoIosCompass,
 } from 'react-icons/io';
+import { getFirstRender } from '../../redux/features/compras/comprasSlice';
 import NavBar from './NavBar';
 import logo from '../../assets/logo-funepe.jpg';
 
 export default function Home() {
+  const { user } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
+
   return (
     <Container>
       <NavBar />
@@ -51,7 +56,10 @@ export default function Home() {
                     </Col>
                     <Col xs={6} md={4}>
                       <div>
-                        <Nav.Link href="/requisicao">
+                        <Nav.Link
+                          href="/requisicao"
+                          onClick={dispatch(getFirstRender(user))}
+                        >
                           <IoIosCart size="48px" />
                           <p>Compras</p>
                         </Nav.Link>

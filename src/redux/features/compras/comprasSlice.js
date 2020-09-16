@@ -34,7 +34,7 @@ export const sliceCompras = createSlice({
     requisicaoSuccess: (state, action) => {
       // console.log(action.payload);
       const {
-        requisicoes,
+        listaRequisicoes,
         listaProdutos,
         empresas,
         fornecedores,
@@ -51,8 +51,8 @@ export const sliceCompras = createSlice({
         arquivosanexo,
       } = action.payload;
       state.loading = false;
-      if (requisicoes !== undefined) {
-        state.requisicoes = requisicoes;
+      if (listaRequisicoes !== undefined) {
+        state.requisicoes = listaRequisicoes;
       }
       if (arquivosanexo !== undefined) {
         state.arquivos = arquivosanexo;
@@ -116,10 +116,13 @@ export const sliceCompras = createSlice({
       state.requisicoes = requisicoes;
     },
     updateRequisicaoSuccess: (state, action) => {
-      const { requisicoes, requisicao } = action.payload;
-      state.loading = false;
-      state.requisicoes = requisicoes;
-      state.requisicao = requisicao;
+      const { listaRequisicoes, requisicao } = action.payload;
+      if (requisicao !== undefined) {
+        state.requisicao = requisicao;
+      }
+      if (listaRequisicoes !== undefined) {
+        state.requisicoes = listaRequisicoes;
+      }
     },
     updateFailure: state => {
       state.loading = false;
@@ -169,11 +172,14 @@ export const getFirstRender = usuario => {
         toast.error('ID do Usuário é inválido.');
         return;
       }
-      const response = await api.get(
-        `usuario/${usuario.idusuario}/requisicao/`
-      );
-      const { requisicoes } = response.data;
-      if (requisicoes.length >= 0) {
+
+      const dataFormatada = format(new Date(), 'yyyy-MM-dd');
+      const response = await api.get(`requisicao?datareq=${dataFormatada}`);
+
+      const { listaRequisicoes } = response.data;
+
+      dispatch(requisicaoSuccess({ listaRequisicoes }));
+      if (listaRequisicoes.length >= 0) {
         dispatch(selectAllFornecedores());
         dispatch(selectAllDepartamentos());
         dispatch(selectAllProdutos());
@@ -184,7 +190,7 @@ export const getFirstRender = usuario => {
         dispatch(selectAllTipoFornecedores());
         dispatch(selectAllTipoTelefones());
         dispatch(selectAllEmpresas());
-        return requisicoes;
+        return listaRequisicoes;
       }
       toast.info('Nenhum Registro Localizado!');
       history.push('/requisicao');
@@ -340,12 +346,12 @@ export const atualizarRequisicao = payload => {
   return async dispatch => {
     try {
       const newRequisicao = payload;
+
       const response = await api.put(
         `usuario/${newRequisicao.iddestinatario}/requisicao/${newRequisicao.idrequisicao}`,
         newRequisicao
       );
       dispatch(updateRequisicaoSuccess(response.data));
-      dispatch(selectAllRequisicao());
 
       return response.data;
     } catch (error) {
@@ -579,9 +585,7 @@ export const inserirHistorico = payload => {
       dispatch(selectAllRequisicao());
       return response.data;
     } catch (error) {
-      toast.error(
-        `ERRO ao despachar Documento - despacharProtocolo ${error.message}`
-      );
+      toast.error(`ERRO ao despachar Documento ${error.message}`);
 
       dispatch(updateFailure());
     }

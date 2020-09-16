@@ -18,8 +18,10 @@ import {
   ListGroupItem,
   ListGroup,
   Row,
+  Accordion,
   Modal,
 } from 'react-bootstrap';
+import DatePicker from 'react-datepicker';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
@@ -30,11 +32,11 @@ import { MdFileDownload } from 'react-icons/md';
 import { toast } from 'react-toastify';
 import AlertError from '../../pages/alerts/AlertError';
 import {
-  getFirstRender,
   selectAllItemRequisicao,
   addRequisicaoRequest,
   addRequisicaoSuccess,
   getUploadedFiles,
+  requisicaoSuccess,
 } from '../../redux/features/compras/comprasSlice';
 import {
   requisicaoModalOpen,
@@ -88,9 +90,13 @@ const SpinnerLine = () => (
 export default function RequisicaoList() {
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  const { requisicoesItem, arquivos, fornecedores, requisicao } = useSelector(
-    state => state.compras
-  );
+  const {
+    requisicoesItem,
+    arquivos,
+    fornecedores,
+    requisicao,
+    requisicoes,
+  } = useSelector(state => state.compras);
   const { orcamentoModal, showAlertError } = useSelector(
     state => state.contexto
   );
@@ -101,7 +107,6 @@ export default function RequisicaoList() {
     updatedRequisicao,
     requisicaoDespachada,
   } = useSelector(state => state.contexto);
-  const [solicitacoes, setSolicitacoes] = useState([]);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [observacao, setObservacao] = useState();
@@ -109,6 +114,7 @@ export default function RequisicaoList() {
     []
   );
   const [descricaoFornecedor, setDescricaoFornecedor] = useState('');
+  const [data, setData] = useState(new Date());
 
   useEffect(() => {
     const arrayFornecedores = [];
@@ -125,30 +131,13 @@ export default function RequisicaoList() {
       setDescricaoFornecedor(arrayFornecedores);
     }
 
-    let c = 0;
-    function loadRequisicoes() {
+    async function loadRequisicoes() {
       setLoading(true);
       if (user.idusuario !== 0) {
         dispatch(getFirstRenderContext());
-        dispatch(getFirstRender(user)).then(response => {
-          if (response.length > 0) {
-            const reqs = response.map(req => ({
-              ...req,
-              idreq: req.idrequisicao,
-              dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy'),
-              nomeSolicitante: req.solicitante.username.toUpperCase(),
-              departamento: req.departamento.descricao.toUpperCase(),
-              nomeDestinatario:
-                req.destinatario !== null
-                  ? req.destinatario.username.toUpperCase()
-                  : '',
-              counter: (c += 1),
-            }));
-            setSolicitacoes(reqs);
-            setCount(c);
-            setLoading(false);
-          }
-        });
+        // eslint-disable-next-line no-use-before-define
+        getReqByDate(new Date());
+        setLoading(false);
       }
     }
     loadRequisicoes();
@@ -183,13 +172,13 @@ export default function RequisicaoList() {
       headerAlign: 'center',
     },
     {
-      dataField: 'departamento',
+      dataField: 'departamento.descricao',
       text: 'Dpto',
       align: 'center',
       headerAlign: 'center',
     },
     {
-      dataField: 'idreq',
+      dataField: 'idrequisicao',
       text: 'NrReq',
       align: 'center',
       headerAlign: 'center',
@@ -202,7 +191,7 @@ export default function RequisicaoList() {
       headerAlign: 'center',
     },
     {
-      dataField: 'nomeDestinatario',
+      dataField: 'solicitante.username',
       text: 'Usuário',
       align: 'center',
       headerAlign: 'center',
@@ -216,7 +205,7 @@ export default function RequisicaoList() {
     {
       isDummyField: true,
       text: 'Menu',
-      dataField: 'idrequisicao',
+      dataField: 'idreq',
       formatter: () => {
         return (
           <DropdownButton drop="left" size="sm" title="Menu">
@@ -413,12 +402,43 @@ export default function RequisicaoList() {
     });
   }
 
+  async function getReqByDate(date) {
+    try {
+      let c = 0;
+
+      setData(date);
+
+      const dataFormatada = format(date, 'yyyy-MM-dd');
+      const response = await api.get(`requisicao?datareq=${dataFormatada}`);
+
+      const { listaRequisicoes } = response.data;
+
+      let lista;
+      if (listaRequisicoes.length > 0) {
+        lista = listaRequisicoes.map(req => ({
+          ...req,
+          dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy'),
+          counter: (c += 1),
+        }));
+        setCount(c);
+      }
+
+      Object.assign(listaRequisicoes, lista);
+
+      dispatch(requisicaoSuccess({ listaRequisicoes }));
+    } catch (error) {
+      toast.error('Erro na busca!');
+    }
+  }
+
   return (
     <Container>
       <NavBar />
+      <br />
+      <CaptionElement />
       <ToolkitProvider
         keyField="idrequisicao"
-        data={solicitacoes}
+        data={requisicoes}
         columns={columns}
         exportCSV
       >
@@ -447,6 +467,7 @@ export default function RequisicaoList() {
                 </ExportCSVButton>
               </Form.Group>
             </Form.Row>
+
             {loading ? (
               <>
                 <SpinnerLine />
@@ -460,15 +481,37 @@ export default function RequisicaoList() {
             {visualizaHistoricoModal ? <Historico /> : null}
             {visualizaRequisicaoModal ? <VisualizarPDF /> : null}
 
+            <Accordion>
+              <Card className="text-center">
+                <Card.Header>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                    Buscar por data
+                  </Accordion.Toggle>
+                </Card.Header>
+                <Accordion.Collapse eventKey="0">
+                  <>
+                    <DatePicker
+                      inline
+                      selected={data}
+                      onChange={date => getReqByDate(date)}
+                      className="form-control"
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
+
+            <br />
+
             <BootstrapTable
               {...props.baseProps}
               bootstrap4
               hover
               table-responsive-sm
-              caption={<CaptionElement />}
               expandRow={expandRow}
               selectRow={selectRow}
-              noDataIndication="Nenhum Registro Localizado!"
+              noDataIndication="Nenhum registro nesse dia!"
               headerClasses="header-class"
               pagination={paginationFactory()}
             />

@@ -13,6 +13,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { parseISO, format } from 'date-fns';
 import pt from 'date-fns/locale/pt';
+import formatarHora from '../../services/formatarHora';
 import { modalClose } from '../../redux/features/context/contextSlice';
 import { selecionarHistorico } from '../../redux/features/compras/comprasSlice';
 
@@ -39,6 +40,7 @@ export default function Historico() {
                   'dd/MM/yyyy',
                   { locale: pt }
                 ),
+                hora: formatarHora(historico.hora),
                 counter: (c += 1),
               }));
               setHistoricos(listHistoricos);
@@ -48,7 +50,7 @@ export default function Historico() {
           }
         );
       } else {
-        console.log('Erro ao carregar histórico de requisições.');
+        throw Error('Erro ao carregar histórico!');
       }
     }
     loadRequisicoes();
@@ -93,6 +95,7 @@ export default function Historico() {
                           <tr>
                             <th>#</th>
                             <th>Data</th>
+                            <th>Hora</th>
                             <th>Despachante</th>
                             <th>Destinatário</th>
                             <th>Status</th>
@@ -104,6 +107,7 @@ export default function Historico() {
                             <tr key={hist.counter} style={{ fontSize: 13 }}>
                               <td>{hist.counter}</td>
                               <td>{hist.dataFormatada}</td>
+                              <td>{hist.hora}</td>
                               <td>{hist.despachante.username}</td>
                               <td>{hist.destinatario.username}</td>
                               <td>{hist.requisicao.status}</td>

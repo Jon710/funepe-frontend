@@ -3,6 +3,7 @@ import { Modal, Button, Form, Container, Card, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
+import { getHours, getMinutes } from 'date-fns';
 import {
   despachoModalClose,
   showAlertErrorOpen,
@@ -101,25 +102,24 @@ export default function Despacho() {
   }
 
   async function handleDespachar() {
-    if (valueUsuario.length > 0) {
-      valueUsuario.forEach(usuario => {
-        const historico = {
-          idrequisicao: requisicao.idrequisicao,
-          iddespachante: user.idusuario,
-          iddestinatario: usuario.value,
-          status,
-          datahistorico: new Date(),
-          observacao,
-        };
-        dispatch(inserirHistorico(historico));
+    try {
+      const historico = {
+        idrequisicao: requisicao.idrequisicao,
+        iddespachante: user.idusuario,
+        iddestinatario: valueUsuario.value,
+        status,
+        datahistorico: new Date(),
+        hora: getHours(new Date()) * 100 + getMinutes(new Date()),
+        observacao,
+      };
+      dispatch(inserirHistorico(historico));
 
-        const reqAtualizada = {
-          iddestinatario: usuario.value,
-          idrequisicao: requisicao.idrequisicao,
-          status,
-        };
-        dispatch(atualizarRequisicao(reqAtualizada));
-      });
+      const reqAtualizada = {
+        iddestinatario: valueUsuario.value,
+        idrequisicao: requisicao.idrequisicao,
+        status,
+      };
+      dispatch(atualizarRequisicao(reqAtualizada));
       toast.success('Requisição despachada com sucesso!');
 
       dispatch(
@@ -128,7 +128,7 @@ export default function Despacho() {
           alertError: '',
         })
       );
-    } else {
+    } catch (error) {
       dispatch(
         showAlertErrorOpen({
           showAlertError: true,
@@ -182,14 +182,13 @@ export default function Despacho() {
                     <Form.Group as={Col}>
                       <Form.Label>Usuários:</Form.Label>
                       <Select
-                        isMulti
                         isSearchable
                         styles={colourStyles}
                         options={idUsuario}
                         onChange={selectedOption =>
                           onChangeUsuarios(selectedOption)
                         }
-                        placeholder="Selecione Usuários"
+                        placeholder="Selecione Usuário"
                         theme={theme => ({
                           ...theme,
                           colors: {
