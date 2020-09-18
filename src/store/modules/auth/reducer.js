@@ -38,6 +38,17 @@ export default function auth(state = initialState, action) {
         break;
       }
 
+      case '@auth/UPDATE_USER_REQUEST': {
+        draft.loading = true;
+        break;
+      }
+
+      case '@auth/UPDATE_USER_SUCCESS': {
+        draft.signed = true;
+        draft.user = action.payload.user;
+        break;
+      }
+
       default:
     }
   });

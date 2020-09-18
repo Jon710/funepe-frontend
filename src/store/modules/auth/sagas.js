@@ -5,7 +5,7 @@ import history from '../../../services/history';
 import apiAuth from '../../../services/apiAuth';
 import api from '../../../services/api';
 
-import { signInSuccess, signFailure } from './actions';
+import { signInSuccess, signFailure, updateUserSuccess } from './actions';
 
 export function* signIn({ payload }) {
   try {
@@ -22,6 +22,28 @@ export function* signIn({ payload }) {
     history.push('/home');
   } catch (err) {
     toast.error('Falha na autenticação, verifique seus dados');
+    yield put(signFailure());
+  }
+}
+
+export function* updateUser({ payload }) {
+  try {
+    const { cpfusuario, senha, oldPassword, confirmPassword } = payload.user;
+    const response = yield call(apiAuth.put, 'usuarios', {
+      cpfusuario,
+      senha,
+      oldPassword,
+      confirmPassword,
+    });
+
+    const { usuario } = response.data;
+
+    yield put(updateUserSuccess(usuario));
+
+    toast.success('Usuário atualizado!');
+    history.push('/home');
+  } catch (err) {
+    toast.error('Erro ao atualizar!');
     yield put(signFailure());
   }
 }
@@ -45,5 +67,6 @@ export default all([
   takeLatest('@auth/SIGN_IN_REQUEST', signIn),
   takeLatest('persist/REHYDRATE', setToken),
   // takeLatest('@auth/SIGN_UP_REQUEST', signUp),
+  takeLatest('@auth/UPDATE_USER_REQUEST', updateUser),
   takeLatest('@auth/SIGN_OUT', signOut),
 ]);

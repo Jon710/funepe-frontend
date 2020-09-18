@@ -1,32 +1,32 @@
 /* eslint-disable no-console */
-import React, { useState } from 'react';
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card, Form, Button, Container } from 'react-bootstrap';
-import logo from '../../../assets/logo.jpg';
+import logo from '../../../assets/logo-funepe.jpg';
 import NavBar from '../../home/NavBar';
+import { updateUserRequest } from '../../../store/modules/auth/actions';
 
 export default function Perfil() {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { user } = useSelector(state => state.auth);
-  console.log(user);
 
   const handleSubmit = event => {
     event.preventDefault();
     const cpfusuario = event.target.elements.formBasicCPF.value;
     const fullname = event.target.elements.formBasicNome.value;
-    // const email = event.target.elements.formBasicEmail.value;
     const oldPassword = event.target.elements.formBasicSenha.value;
     const senha = event.target.elements.formBasicNovaSenha.value;
     const confirmPassword = event.target.elements.formBasicConfirmSenha.value;
-    const payloadMed = {
+
+    const payload = {
       cpfusuario,
       fullname,
-      // email,
       oldPassword,
       senha,
       confirmPassword,
     };
-    console.log('Usuario: ', payloadMed);
+
+    dispatch(updateUserRequest(payload));
   };
 
   return (
@@ -43,18 +43,13 @@ export default function Perfil() {
                       className="img-fluid rounded-circle center-block hoverable img-profile mx-2 mb-2"
                       src={logo}
                       alt="logo"
-                      width={50}
-                      height={50}
+                      width={70}
+                      height={100}
                     />
                   </div>
                   <Form.Group controlId="formBasicCPF">
                     <Form.Label>CPF do Usuário</Form.Label>
-                    <Form.Control
-                      defaultValue={user.cpfusuario}
-                      required
-                      type="text"
-                      placeholder="Seu CPF"
-                    />
+                    <Form.Control defaultValue={user.cpfusuario} readOnly />
                   </Form.Group>
                   <Form.Group controlId="formBasicNome">
                     <Form.Label>Nome</Form.Label>
@@ -65,15 +60,6 @@ export default function Perfil() {
                       placeholder="Seu Nome Completo"
                     />
                   </Form.Group>
-                  {/* <Form.Group controlId="formBasicEmail">
-                    <Form.Label>E-mail</Form.Label>
-                    <Form.Control
-                      defaultValue={profile.email}
-                      required
-                      type="text"
-                      placeholder="Seu E-mail"
-                    />
-                  </Form.Group> */}
                   <Form.Group controlId="formBasicSenha">
                     <Form.Label>Senha Atual</Form.Label>
                     <Form.Control

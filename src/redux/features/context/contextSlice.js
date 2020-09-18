@@ -4,6 +4,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import api from '../../../services/api';
+import apiAuth from '../../../services/apiAuth';
 
 // createSlice makes all action creators and reducers in the same file so no separation of logic is necessary
 export const sliceContext = createSlice({
@@ -153,7 +154,7 @@ export const getFirstRenderContext = () => {
 export const selectAllUsuarios = () => {
   return async dispatch => {
     try {
-      const response = await api.get('usuarios');
+      const response = await apiAuth.get('usuarios');
       const { users } = response.data;
       if (users.length >= 0) {
         await dispatch(contextoSuccess({ users }));
