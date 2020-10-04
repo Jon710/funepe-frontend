@@ -44,7 +44,6 @@ import {
   despachaRequisicaoModalOpen,
   visualizaRequisicaoModalOpen,
   visualizaHistoricoModalOpen,
-  getFirstRenderContext,
   modalClose,
   modalOpen,
   showAlertErrorOpen,
