@@ -26,6 +26,7 @@ export const sliceContext = createSlice({
     orcamentoPrecosModal: false,
     usuarios: {},
     grupos: {},
+    usuario: {},
     usuariosgrupo: {},
     funcoes: {},
     updatedRequisicao: false,
@@ -33,9 +34,13 @@ export const sliceContext = createSlice({
   },
   reducers: {
     contextoSuccess: (state, action) => {
-      const { users, roles, groups, usuariosgrupo } = action.payload;
+      const { users, roles, groups, usuariosgrupo, usuario } = action.payload;
+
       if (users !== undefined) {
         state.usuarios = users;
+      }
+      if (usuario !== undefined) {
+        state.usuario = usuario;
       }
       if (groups !== undefined) {
         state.grupos = groups;
@@ -114,6 +119,13 @@ export const sliceContext = createSlice({
       state.showAlertError = showAlertError;
       state.alertError = alertError;
     },
+    resetContext: state => {
+      state.usuario = {};
+      state.usuarios = {};
+      state.grupos = {};
+      state.usuariosgrupo = {};
+      state.funcoes = {};
+    },
   },
 });
 
@@ -136,15 +148,17 @@ export const {
   showAlertErrorOpen,
   showAlertErrorClose,
   contextoSuccess,
+  resetContext,
 } = sliceContext.actions;
 
 export default sliceContext.reducer;
 
 // API REQUEST ACTIONS HANDLED WITH REDUX-THUNK MIDDLEWARE BUILT INTO REDUX TOOLKIT -->
-/** *************THUNKS************** */
-
 export const getFirstRenderContext = () => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const { user } = getState().auth;
+
+    dispatch(getUsuarioByID(user));
     dispatch(selectAllUsuarios());
     dispatch(selectAllGrupos());
     dispatch(selectAllFuncoes());
@@ -166,6 +180,19 @@ export const selectAllUsuarios = () => {
       toast.error(
         `ERRO: Falha na busca de Tipo de Usuarios (selectAllUsuarios)!  ${error.message}`
       );
+    }
+  };
+};
+
+export const getUsuarioByID = payload => {
+  return async dispatch => {
+    try {
+      const response = await apiAuth.get(`usuario/${payload.idusuario}`);
+      const usuario = response.data;
+
+      await dispatch(contextoSuccess(usuario));
+    } catch (error) {
+      toast.error(`ERRO: Usuário não encontrado! ${error.message}`);
     }
   };
 };

@@ -1,25 +1,26 @@
-import React from 'react';
+/* eslint-disable no-nested-ternary */
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Nav, NavDropdown, Navbar } from 'react-bootstrap';
+import { Redirect } from 'react-router';
 
 import { signOut } from '../../store/modules/auth/actions';
 import logo from '../../assets/logo-funepe.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import { selectAllProdutos } from '../../redux/features/compras/comprasSlice';
+import { resetContext } from '../../redux/features/context/contextSlice';
 
 export default function NavBar() {
-  const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+  const { usuario } = useSelector(state => state.contexto);
+  const [userRole] = useState(usuario[0]);
+
   const dataSistema = new Date().toDateString();
 
   function handleSignOut() {
+    dispatch(resetContext());
     dispatch(signOut());
   }
-
-  // function handleAllProdutos() {
-  //   dispatch(selectAllProdutos());
-  // }
 
   return (
     <Navbar bg="success" expand="lg">
@@ -44,37 +45,49 @@ export default function NavBar() {
               Minhas requisições
             </NavDropdown.Item>
           </NavDropdown>
-          <Nav.Link href="/orcamento">Orçamento</Nav.Link>
-          <NavDropdown title="Cadastros" id="basic-nav-dropdown">
-            <NavDropdown.Item href="/formcategoria">
-              Categorias
-            </NavDropdown.Item>
-            <NavDropdown.Item href="/formdepartamento">
-              Departamentos
-            </NavDropdown.Item>
-            <NavDropdown.Item href="/formempresa">Empresas</NavDropdown.Item>
-            <NavDropdown.Item href="/formfornecedor">
-              Fornecedores
-            </NavDropdown.Item>
-            <NavDropdown.Item href="/formmarca">Marcas</NavDropdown.Item>
-            <NavDropdown.Item href="/formproduto">Produtos</NavDropdown.Item>
-            <NavDropdown.Item href="/almoxarifado">
-              Controle de Almoxarifado
-            </NavDropdown.Item>
-            <NavDropdown.Item href="/formmedida">
-              Unidades de Medida
-            </NavDropdown.Item>
-            <NavDropdown.Divider />
-            <NavDropdown.Item href="/formtipoempresa">
-              Tipo de Empresa
-            </NavDropdown.Item>
-            <NavDropdown.Item href="/formtipoforn">
-              Tipo de Fornecedor
-            </NavDropdown.Item>
-            <NavDropdown.Item href="/formtipotel">
-              Tipo de Telefone
-            </NavDropdown.Item>
-          </NavDropdown>
+
+          {userRole && userRole.role_id === 1 ? (
+            <>
+              <Nav.Link href="/orcamento">Orçamento</Nav.Link>
+              <NavDropdown title="Cadastros" id="basic-nav-dropdown">
+                <NavDropdown.Item href="/formcategoria">
+                  Categorias
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/formdepartamento">
+                  Departamentos
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/formempresa">
+                  Empresas
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/formfornecedor">
+                  Fornecedores
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/formmarca">Marcas</NavDropdown.Item>
+                <NavDropdown.Item href="/formproduto">
+                  Produtos
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/almoxarifado">
+                  Controle de Almoxarifado
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/formmedida">
+                  Unidades de Medida
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="/formtipoempresa">
+                  Tipo de Empresa
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/formtipoforn">
+                  Tipo de Fornecedor
+                </NavDropdown.Item>
+                <NavDropdown.Item href="/formtipotel">
+                  Tipo de Telefone
+                </NavDropdown.Item>
+              </NavDropdown>
+            </>
+          ) : (
+            <Redirect to="/requisicao" />
+          )}
+
           <Nav.Link onClick={handleSignOut} href="/">
             Sair
           </Nav.Link>

@@ -13,6 +13,8 @@ import {
   IoIosCompass,
 } from 'react-icons/io';
 import { getFirstRender } from '../../redux/features/compras/comprasSlice';
+import { getFirstRenderContext } from '../../redux/features/context/contextSlice';
+
 import NavBar from './NavBar';
 import logo from '../../assets/logo-funepe.jpg';
 
@@ -50,7 +52,7 @@ export default function Home() {
                       <div>
                         <Nav.Link href="/protocolo">
                           <IoIosAperture size="48px" />
-                          <p>e-Protocolo</p>
+                          <p>Protocolo</p>
                         </Nav.Link>
                       </div>
                     </Col>
@@ -58,7 +60,10 @@ export default function Home() {
                       <div>
                         <Nav.Link
                           href="/requisicao"
-                          onClick={dispatch(getFirstRender(user))}
+                          onClick={
+                            (dispatch(getFirstRender(user)),
+                            dispatch(getFirstRenderContext()))
+                          }
                         >
                           <IoIosCart size="48px" />
                           <p>Compras</p>

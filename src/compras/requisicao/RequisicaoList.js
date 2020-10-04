@@ -134,7 +134,6 @@ export default function RequisicaoList() {
     async function loadRequisicoes() {
       setLoading(true);
       if (user.idusuario !== 0) {
-        dispatch(getFirstRenderContext());
         // eslint-disable-next-line no-use-before-define
         getReqByDate(new Date());
         setLoading(false);
