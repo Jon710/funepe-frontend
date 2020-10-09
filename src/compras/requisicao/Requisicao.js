@@ -94,7 +94,7 @@ export default function Requisicao() {
     async function loadRequisicao() {
       setFinalidade(requisicao.finalidade);
       setObservacao(requisicao.observacao);
-      setEditDepartamento(requisicao.departamento);
+      setEditDepartamento('');
       setIdDpto(requisicao.iddepartamento);
     }
 
@@ -479,6 +479,7 @@ export default function Requisicao() {
           variant="danger"
           dialogClassName="modal-danger"
           size="lg"
+          backdrop="static"
           animation
           show={editRequisicaoModal}
           onHide={handleClose}

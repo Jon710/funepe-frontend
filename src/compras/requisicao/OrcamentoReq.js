@@ -313,8 +313,8 @@ export default function OrcamentoReq() {
                     <Form.Group as={Col}>
                       <Form.Control
                         onBlur={() => handleSalvarProduto(item)}
-                        as="textarea"
-                        rows="1"
+                        type="number"
+                        style={{ width: 100 }}
                         onChange={e => setValorUnitario(e.target.value)}
                       />
                     </Form.Group>
