@@ -62,10 +62,11 @@ export const selectAllItemOrcamento = orcamento_id => {
     try {
       const response = await api.get(`orcamento/${orcamento_id}/itemorcamento`);
       const { itensorcamento } = response.data;
+
       const itemOrcamento = itensorcamento.map(item => ({
         ...item,
         vlrUnit: formatPrice(item.valorunitario),
-        vlrTotal: formatPrice(item.valortotal),
+        vlrTotal: formatPrice(item.valorunitario * item.quantidade),
       }));
 
       if (itemOrcamento.length >= 0) {
