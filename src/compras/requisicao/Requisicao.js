@@ -587,9 +587,13 @@ export default function Requisicao() {
                           Ver Produtos/Serviços
                         </Accordion.Toggle>
                       </Card.Header>
+
                       <Accordion.Collapse eventKey="0">
                         <div>
                           <Card className="text-center mb-2">
+                            <Card.Header>
+                              <Produto />
+                            </Card.Header>
                             <Card.Body>
                               <RequisicaoItem />
                             </Card.Body>
@@ -610,6 +614,46 @@ export default function Requisicao() {
                     />
                   </Form.Group>
                 </Form>
+
+                <Form.Row>
+                  <Form.Group as={Col} controlId="editArq">
+                    <Form.Label>Anexar arquivo</Form.Label>
+                    <div>
+                      <Card>
+                        <section>
+                          <div
+                            {...getRootProps({ className: 'dropzone' })}
+                            style={dropzoneStyle}
+                          >
+                            <div align="center">
+                              <span>{files ? ' 📂 ' : ' 📁 '}</span>
+                              <i className="fa fa-cloud-upload" />
+                              <input {...getInputProps()} />
+                              <p>
+                                Arraste e solte arquivos aqui, ou clique para
+                                selecionar arquivos
+                              </p>
+                              <p />
+                            </div>
+                          </div>
+
+                          <div>
+                            {files.length > 0 ? (
+                              <div>
+                                <aside>
+                                  <h5>Arquivos</h5>
+                                  <ul>{files}</ul>
+                                </aside>
+                              </div>
+                            ) : (
+                              <div />
+                            )}
+                          </div>
+                        </section>
+                      </Card>
+                    </div>
+                  </Form.Group>
+                </Form.Row>
               </Card.Body>
             </Card>
           </Modal.Body>

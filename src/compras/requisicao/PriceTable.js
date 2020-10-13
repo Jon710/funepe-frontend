@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Card } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { getItensOrcamentoProduto } from '../../redux/features/compras/orcamentoSlice';
 
@@ -24,7 +25,7 @@ export default function PriceTable() {
       text: 'Fornecedor',
     },
     {
-      dataField: 'vlrTotal',
+      dataField: 'vlrUnit',
       text: 'Menor Preço',
     },
   ];
@@ -41,17 +42,22 @@ export default function PriceTable() {
   };
 
   const expandRow = {
+    showExpandColum: true,
+    onlyOneExpanding: true,
     renderer: () => (
       <div>
-        <b>FORNECEDORES</b>
-        {orcamentoItensProduto.map(item => (
-          <p>
-            {item.nomefantasia} - {item.vlrTotal}
-          </p>
-        ))}
+        <Card>
+          <Card.Body>
+            <Card.Title>FORNECEDORES</Card.Title>
+            {orcamentoItensProduto.map(item => (
+              <p>
+                {item.nomefantasia} - {item.vlrUnit}
+              </p>
+            ))}
+          </Card.Body>
+        </Card>
       </div>
     ),
-    showExpandColumn: true,
   };
 
   return (

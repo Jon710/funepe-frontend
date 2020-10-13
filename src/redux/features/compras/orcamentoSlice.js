@@ -110,6 +110,7 @@ export const getItensOrcamentoProduto = (requisicao_id, produto_id) => {
       const response = await api.get(
         `/orcamento/${requisicao_id}/itensorcamentoreq/${produto_id}`
       );
+
       const { itensOrcamentoProduto } = response.data;
       const itensOrcamentoReqProduto = itensOrcamentoProduto.map(item => ({
         ...item,

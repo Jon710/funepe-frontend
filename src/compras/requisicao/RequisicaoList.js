@@ -364,25 +364,27 @@ export default function RequisicaoList() {
         dataorcamento: new Date(),
       };
 
-      const forn = {
-        idfornecedor: fornecedor.value,
-      };
+      dispatch(inserirOrcamento({ newOrcamento })).then(async response => {
+        const { orcamento } = response;
+        const forn = {
+          identificador: orcamento.idorcamento,
+          idfornecedor: fornecedor.value,
+        };
 
-      await api
-        .post('sendmail', forn)
-        .then(() => {
-          toast.success('E-mail enviado para o fornecedor!');
-          dispatch(inserirOrcamento({ newOrcamento }));
-          dispatch(inserirItemOrcamento());
-        })
-        .catch(error => {
-          dispatch(
-            showAlertErrorOpen({
-              showAlertError: true,
-              alertError: `${error.response.data.error} Deseja gerar orçamento assim mesmo?`,
-            })
-          );
-        });
+        await api
+          .post('sendmail', forn)
+          .then(() => {
+            toast.success('E-mail enviado para o fornecedor!');
+          })
+          .catch(error => {
+            dispatch(
+              showAlertErrorOpen({
+                showAlertError: true,
+                alertError: `${error.response.data.error} Deseja gerar orçamento assim mesmo?`,
+              })
+            );
+          });
+      });
     });
   }
 

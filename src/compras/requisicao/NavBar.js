@@ -48,7 +48,7 @@ export default function NavBar() {
 
           {userRole && userRole.role_id === 1 ? (
             <>
-              <Nav.Link href="/orcamento">Orçamento</Nav.Link>
+              {/* <Nav.Link href="/orcamento">Orçamento</Nav.Link> */}
               <NavDropdown title="Cadastros" id="basic-nav-dropdown">
                 <NavDropdown.Item href="/formcategoria">
                   Categorias

@@ -55,6 +55,7 @@ export default function OrcamentoReq() {
   );
   const { requisicao } = useSelector(state => state.compras);
   const [loading, setLoading] = useState(true);
+  const [menorPreco, setMenorPreco] = useState(false);
   const [valorunitario, setValorUnitario] = useState();
   const [show, setShow] = useState(false);
   const CaptionElement = () => (
@@ -81,6 +82,7 @@ export default function OrcamentoReq() {
   }, [dispatch, requisicao.idrequisicao]);
 
   function handleCompararPrecos() {
+    setMenorPreco(true);
     dispatch(modalOpen());
   }
 
@@ -272,19 +274,21 @@ export default function OrcamentoReq() {
         )}
       </ToolkitProvider>
 
-      <Modal size="lg" show={orcamentoPrecosModal} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>Menor Preço</Modal.Title>
-        </Modal.Header>
-        <Modal.Body align="center">
-          <PriceTable />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Fechar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {menorPreco ? (
+        <Modal size="lg" show={orcamentoPrecosModal} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <Modal.Title>Menor Preço</Modal.Title>
+          </Modal.Header>
+          <Modal.Body align="center">
+            <PriceTable />
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={handleClose}>
+              Fechar
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      ) : null}
 
       <Modal size="lg" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
