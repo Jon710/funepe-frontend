@@ -59,7 +59,7 @@ export default function OrcamentoReq() {
   const [menorPreco, setMenorPreco] = useState(false);
   const [valorunitario, setValorUnitario] = useState();
   const [show, setShow] = useState(false);
-  const [somaItens, setSomaItens] = useState(0);
+  const [somaItens, setSomaItens] = useState('');
   const CaptionElement = () => (
     <h3
       style={{
@@ -85,7 +85,7 @@ export default function OrcamentoReq() {
 
   let somaTotal = 0;
   function somar(item) {
-    somaTotal = formatPrice(item.valorunitario * item.quantidade + somaTotal);
+    somaTotal = item.valorunitario * item.quantidade + somaTotal;
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -248,7 +248,7 @@ export default function OrcamentoReq() {
                       SOMA
                     </td>
                     <td style={{ textAlign: 'left' }} colSpan="1">
-                      {somaItens}
+                      {formatPrice(somaItens)}
                     </td>
                   </tr>
                 </tfoot>
