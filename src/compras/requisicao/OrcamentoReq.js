@@ -262,6 +262,7 @@ export default function OrcamentoReq() {
     ),
   };
 
+  console.log(orcamentosItem);
   return (
     <Container>
       <NavBar />
@@ -323,6 +324,7 @@ export default function OrcamentoReq() {
               <tr>
                 <th>ID</th>
                 <th>Produto</th>
+                <th>Quantidade</th>
                 <th>Fornecedor</th>
                 <th>Preço</th>
                 <th>Alterar</th>
@@ -333,6 +335,7 @@ export default function OrcamentoReq() {
                 <tr key={item.idorcamento}>
                   <td>{item.idproduto}</td>
                   <td>{item.produto.descricao}</td>
+                  <td>{item.quantidade}</td>
                   <td>{item.orcamento.fornecedor.nomefantasia}</td>
                   <td>{item.vlrUnit}</td>
                   <td>
