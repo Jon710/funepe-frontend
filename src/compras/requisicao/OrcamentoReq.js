@@ -33,6 +33,7 @@ import {
 } from '../../redux/features/context/contextSlice';
 import NavBar from './NavBar';
 import api from '../../services/api';
+import { formatPrice } from '../../services/formatPrice';
 
 const SpinnerLine = () => (
   <>
@@ -58,6 +59,7 @@ export default function OrcamentoReq() {
   const [menorPreco, setMenorPreco] = useState(false);
   const [valorunitario, setValorUnitario] = useState();
   const [show, setShow] = useState(false);
+  const [somaItens, setSomaItens] = useState(0);
   const CaptionElement = () => (
     <h3
       style={{
@@ -80,6 +82,17 @@ export default function OrcamentoReq() {
     }
     loadOrcamentos();
   }, [dispatch, requisicao.idrequisicao]);
+
+  let somaTotal = 0;
+  function somar(item) {
+    somaTotal = formatPrice(item.valorunitario * item.quantidade + somaTotal);
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    orcamentosItem.forEach(somar);
+    setSomaItens(somaTotal);
+  });
 
   function handleCompararPrecos() {
     setMenorPreco(true);
@@ -206,7 +219,6 @@ export default function OrcamentoReq() {
                 responsive="sm"
                 striped
                 bordered
-                hover
                 size="sm"
                 variant="success"
               >
@@ -216,7 +228,7 @@ export default function OrcamentoReq() {
                     <th>Produto</th>
                     <th>Qtde</th>
                     <th>V.Unit</th>
-                    <th>V.Tot</th>
+                    <th>V.Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -230,6 +242,16 @@ export default function OrcamentoReq() {
                     </tr>
                   ))}
                 </tbody>
+                <tfoot>
+                  <tr>
+                    <td style={{ textAlign: 'right' }} colSpan="4">
+                      SOMA
+                    </td>
+                    <td style={{ textAlign: 'left' }} colSpan="1">
+                      {somaItens}
+                    </td>
+                  </tr>
+                </tfoot>
               </Table>
             </Card.Body>
           </Card>
