@@ -12,10 +12,10 @@ export default function PriceTable() {
   const { requisicao } = useSelector(state => state.compras);
 
   const columns = [
-    // {
-    //   dataField: 'idproduto',
-    //   text: 'ID Produto',
-    // },
+    {
+      dataField: 'idproduto',
+      text: 'ID Produto',
+    },
     {
       dataField: 'descricao',
       text: 'Produto',
