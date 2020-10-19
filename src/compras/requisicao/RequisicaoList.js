@@ -356,6 +356,8 @@ export default function RequisicaoList() {
   };
 
   function handleEnviarEmail() {
+    let msg = '';
+
     arraySelectedFornecedores.map(async fornecedor => {
       const newOrcamento = {
         idfornecedor: fornecedor.value,
@@ -364,27 +366,44 @@ export default function RequisicaoList() {
         dataorcamento: new Date(),
       };
 
-      dispatch(inserirOrcamento({ newOrcamento })).then(async response => {
-        const { orcamento } = response;
-        const forn = {
-          identificador: orcamento.idorcamento,
-          idfornecedor: fornecedor.value,
-        };
+      const newFornecedor = fornecedores.filter(
+        f => f.idfornecedor === fornecedor.value
+      );
 
-        await api
-          .post('sendmail', forn)
-          .then(() => {
-            toast.success('E-mail enviado para o fornecedor!');
-          })
-          .catch(error => {
-            dispatch(
-              showAlertErrorOpen({
-                showAlertError: true,
-                alertError: `${error.response.data.error} Deseja gerar orçamento assim mesmo?`,
+      if (newFornecedor[0].emailprincipal !== null) {
+        await dispatch(inserirOrcamento({ newOrcamento }))
+          .then(async response => {
+            const { orcamento } = response;
+            const forn = {
+              identificador: orcamento.idorcamento,
+              idfornecedor: fornecedor.value,
+            };
+
+            await api
+              .post('sendmail', forn)
+              .then(res => {
+                if (res.status === 204) {
+                  toast.success('E-mail enviado para o fornecedor!');
+                } else {
+                  toast.error('Erro ao enviar e-mail.');
+                }
               })
-            );
+              .catch(error => {
+                toast.error(error);
+              });
+          })
+          .catch(err => {
+            toast.error('Erro', err);
           });
-      });
+      } else {
+        msg += `${newFornecedor[0].nomefantasia} não possui e-mail. Deseja gerar orçamento assim mesmo?`;
+        dispatch(
+          showAlertErrorOpen({
+            showAlertError: true,
+            alertError: msg,
+          })
+        );
+      }
     });
   }
 

@@ -262,7 +262,6 @@ export default function OrcamentoReq() {
     ),
   };
 
-  console.log(orcamentosItem);
   return (
     <Container>
       <NavBar />

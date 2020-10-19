@@ -62,7 +62,7 @@ export default function PriceTable() {
 
   return (
     <BootstrapTable
-      keyField="id"
+      keyField="idproduto"
       data={orcamentoItensReq}
       columns={columns}
       expandRow={expandRow}

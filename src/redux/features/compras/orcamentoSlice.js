@@ -16,6 +16,7 @@ export const sliceOrcamentos = createSlice({
     orcamento: {},
     orcamentoItensReq: [],
     orcamentoItensProduto: [],
+    fornecedor: {},
   },
   reducers: {
     orcamentoSuccess: (state, action) => {
@@ -26,6 +27,7 @@ export const sliceOrcamentos = createSlice({
         orcamentoReq,
         itensOrcamentoReq,
         itensOrcamentoReqProduto,
+        fornecedor,
       } = action.payload;
       state.loading = false;
       if (itemOrcamento !== undefined) {
@@ -42,6 +44,9 @@ export const sliceOrcamentos = createSlice({
       }
       if (orcamento !== undefined) {
         state.orcamento = orcamento;
+      }
+      if (fornecedor !== undefined) {
+        state.fornecedor = fornecedor;
       }
     },
     orcamentoFailure: state => {
@@ -211,6 +216,19 @@ export const inserirOrcamento = payload => {
     } catch (error) {
       toast.error(`ERRO ao inserir orçamento ${error.message}`);
       dispatch(orcamentoFailure());
+    }
+  };
+};
+
+export const getFornecedorByID = payload => {
+  return async dispatch => {
+    try {
+      const response = await api.get(`fornecedor/${payload.idfornecedor}`);
+      const fornecedor = response.data;
+
+      await dispatch(orcamentoSuccess(fornecedor));
+    } catch (error) {
+      toast.error(`Fornecedor não encontrado. ${error.message}`);
     }
   };
 };
