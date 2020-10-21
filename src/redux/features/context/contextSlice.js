@@ -36,21 +36,11 @@ export const sliceContext = createSlice({
     contextoSuccess: (state, action) => {
       const { users, roles, groups, usuariosgrupo, usuario } = action.payload;
 
-      if (users !== undefined) {
-        state.usuarios = users;
-      }
-      if (usuario !== undefined) {
-        state.usuario = usuario;
-      }
-      if (groups !== undefined) {
-        state.grupos = groups;
-      }
-      if (usuariosgrupo !== undefined) {
-        state.usuariosgrupo = usuariosgrupo;
-      }
-      if (roles !== undefined) {
-        state.funcoes = roles;
-      }
+      if (users !== undefined) state.usuarios = users;
+      if (usuario !== undefined) state.usuario = usuario;
+      if (groups !== undefined) state.grupos = groups;
+      if (usuariosgrupo !== undefined) state.usuariosgrupo = usuariosgrupo;
+      if (roles !== undefined) state.funcoes = roles;
     },
     modalClose: state => {
       state.showModal = false;
@@ -157,7 +147,6 @@ export default sliceContext.reducer;
 export const getFirstRenderContext = () => {
   return async (dispatch, getState) => {
     const { user } = getState().auth;
-
     dispatch(getUsuarioByID(user));
     dispatch(selectAllUsuarios());
     dispatch(selectAllGrupos());

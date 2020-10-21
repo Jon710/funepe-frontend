@@ -30,24 +30,14 @@ export const sliceOrcamentos = createSlice({
         fornecedor,
       } = action.payload;
       state.loading = false;
-      if (itemOrcamento !== undefined) {
-        state.orcamentosItem = itemOrcamento;
-      }
-      if (itensOrcamentoReq !== undefined) {
+      if (itemOrcamento !== undefined) state.orcamentosItem = itemOrcamento;
+      if (itensOrcamentoReq !== undefined)
         state.orcamentoItensReq = itensOrcamentoReq;
-      }
-      if (itensOrcamentoReqProduto !== undefined) {
+      if (itensOrcamentoReqProduto !== undefined)
         state.orcamentoItensProduto = itensOrcamentoReqProduto;
-      }
-      if (orcamentoReq !== undefined) {
-        state.orcamentos = orcamentoReq;
-      }
-      if (orcamento !== undefined) {
-        state.orcamento = orcamento;
-      }
-      if (fornecedor !== undefined) {
-        state.fornecedor = fornecedor;
-      }
+      if (orcamentoReq !== undefined) state.orcamentos = orcamentoReq;
+      if (orcamento !== undefined) state.orcamento = orcamento;
+      if (fornecedor !== undefined) state.fornecedor = fornecedor;
     },
     orcamentoFailure: state => {
       state.loading = false;

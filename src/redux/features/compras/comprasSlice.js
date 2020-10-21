@@ -51,51 +51,22 @@ export const sliceCompras = createSlice({
         arquivosanexo,
       } = action.payload;
       state.loading = false;
-      if (listaRequisicoes !== undefined) {
-        state.requisicoes = listaRequisicoes;
-      }
-      if (arquivosanexo !== undefined) {
-        state.arquivos = arquivosanexo;
-      }
-      if (myReqs !== undefined) {
-        state.minhasRequisicoes = myReqs;
-      }
-      if (itensReq !== undefined) {
-        state.requisicoesItem = itensReq;
-      }
-      if (users !== undefined) {
-        state.usuarios = users;
-      }
-      if (empresas !== undefined) {
-        state.empresas = empresas;
-      }
-      if (listaProdutos !== undefined) {
-        state.produtos = listaProdutos;
-      }
-      if (fornecedores !== undefined) {
-        state.fornecedores = fornecedores;
-      }
-      if (departamentos !== undefined) {
-        state.departamentos = departamentos;
-      }
-      if (marcas !== undefined) {
-        state.marcas = marcas;
-      }
-      if (categorias !== undefined) {
-        state.categorias = categorias;
-      }
-      if (unidadesmedida !== undefined) {
-        state.unidadeMedidas = unidadesmedida;
-      }
-      if (tiposfornecedor !== undefined) {
+      if (listaRequisicoes !== undefined) state.requisicoes = listaRequisicoes;
+      if (arquivosanexo !== undefined) state.arquivos = arquivosanexo;
+      if (myReqs !== undefined) state.minhasRequisicoes = myReqs;
+      if (itensReq !== undefined) state.requisicoesItem = itensReq;
+      if (users !== undefined) state.usuarios = users;
+      if (empresas !== undefined) state.empresas = empresas;
+      if (listaProdutos !== undefined) state.produtos = listaProdutos;
+      if (fornecedores !== undefined) state.fornecedores = fornecedores;
+      if (departamentos !== undefined) state.departamentos = departamentos;
+      if (marcas !== undefined) state.marcas = marcas;
+      if (categorias !== undefined) state.categorias = categorias;
+      if (unidadesmedida !== undefined) state.unidadeMedidas = unidadesmedida;
+      if (tiposfornecedor !== undefined)
         state.tipoFornecedores = tiposfornecedor;
-      }
-      if (tiposempresa !== undefined) {
-        state.tipoEmpresas = tiposempresa;
-      }
-      if (tipostelefone !== undefined) {
-        state.tipoTelefones = tipostelefone;
-      }
+      if (tiposempresa !== undefined) state.tipoEmpresas = tiposempresa;
+      if (tipostelefone !== undefined) state.tipoTelefones = tipostelefone;
     },
     requisicaoRequest: (state, action) => {
       const { requisicoes } = action.payload;

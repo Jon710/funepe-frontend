@@ -133,8 +133,6 @@ export default function RequisicaoList() {
     async function loadRequisicoes() {
       setLoading(true);
       if (user.idusuario !== 0) {
-        // eslint-disable-next-line no-use-before-define
-        getReqByDate(new Date());
         setLoading(false);
       }
     }
@@ -578,8 +576,11 @@ export default function RequisicaoList() {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="success" onClick={() => handleEnviarEmail()}>
-            Gerar
+          <Button variant="success" onClick={() => handleGerarOrcamento()}>
+            Gerar orçamento
+          </Button>
+          <Button variant="info" onClick={() => handleEnviarEmail()}>
+            Enviar e-mail
           </Button>
           <Button as={Link} className="Link" to="/formfornecedor">
             Fornecedor não existe?
