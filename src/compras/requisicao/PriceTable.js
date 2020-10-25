@@ -1,15 +1,28 @@
-import React from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Card } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
+import { formatPrice } from '../../services/formatPrice';
 import { getItensOrcamentoProduto } from '../../redux/features/compras/orcamentoSlice';
 
 export default function PriceTable() {
+  const [somaItens, setSomaItens] = useState('');
   const dispatch = useDispatch();
   const { orcamentoItensProduto, orcamentoItensReq } = useSelector(
     state => state.orcamentos
   );
   const { requisicao } = useSelector(state => state.compras);
+
+  let somaTotal = 0;
+  function somar(item) {
+    somaTotal = item.valorunitario * item.quantidade + somaTotal;
+  }
+
+  useEffect(() => {
+    orcamentoItensReq.forEach(somar);
+    setSomaItens(somaTotal);
+  });
 
   const columns = [
     {
@@ -61,12 +74,18 @@ export default function PriceTable() {
   };
 
   return (
-    <BootstrapTable
-      keyField="idproduto"
-      data={orcamentoItensReq}
-      columns={columns}
-      expandRow={expandRow}
-      selectRow={selectRow}
-    />
+    <>
+      <BootstrapTable
+        keyField="idproduto"
+        data={orcamentoItensReq}
+        columns={columns}
+        expandRow={expandRow}
+        selectRow={selectRow}
+      />
+
+      <Card>
+        <h3>VALOR TOTAL: {formatPrice(somaItens)}</h3>
+      </Card>
+    </>
   );
 }

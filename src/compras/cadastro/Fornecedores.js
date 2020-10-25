@@ -113,7 +113,6 @@ export default function Fornecedores() {
         setShow(false);
       })
       .catch(error => {
-        console.log(error.response.data.error);
         dispatch(
           showAlertErrorOpen({
             showAlertError: true,
