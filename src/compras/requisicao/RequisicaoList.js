@@ -114,6 +114,7 @@ export default function RequisicaoList() {
   );
   const [descricaoFornecedor, setDescricaoFornecedor] = useState('');
   const [data, setData] = useState(new Date());
+  const [endDate, setEndDate] = useState(null);
 
   useEffect(() => {
     const arrayFornecedores = [];
@@ -448,6 +449,47 @@ export default function RequisicaoList() {
     }
   }
 
+  async function getReqByPeriodo(start, end) {
+    try {
+      let c = 0;
+
+      setData(start);
+      setEndDate(end);
+
+      const dataStartFormatada = format(start, 'yyyy-MM-dd');
+      const dataEndFormatada = format(end, 'yyyy-MM-dd');
+
+      const response = await api.get(
+        `requisicaoperiodo?start=${dataStartFormatada}&end=${dataEndFormatada}`
+      );
+
+      const { requisicoesPorPeriodo } = response.data;
+
+      let lista;
+      if (requisicoesPorPeriodo.length > 0) {
+        lista = requisicoesPorPeriodo.map(req => ({
+          ...req,
+          dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy'),
+          counter: (c += 1),
+        }));
+        setCount(c);
+      }
+
+      Object.assign(requisicoesPorPeriodo, lista);
+
+      dispatch(requisicaoSuccess({ requisicoesPorPeriodo }));
+    } catch (error) {
+      toast.error('Erro na busca!', error);
+    }
+  }
+
+  const onChangeDate = dates => {
+    const [start, end] = dates;
+    setData(start);
+    setEndDate(end);
+    getReqByPeriodo(start, end);
+  };
+
   return (
     <Container>
       <NavBar />
@@ -498,26 +540,57 @@ export default function RequisicaoList() {
             {visualizaHistoricoModal ? <Historico /> : null}
             {visualizaRequisicaoModal ? <VisualizarPDF /> : null}
 
-            <Accordion>
-              <Card className="text-center">
-                <Card.Header>
-                  <Accordion.Toggle as={Button} variant="link" eventKey="0">
-                    Buscar por data
-                  </Accordion.Toggle>
-                </Card.Header>
-                <Accordion.Collapse eventKey="0">
-                  <>
-                    <DatePicker
-                      inline
-                      selected={data}
-                      onChange={date => getReqByDate(date)}
-                      className="form-control"
-                      dateFormat="dd/MM/yyyy"
-                    />
-                  </>
-                </Accordion.Collapse>
-              </Card>
-            </Accordion>
+            <Row>
+              <Col>
+                <Accordion>
+                  <Card className="text-center">
+                    <Card.Header>
+                      <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                        Buscar por data
+                      </Accordion.Toggle>
+                    </Card.Header>
+                    <Accordion.Collapse eventKey="0">
+                      <>
+                        <DatePicker
+                          inline
+                          selected={data}
+                          startDate={data}
+                          onChange={date => getReqByDate(date)}
+                          className="form-control"
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              </Col>
+
+              <Col>
+                <Accordion>
+                  <Card className="text-center">
+                    <Card.Header>
+                      <Accordion.Toggle as={Button} variant="link" eventKey="0">
+                        Buscar por período
+                      </Accordion.Toggle>
+                    </Card.Header>
+                    <Accordion.Collapse eventKey="0">
+                      <>
+                        <DatePicker
+                          inline
+                          selected={data}
+                          selectsRange
+                          startDate={data}
+                          endDate={endDate}
+                          onChange={onChangeDate}
+                          className="form-control"
+                          dateFormat="dd/MM/yyyy"
+                        />
+                      </>
+                    </Accordion.Collapse>
+                  </Card>
+                </Accordion>
+              </Col>
+            </Row>
 
             <br />
 

@@ -35,6 +35,7 @@ export const sliceCompras = createSlice({
       // console.log(action.payload);
       const {
         listaRequisicoes,
+        requisicoesPorPeriodo,
         listaProdutos,
         empresas,
         fornecedores,
@@ -52,6 +53,8 @@ export const sliceCompras = createSlice({
       } = action.payload;
       state.loading = false;
       if (listaRequisicoes !== undefined) state.requisicoes = listaRequisicoes;
+      if (requisicoesPorPeriodo !== undefined)
+        state.requisicoes = requisicoesPorPeriodo;
       if (arquivosanexo !== undefined) state.arquivos = arquivosanexo;
       if (myReqs !== undefined) state.minhasRequisicoes = myReqs;
       if (itensReq !== undefined) state.requisicoesItem = itensReq;
