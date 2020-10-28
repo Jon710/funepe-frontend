@@ -13,6 +13,7 @@ import {
   DropdownButton,
   Form,
   Col,
+  Row,
 } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -122,6 +123,10 @@ export default function OrcamentoReq() {
       });
   }
 
+  function print() {
+    window.print();
+  }
+
   const columns = [
     {
       dataField: 'idorcamento',
@@ -155,19 +160,35 @@ export default function OrcamentoReq() {
       dataField: 'idrequisicao',
       formatter: () => {
         return (
-          <DropdownButton drop="left" size="sm" title="Opções">
-            <Dropdown.Item as="button" onClick={handleShow}>
-              Alterar preços
-            </Dropdown.Item>
-            <Dropdown.Item
-              as="button"
-              onClick={() => {
-                dispatch(getItensOrcamento(requisicao.idrequisicao));
-              }}
-            >
-              <Link to="/menorpreco">Obter preços</Link>
-            </Dropdown.Item>
-          </DropdownButton>
+          <>
+            <Row>
+              <Col>
+                <DropdownButton drop="left" size="sm" title="Opções">
+                  <Dropdown.Item as="button" onClick={handleShow}>
+                    Alterar preços
+                  </Dropdown.Item>
+                  <Dropdown.Item
+                    as="button"
+                    onClick={() => {
+                      dispatch(getItensOrcamento(requisicao.idrequisicao));
+                    }}
+                  >
+                    <Link to="/menorpreco">Obter preços</Link>
+                  </Dropdown.Item>
+                </DropdownButton>
+              </Col>
+              <Col>
+                <Button
+                  as="button"
+                  variant="success"
+                  size="sm"
+                  onClick={() => print()}
+                >
+                  Imprimir
+                </Button>
+              </Col>
+            </Row>
+          </>
         );
       },
     },
