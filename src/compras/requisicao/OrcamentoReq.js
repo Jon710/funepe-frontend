@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,7 +18,8 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import { toast } from 'react-toastify';
-import PriceTable from './PriceTable';
+import { Link } from 'react-router-dom';
+
 import AlertError from '../../pages/alerts/AlertError';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import {
@@ -27,7 +29,6 @@ import {
   selectAllItemOrcamento,
 } from '../../redux/features/compras/orcamentoSlice';
 import {
-  modalOpen,
   modalClose,
   showAlertErrorOpen,
 } from '../../redux/features/context/contextSlice';
@@ -51,12 +52,9 @@ const SpinnerLine = () => (
 export default function OrcamentoReq() {
   const dispatch = useDispatch();
   const { orcamentos, orcamentosItem } = useSelector(state => state.orcamentos);
-  const { orcamentoPrecosModal, showAlertError } = useSelector(
-    state => state.contexto
-  );
+  const { showAlertError } = useSelector(state => state.contexto);
   const { requisicao } = useSelector(state => state.compras);
   const [loading, setLoading] = useState(true);
-  const [menorPreco, setMenorPreco] = useState(false);
   const [valorunitario, setValorUnitario] = useState();
   const [show, setShow] = useState(false);
   const [somaItens, setSomaItens] = useState('');
@@ -88,16 +86,10 @@ export default function OrcamentoReq() {
     somaTotal = item.valorunitario * item.quantidade + somaTotal;
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     orcamentosItem.forEach(somar);
     setSomaItens(somaTotal);
   });
-
-  function handleCompararPrecos() {
-    setMenorPreco(true);
-    dispatch(modalOpen());
-  }
 
   const handleClose = () => {
     dispatch(modalClose());
@@ -167,8 +159,13 @@ export default function OrcamentoReq() {
             <Dropdown.Item as="button" onClick={handleShow}>
               Alterar preços
             </Dropdown.Item>
-            <Dropdown.Item as="button" onClick={handleCompararPrecos}>
-              Obter preços
+            <Dropdown.Item
+              as="button"
+              onClick={() => {
+                dispatch(getItensOrcamento(requisicao.idrequisicao));
+              }}
+            >
+              <Link to="/menorpreco">Obter preços</Link>
             </Dropdown.Item>
           </DropdownButton>
         );
@@ -295,22 +292,6 @@ export default function OrcamentoReq() {
           </div>
         )}
       </ToolkitProvider>
-
-      {menorPreco ? (
-        <Modal size="lg" show={orcamentoPrecosModal} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Menor Preço</Modal.Title>
-          </Modal.Header>
-          <Modal.Body align="center">
-            <PriceTable />
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Fechar
-            </Button>
-          </Modal.Footer>
-        </Modal>
-      ) : null}
 
       <Modal size="lg" show={show} onHide={handleClose}>
         <Modal.Header closeButton>

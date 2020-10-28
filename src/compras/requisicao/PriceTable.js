@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Card } from 'react-bootstrap';
+import { Card, Button, Container, Row, Col } from 'react-bootstrap';
 import BootstrapTable from 'react-bootstrap-table-next';
 import { formatPrice } from '../../services/formatPrice';
+import logo from '../../assets/funepe.jpeg';
 import { getItensOrcamentoProduto } from '../../redux/features/compras/orcamentoSlice';
 
 export default function PriceTable() {
@@ -36,6 +37,10 @@ export default function PriceTable() {
     {
       dataField: 'nomefantasia',
       text: 'Fornecedor',
+    },
+    {
+      dataField: 'quantidade',
+      text: 'Quantidade',
     },
     {
       dataField: 'vlrUnit',
@@ -73,19 +78,52 @@ export default function PriceTable() {
     ),
   };
 
-  return (
-    <>
-      <BootstrapTable
-        keyField="idproduto"
-        data={orcamentoItensReq}
-        columns={columns}
-        expandRow={expandRow}
-        selectRow={selectRow}
-      />
+  function print() {
+    window.print();
+  }
 
-      <Card>
-        <h3>VALOR TOTAL: {formatPrice(somaItens)}</h3>
+  return (
+    <Container>
+      <Card size="lg" className="text-center">
+        <Card.Header closeButton>
+          <Card.Title>
+            <Row>
+              <Col>
+                <h4>
+                  Cotação Menor Preço da Requisição {requisicao.idrequisicao}
+                </h4>
+              </Col>
+              <Col>
+                <img
+                  src={logo}
+                  alt="logo"
+                  width={150}
+                  height={40}
+                  style={{ marginLeft: 300 }}
+                />
+              </Col>
+            </Row>
+          </Card.Title>
+        </Card.Header>
+        <Card.Body align="center">
+          <BootstrapTable
+            keyField="idproduto"
+            data={orcamentoItensReq}
+            columns={columns}
+            expandRow={expandRow}
+            selectRow={selectRow}
+          />
+
+          <Card>
+            <h3>VALOR TOTAL: {formatPrice(somaItens)}</h3>
+          </Card>
+        </Card.Body>
+        <Card.Footer>
+          <Button variant="primary" onClick={() => print()}>
+            Imprimir
+          </Button>
+        </Card.Footer>
       </Card>
-    </>
+    </Container>
   );
 }

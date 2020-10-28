@@ -28,6 +28,7 @@ import MinhaReq from '../compras/requisicao/MinhaReq';
 import VisualizarPDF from '../compras/requisicao/VisualizarPDF';
 import Perfil from '../pages/usuario/Perfil/index';
 import EmailParaFornecedor from '../compras/requisicao/EmailParaFornecedor';
+import PriceTable from '../compras/requisicao/PriceTable';
 
 import { signOut } from '../store/modules/auth/actions';
 
@@ -90,6 +91,7 @@ export default function Routes() {
             <Route path="/pdf" component={VisualizarPDF} />
             <Route path="/meuperfil" component={Perfil} />
             <Route path="/usuario" component={Usuario} />
+            <Route path="/menorpreco" component={PriceTable} />
           </>
         ) : (
           <Redirect to="/" />

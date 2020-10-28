@@ -1,3 +1,5 @@
+/* eslint-disable guard-for-in */
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-return-assign */
 /* eslint-disable array-callback-return */
 /* eslint-disable consistent-return */
@@ -25,14 +27,14 @@ export const sliceOrcamentos = createSlice({
         itemOrcamento,
         orcamento,
         orcamentoReq,
-        itensOrcamentoReq,
+        noDuplicateItems,
         itensOrcamentoReqProduto,
         fornecedor,
       } = action.payload;
       state.loading = false;
       if (itemOrcamento !== undefined) state.orcamentosItem = itemOrcamento;
-      if (itensOrcamentoReq !== undefined)
-        state.orcamentoItensReq = itensOrcamentoReq;
+      if (noDuplicateItems !== undefined)
+        state.orcamentoItensReq = noDuplicateItems;
       if (itensOrcamentoReqProduto !== undefined)
         state.orcamentoItensProduto = itensOrcamentoReqProduto;
       if (orcamentoReq !== undefined) state.orcamentos = orcamentoReq;
@@ -89,9 +91,20 @@ export const getItensOrcamento = requisicao_id => {
         vlrTotal: formatPrice(item.valortotal),
       }));
 
-      if (itensOrcamentoReq.length >= 0) {
-        await dispatch(orcamentoSuccess({ itensOrcamentoReq }));
-        return;
+      const noDuplicateItems = [];
+      const lookupObject = {};
+      let i;
+
+      for (i in itensOrcamentoReq) {
+        lookupObject[itensOrcamentoReq[i].idproduto] = itensOrcamentoReq[i];
+      }
+
+      for (i in lookupObject) {
+        noDuplicateItems.push(lookupObject[i]);
+      }
+
+      if (noDuplicateItems.length >= 0) {
+        await dispatch(orcamentoSuccess({ noDuplicateItems }));
       }
     } catch (error) {
       toast.error(`ERRO: Falha ao buscar item orçamento.   ${error.message}`);
