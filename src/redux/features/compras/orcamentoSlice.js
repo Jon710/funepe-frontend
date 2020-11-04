@@ -27,14 +27,14 @@ export const sliceOrcamentos = createSlice({
         itemOrcamento,
         orcamento,
         orcamentoReq,
-        noDuplicateItems,
+        itensOrcamentoReq,
         itensOrcamentoReqProduto,
         fornecedor,
       } = action.payload;
       state.loading = false;
       if (itemOrcamento !== undefined) state.orcamentosItem = itemOrcamento;
-      if (noDuplicateItems !== undefined)
-        state.orcamentoItensReq = noDuplicateItems;
+      if (itensOrcamentoReq !== undefined)
+        state.orcamentoItensReq = itensOrcamentoReq;
       if (itensOrcamentoReqProduto !== undefined)
         state.orcamentoItensProduto = itensOrcamentoReqProduto;
       if (orcamentoReq !== undefined) state.orcamentos = orcamentoReq;
@@ -85,27 +85,44 @@ export const getItensOrcamento = requisicao_id => {
         `/orcamento/${requisicao_id}/itensorcamentoreq`
       );
       const { itensOrcamento } = response.data;
-      const itensOrcamentoReq = itensOrcamento.map(item => ({
+
+      const arrayIDProdutos = itensOrcamento.map(produto => {
+        return produto.idproduto;
+      });
+
+      const unique = [...new Set(arrayIDProdutos)];
+
+      const arrayMenorPreco = [];
+      unique.map(iditem => {
+        const lookupArray = [];
+        itensOrcamento.filter(item => {
+          if (item.idproduto === iditem) {
+            lookupArray.push(item);
+          }
+        });
+
+        let menor = Infinity;
+        let tempItem = {};
+        // eslint-disable-next-line no-plusplus
+        for (let i = 0; i < lookupArray.length; i++) {
+          if (lookupArray[i].valorunitario > 0) {
+            if (lookupArray[i].valorunitario < menor) {
+              menor = lookupArray[i].valorunitario;
+              tempItem = lookupArray[i];
+            }
+          }
+        }
+
+        arrayMenorPreco.push(tempItem);
+      });
+
+      const itensOrcamentoReq = arrayMenorPreco.map(item => ({
         ...item,
         vlrUnit: formatPrice(item.valorunitario),
         vlrTotal: formatPrice(item.valortotal),
       }));
 
-      const noDuplicateItems = [];
-      const lookupObject = {};
-      let i;
-
-      for (i in itensOrcamentoReq) {
-        lookupObject[itensOrcamentoReq[i].idproduto] = itensOrcamentoReq[i];
-      }
-
-      for (i in lookupObject) {
-        noDuplicateItems.push(lookupObject[i]);
-      }
-
-      if (noDuplicateItems.length >= 0) {
-        await dispatch(orcamentoSuccess({ noDuplicateItems }));
-      }
+      await dispatch(orcamentoSuccess({ itensOrcamentoReq }));
     } catch (error) {
       toast.error(`ERRO: Falha ao buscar item orçamento.   ${error.message}`);
     }

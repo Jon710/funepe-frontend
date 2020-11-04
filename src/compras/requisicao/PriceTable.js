@@ -112,6 +112,7 @@ export default function PriceTable() {
             columns={columns}
             expandRow={expandRow}
             selectRow={selectRow}
+            pagination={false}
           />
 
           <Card>
