@@ -27,7 +27,6 @@ export default function Departamento() {
     } else {
       e.preventDefault();
 
-      console.log(descricaoDepto);
       const novoDepto = {
         descricao: descricaoDepto,
       };

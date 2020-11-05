@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import {
   Table,
@@ -13,14 +13,26 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { green } from '@material-ui/core/colors';
 import { toast } from 'react-toastify';
+import { selectAllItemRequisicao } from '../../redux/features/compras/comprasSlice';
 import api from '../../services/api';
 
 export default function RequisicaoItem() {
+  const dispatch = useDispatch();
   const [observacao, setObservacao] = useState('');
   const { requisicoesItem } = useSelector(state => state.compras);
 
-  function handleDeleteProduto(item) {
-    console.log('ITEM: ', item);
+  async function handleDeleteProduto(item) {
+    await api
+      .delete(
+        `requisicao/${item.idrequisicao}/itemrequisicao/${item.iditemrequisicao}`
+      )
+      .then(() => {
+        dispatch(selectAllItemRequisicao(item.idrequisicao));
+        toast.success('Item excluído!');
+      })
+      .catch(error => {
+        toast.error(error);
+      });
   }
 
   async function handleObservacaoProduto(item) {
@@ -38,12 +50,6 @@ export default function RequisicaoItem() {
       })
       .catch(error => {
         console.log(error);
-        // dispatch(
-        //   showAlertErrorOpen({
-        //     showAlertError: true,
-        //     alertError: `${error.response.data.error}`,
-        //   })
-        // );
       });
   }
 
