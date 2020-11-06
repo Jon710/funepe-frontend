@@ -90,7 +90,8 @@ export default function PriceTable() {
             <Row>
               <Col>
                 <h4>
-                  Cotação Menor Preço da Requisição {requisicao.idrequisicao}
+                  Cotação Menor Preço Req. {requisicao.idrequisicao} -{' '}
+                  {requisicao.finalidade}
                 </h4>
               </Col>
               <Col>
