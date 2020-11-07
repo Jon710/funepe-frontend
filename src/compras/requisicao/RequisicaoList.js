@@ -52,6 +52,7 @@ import {
   inserirOrcamento,
   inserirItemOrcamento,
   getItensOrcamento,
+  getOrcamentoByID,
 } from '../../redux/features/compras/orcamentoSlice';
 import NavBar from './NavBar';
 import Despacho from './Despacho';
@@ -106,6 +107,7 @@ export default function RequisicaoList() {
     updatedRequisicao,
     requisicaoDespachada,
   } = useSelector(state => state.contexto);
+  const { orcamentosItem } = useSelector(state => state.orcamentos);
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [observacao, setObservacao] = useState();
@@ -407,17 +409,50 @@ export default function RequisicaoList() {
   }
 
   function handleGerarOrcamento() {
-    arraySelectedFornecedores.map(async fornecedor => {
-      const newOrcamento = {
-        idfornecedor: fornecedor.value,
-        idrequisicao: requisicao.idrequisicao,
-        idsolicitante: requisicao.idsolicitante,
-        dataorcamento: new Date(),
-      };
+    dispatch(getOrcamentoByID(requisicao.idrequisicao))
+      .then(response => {
+        if (response.orcamento.length > 0) {
+          requisicoesItem.map(async item => {
+            const produto = orcamentosItem.filter(itemOrc => {
+              return itemOrc.idproduto === item.idproduto;
+            });
 
-      dispatch(inserirOrcamento({ newOrcamento }));
-      dispatch(inserirItemOrcamento());
-    });
+            if (produto.length === 0) {
+              response.orcamento.forEach(itemOrcamento => {
+                const newItemOrcamento = {
+                  idorcamento: itemOrcamento.idorcamento,
+                  idproduto: item.idproduto,
+                  quantidade: item.quantidade,
+                  unidade: item.unidade,
+                  valorunitario: item.valorunitario,
+                  desconto: item.desconto,
+                  valortotal: item.valortotal,
+                  idrequisicao: item.idrequisicao,
+                  iditemrequisicao: item.iditemrequisicao,
+                };
+
+                dispatch(inserirItemOrcamento({ newItemOrcamento }));
+              });
+            } else {
+              toast.error('ERRO!');
+            }
+          });
+        } else {
+          arraySelectedFornecedores.map(async fornecedor => {
+            const newOrcamento = {
+              idfornecedor: fornecedor.value,
+              idrequisicao: requisicao.idrequisicao,
+              idsolicitante: requisicao.idsolicitante,
+              dataorcamento: new Date(),
+            };
+
+            dispatch(inserirOrcamento({ newOrcamento }));
+          });
+        }
+      })
+      .catch(() => {
+        toast.error('Erro!');
+      });
   }
 
   async function getReqByDate(date) {

@@ -226,6 +226,8 @@ export const inserirOrcamento = payload => {
           valorunitario: item.valorunitario,
           desconto: item.desconto,
           valortotal: item.valortotal,
+          idrequisicao: item.idrequisicao,
+          iditemrequisicao: item.iditemrequisicao,
         };
 
         await dispatch(inserirItemOrcamento({ newItemOrcamento }));
@@ -249,6 +251,23 @@ export const getFornecedorByID = payload => {
       await dispatch(orcamentoSuccess(fornecedor));
     } catch (error) {
       toast.error(`Fornecedor não encontrado. ${error.message}`);
+    }
+  };
+};
+
+// /requisicao/:requisicao_id/orcamento/:id
+export const getOrcamentoByID = idrequisicao => {
+  return async dispatch => {
+    try {
+      const response = await api.get(
+        `/requisicao/${idrequisicao}/orcamento/${idrequisicao}`
+      );
+      const orcamento = response.data;
+
+      await dispatch(orcamentoSuccess(orcamento));
+      return orcamento;
+    } catch (error) {
+      toast.error(`Orçamento não encontrado. ${error.message}`);
     }
   };
 };
