@@ -139,7 +139,6 @@ export default function Requisicao() {
     try {
       const newRequisicao = {
         idrequisicao: requisicao.idrequisicao,
-        datareq,
         finalidade,
         iddepartamento,
         iddestinatario,
