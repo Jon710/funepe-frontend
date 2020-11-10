@@ -20,6 +20,8 @@ import {
   Row,
   Accordion,
   Modal,
+  InputGroup,
+  FormControl,
 } from 'react-bootstrap';
 import DatePicker from 'react-datepicker';
 import BootstrapTable from 'react-bootstrap-table-next';
@@ -33,13 +35,11 @@ import { toast } from 'react-toastify';
 import AlertError from '../../pages/alerts/AlertError';
 import {
   selectAllItemRequisicao,
-  addRequisicaoRequest,
   addRequisicaoSuccess,
   getUploadedFiles,
   requisicaoSuccess,
 } from '../../redux/features/compras/comprasSlice';
 import {
-  requisicaoModalOpen,
   editRequisicaoModalOpen,
   despachaRequisicaoModalOpen,
   visualizaRequisicaoModalOpen,
@@ -111,6 +111,7 @@ export default function RequisicaoList() {
   const [count, setCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [observacao, setObservacao] = useState();
+  const [finalidade, setFinalidade] = useState('');
   const [arraySelectedFornecedores, setArraySelectedFornecedores] = useState(
     []
   );
@@ -232,19 +233,6 @@ export default function RequisicaoList() {
       },
     },
   ];
-
-  const ExportCSVButton = props => {
-    const handleClick = () => {
-      props.onExport();
-    };
-    return (
-      <div>
-        <Button variant="primary" size="lg" block p="2" onClick={handleClick}>
-          Exportar CSV
-        </Button>
-      </div>
-    );
-  };
 
   const selectRow = {
     mode: 'checkbox',
@@ -525,6 +513,31 @@ export default function RequisicaoList() {
     getReqByPeriodo(start, end);
   };
 
+  async function getReqByFinalidade(reqFinalidade) {
+    try {
+      const response = await api.get(`requisicao/finalidade/${reqFinalidade}`);
+
+      const { listaRequisicoes } = response.data;
+
+      let lista;
+      let c = 0;
+      if (listaRequisicoes.length > 0) {
+        lista = listaRequisicoes.map(req => ({
+          ...req,
+          dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy'),
+          counter: (c += 1),
+        }));
+        setCount(c);
+      }
+
+      Object.assign(listaRequisicoes, lista);
+
+      dispatch(requisicaoSuccess({ listaRequisicoes }));
+    } catch (error) {
+      toast.error('Erro na busca!');
+    }
+  }
+
   return (
     <Container>
       <NavBar />
@@ -538,30 +551,6 @@ export default function RequisicaoList() {
       >
         {props => (
           <div style={{ fontSize: 13 }}>
-            <Form.Row>
-              <Form.Group as={Col} controlId="editArq">
-                <Form.Label />
-                <Button
-                  variant="primary"
-                  size="lg"
-                  block
-                  p="2"
-                  onClick={() => {
-                    dispatch(addRequisicaoRequest());
-                    dispatch(requisicaoModalOpen());
-                  }}
-                >
-                  Solicitar Compras
-                </Button>
-              </Form.Group>
-              <Form.Group as={Col}>
-                <Form.Label />
-                <ExportCSVButton {...props.csvProps} size="lg" block p="2">
-                  Export CSV!
-                </ExportCSVButton>
-              </Form.Group>
-            </Form.Row>
-
             {loading ? (
               <>
                 <SpinnerLine />
@@ -570,11 +559,9 @@ export default function RequisicaoList() {
             ) : (
               <></>
             )}
-
             {despachaRequisicaoModal ? <Despacho /> : null}
             {visualizaHistoricoModal ? <Historico /> : null}
             {visualizaRequisicaoModal ? <VisualizarPDF /> : null}
-
             <Row>
               <Col>
                 <Accordion>
@@ -599,7 +586,6 @@ export default function RequisicaoList() {
                   </Card>
                 </Accordion>
               </Col>
-
               <Col>
                 <Accordion>
                   <Card className="text-center">
@@ -626,8 +612,23 @@ export default function RequisicaoList() {
                 </Accordion>
               </Col>
             </Row>
-
             <br />
+
+            <InputGroup className="mb-3">
+              <FormControl
+                value={finalidade}
+                onChange={e => setFinalidade(e.target.value)}
+                placeholder="Buscar requisição pela finalidade"
+              />
+              <InputGroup.Append>
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => getReqByFinalidade(finalidade)}
+                >
+                  Buscar
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
 
             <BootstrapTable
               {...props.baseProps}

@@ -18,8 +18,11 @@ import { toast } from 'react-toastify';
 import { signOut } from '../../store/modules/auth/actions';
 import logo from '../../assets/logo-funepe.jpg';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-import { resetContext } from '../../redux/features/context/contextSlice';
+import {
+  resetContext,
+  requisicaoModalOpen,
+} from '../../redux/features/context/contextSlice';
+import { addRequisicaoRequest } from '../../redux/features/compras/comprasSlice';
 import api from '../../services/api';
 
 export default function NavBar() {
@@ -102,6 +105,14 @@ export default function NavBar() {
               </NavDropdown.Item>
               <NavDropdown.Item href="/minhareq">
                 Minhas requisições
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                onClick={() => {
+                  dispatch(addRequisicaoRequest());
+                  dispatch(requisicaoModalOpen());
+                }}
+              >
+                Solicitar compras
               </NavDropdown.Item>
             </NavDropdown>
 
