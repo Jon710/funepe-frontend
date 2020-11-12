@@ -29,6 +29,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { requisicaoModalClose } from '../../redux/features/context/contextSlice';
 import history from '../../services/history';
 import api from '../../services/api';
+import { createLogger } from '../../redux/features/historico/historicoSlice';
 
 export default function Requisicao() {
   const dispatch = useDispatch();
@@ -129,6 +130,12 @@ export default function Requisicao() {
         setIdReq(response.requisicao.idrequisicao);
       });
 
+      const payload = {
+        conteudo: `Solicitação de Compras realizada! ${user.username}`,
+        codUsuario: user.cpfusuario,
+      };
+      dispatch(createLogger(payload));
+
       toast.success('Requisição realizada! Agora, insira o produto.');
       setDisableSalvar(true);
       setEnableAtualizar(false);
@@ -152,6 +159,11 @@ export default function Requisicao() {
       };
 
       dispatch(atualizarRequisicao(newRequisicao)).then(() => {
+        const payload = {
+          conteudo: `Requisição EDITADA por ${user.username}`,
+          codUsuario: user.cpfusuario,
+        };
+        dispatch(createLogger(payload));
         try {
           if (arquivos.length > 0) {
             for (let i = 0; i < arquivos.length; i++) {

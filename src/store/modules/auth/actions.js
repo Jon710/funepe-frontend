@@ -1,3 +1,5 @@
+import api from '../../../services/api';
+
 export function signInRequest(cpfusuario, senha) {
   return {
     type: '@auth/SIGN_IN_REQUEST',
@@ -6,6 +8,11 @@ export function signInRequest(cpfusuario, senha) {
 }
 
 export function signInSuccess(token, user) {
+  api.post(`historico/`, {
+    conteudo: `Acesso ao sistema FUNEPE! - ${user.username}`,
+    codUsuario: user.cpfusuario,
+  });
+
   return {
     type: '@auth/SIGN_IN_SUCCESS',
     payload: { token, user },

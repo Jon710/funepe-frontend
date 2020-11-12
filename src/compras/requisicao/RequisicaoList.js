@@ -59,6 +59,7 @@ import Despacho from './Despacho';
 import Historico from './Historico';
 import VisualizarPDF from './VisualizarPDF';
 import api from '../../services/api';
+import { createLogger } from '../../redux/features/historico/historicoSlice';
 
 const CaptionElement = () => (
   <h3
@@ -420,6 +421,11 @@ export default function RequisicaoList() {
                 };
 
                 dispatch(inserirItemOrcamento({ newItemOrcamento }));
+                const payload = {
+                  conteudo: `Orçamento gerado com sucesso! ${user.username}`,
+                  codUsuario: user.cpfusuario,
+                };
+                dispatch(createLogger(payload));
               });
             } else {
               toast.error('ERRO!');
@@ -435,6 +441,11 @@ export default function RequisicaoList() {
             };
 
             dispatch(inserirOrcamento({ newOrcamento }));
+            const payload = {
+              conteudo: `Orçamento gerado com sucesso! ${user.username}`,
+              codUsuario: user.cpfusuario,
+            };
+            dispatch(createLogger(payload));
           });
         }
       })

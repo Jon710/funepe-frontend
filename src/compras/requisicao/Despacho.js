@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { getHours, getMinutes } from 'date-fns';
+import { createLogger } from '../../redux/features/historico/historicoSlice';
 import {
   despachoModalClose,
   showAlertErrorOpen,
@@ -120,6 +121,12 @@ export default function Despacho() {
         status,
       };
       dispatch(atualizarRequisicao(reqAtualizada));
+
+      const payload = {
+        conteudo: `Requisicão Despachada!!! ${user.username}`,
+        codUsuario: user.cpfusuario,
+      };
+      dispatch(createLogger(payload));
       toast.success('Requisição despachada com sucesso!');
 
       dispatch(

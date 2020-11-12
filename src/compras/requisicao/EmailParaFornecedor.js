@@ -1,5 +1,6 @@
 /* eslint-disable no-return-assign */
 import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Container,
   Jumbotron,
@@ -10,11 +11,14 @@ import {
 } from 'react-bootstrap';
 import logo from '../../assets/logo-funepe.jpg';
 import api from '../../services/api';
+import { createLogger } from '../../redux/features/historico/historicoSlice';
 
 export default function EmailParaFornecedor() {
+  const dispatch = useDispatch();
   const [itens, setItens] = useState([]);
   const [count, setCount] = useState(0);
   const [alert, setAlert] = useState(false);
+  const { fornecedor } = useSelector(state => state.compras);
   const newItem = [];
 
   useEffect(() => {
@@ -63,6 +67,11 @@ export default function EmailParaFornecedor() {
         .put(`/orcamento/${item.iditemorcamento}`, objetoItem)
         .then(response => {
           setAlert(true);
+          const payload = {
+            conteudo: `Orçamento FINALIZADO com sucesso! ${fornecedor.nomefantasia}`,
+            origem: 'FUNEPE',
+          };
+          dispatch(createLogger(payload));
           return response.data;
         })
         .catch(error => {
