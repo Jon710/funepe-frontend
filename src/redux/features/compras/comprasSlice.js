@@ -343,6 +343,7 @@ export const inserirItemRequisicao = payload => {
         `requisicao/${newRequisicao.idrequisicao}/itemrequisicao/`,
         newRequisicao
       );
+
       dispatch(addRequisicaoSuccess(response.data));
       dispatch(selectAllRequisicao());
       dispatch(selectAllItemRequisicao(newRequisicao.idrequisicao));
@@ -350,9 +351,7 @@ export const inserirItemRequisicao = payload => {
       toast.success('Produto adicionado!');
       return response.data;
     } catch (error) {
-      toast.error(
-        `ERRO ao inserir Item de Requisicao - inserirRequisicao ${error.message}`
-      );
+      toast.error(`ERRO ao inserir Item de Requisição!`);
       dispatch(updateFailure());
     }
   };

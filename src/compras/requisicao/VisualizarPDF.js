@@ -3,6 +3,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import jsPDF from 'jspdf';
+import { format } from 'date-fns';
+import pt from 'date-fns/locale/pt';
 import funepe from '../../assets/funepe.jpeg';
 import { formatPrice } from '../../services/formatPrice';
 import { modalClose } from '../../redux/features/context/contextSlice';
@@ -21,7 +23,14 @@ export default function VisualizarPDF() {
 
   doc.setFontStyle('normal');
   doc.setFontSize(10);
-  doc.text(`Data: ${requisicao.dataFormatada}`, 193.5, 20, 'right');
+  doc.text(
+    `Data: ${format(new Date(), 'dd/MM/yyyy', {
+      locale: pt,
+    })}`,
+    193.5,
+    20,
+    'right'
+  );
   doc.line(20, 27, 195, 27);
 
   doc.addImage(myImage, 'JPEG', 150, 28, 45, 15);
@@ -36,8 +45,8 @@ export default function VisualizarPDF() {
   doc.text(`Prioridade: ${requisicao.prioridade}`, 80, 47);
   doc.text(`Indicação de uso: ${requisicao.indicacaouso}`, 142, 47);
 
-  doc.text(`DPTO: ${requisicao.departamento}`, 20, 52, 'left');
-  doc.text(`Data indicação: ${requisicao.dataFormatada}`, 80, 52);
+  doc.text(`DPTO: ${requisicao.departamento.descricao}`, 20, 52, 'left');
+  // doc.text(`Data indicação: ${requisicao.dataFormatada}`, 80, 52);
   doc.text(`Solicitante: ${requisicao.solicitante.username}`, 142, 52);
   doc.line(20, 53, 195, 53);
 
@@ -73,7 +82,7 @@ export default function VisualizarPDF() {
           `${item.vlrTotal}`,
         ],
       ],
-      foot: [[`OBS: ${requisicao.observacao}`]],
+      foot: [[`OBS: ${item.observacao === null ? '' : item.observacao}`]],
     });
     total += item.valortotal;
     vAfterTable += 30;
