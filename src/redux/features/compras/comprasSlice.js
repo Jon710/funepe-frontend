@@ -32,9 +32,10 @@ export const sliceCompras = createSlice({
   },
   reducers: {
     requisicaoSuccess: (state, action) => {
-      // console.log(action.payload);
+      console.log(action.payload);
       const {
         listaRequisicoes,
+        requisicaoPorID,
         requisicoesPorPeriodo,
         listaProdutos,
         empresas,
@@ -53,6 +54,7 @@ export const sliceCompras = createSlice({
       } = action.payload;
       state.loading = false;
       if (listaRequisicoes !== undefined) state.requisicoes = listaRequisicoes;
+      if (requisicaoPorID !== undefined) state.requisicoes = requisicaoPorID;
       if (requisicoesPorPeriodo !== undefined)
         state.requisicoes = requisicoesPorPeriodo;
       if (arquivosanexo !== undefined) state.arquivos = arquivosanexo;

@@ -113,6 +113,7 @@ export default function RequisicaoList() {
   const [loading, setLoading] = useState(true);
   const [observacao, setObservacao] = useState();
   const [finalidade, setFinalidade] = useState('');
+  const [id, setID] = useState();
   const [arraySelectedFornecedores, setArraySelectedFornecedores] = useState(
     []
   );
@@ -144,6 +145,11 @@ export default function RequisicaoList() {
     loadRequisicoes();
     loadFornecedores();
   }, [dispatch, count, updatedRequisicao, requisicaoDespachada]);
+
+  // useEffect(() => {
+  //   // eslint-disable-next-line no-use-before-define
+  //   getReqByID(id);
+  // }, [requisicoes]);
 
   const visualizarHistorico = () => dispatch(visualizaHistoricoModalOpen());
   const visualizarRequisicao = () => dispatch(visualizaRequisicaoModalOpen());
@@ -549,6 +555,28 @@ export default function RequisicaoList() {
     }
   }
 
+  async function getReqByID(idreq) {
+    try {
+      const response = await api.get(`requisicao/${idreq}`);
+
+      const { requisicaoPorID } = response.data;
+
+      let requisicaoComData;
+      if (requisicaoPorID.length >= 0) {
+        requisicaoComData = requisicaoPorID.map(req => ({
+          ...req,
+          dataFormatada: format(parseISO(req.datareq), 'dd/MM/yyyy'),
+        }));
+      }
+
+      Object.assign(requisicaoPorID, requisicaoComData);
+
+      dispatch(requisicaoSuccess({ requisicaoPorID }));
+    } catch (error) {
+      toast.error('Erro na busca!');
+    }
+  }
+
   return (
     <Container>
       <NavBar />
@@ -625,21 +653,44 @@ export default function RequisicaoList() {
             </Row>
             <br />
 
-            <InputGroup className="mb-3">
-              <FormControl
-                value={finalidade}
-                onChange={e => setFinalidade(e.target.value)}
-                placeholder="Buscar requisição pela finalidade"
-              />
-              <InputGroup.Append>
-                <Button
-                  variant="outline-secondary"
-                  onClick={() => getReqByFinalidade(finalidade)}
-                >
-                  Buscar
-                </Button>
-              </InputGroup.Append>
-            </InputGroup>
+            <Row>
+              <Col>
+                <InputGroup className="mb-3">
+                  <FormControl
+                    value={finalidade}
+                    onChange={e => setFinalidade(e.target.value)}
+                    placeholder="Buscar requisição pela finalidade"
+                  />
+                  <InputGroup.Append>
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => getReqByFinalidade(finalidade)}
+                    >
+                      Buscar
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
+              </Col>
+
+              <Col>
+                <InputGroup className="mb-3">
+                  <FormControl
+                    value={id}
+                    type="number"
+                    onChange={e => setID(e.target.value)}
+                    placeholder="Buscar requisição por ID"
+                  />
+                  <InputGroup.Append>
+                    <Button
+                      variant="outline-secondary"
+                      onClick={() => getReqByID(id)}
+                    >
+                      Buscar
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
+              </Col>
+            </Row>
 
             <BootstrapTable
               {...props.baseProps}
