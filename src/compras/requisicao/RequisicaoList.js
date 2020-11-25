@@ -146,11 +146,6 @@ export default function RequisicaoList() {
     loadFornecedores();
   }, [dispatch, count, updatedRequisicao, requisicaoDespachada]);
 
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-use-before-define
-  //   getReqByID(id);
-  // }, [requisicoes]);
-
   const visualizarHistorico = () => dispatch(visualizaHistoricoModalOpen());
   const visualizarRequisicao = () => dispatch(visualizaRequisicaoModalOpen());
   const despachaRequisicao = () => dispatch(despachaRequisicaoModalOpen());

@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 import React, { useState, useEffect } from 'react';
 import {
   Table,
@@ -9,15 +10,19 @@ import {
   Form,
   Row,
   Col,
+  FormControl,
+  InputGroup,
 } from 'react-bootstrap';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
-
 import api from '../../services/api';
-import { selectAllFornecedores } from '../../redux/features/compras/comprasSlice';
+import {
+  selectAllFornecedores,
+  requisicaoSuccess,
+} from '../../redux/features/compras/comprasSlice';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
 
 export default function Fornecedores() {
@@ -213,15 +218,46 @@ export default function Fornecedores() {
       .catch(error => Error(`Erro no CEP: ${error}`));
   }
 
+  async function getFornByNomeFantasia(nomefant) {
+    try {
+      const response = await api.get(`fornecedor/${nomefant}`);
+
+      const { fornecedoresPorNome } = response.data;
+
+      dispatch(requisicaoSuccess({ fornecedoresPorNome }));
+    } catch (error) {
+      toast.error('Erro na busca!');
+    }
+  }
+
   return (
     <Container>
       <NavBar />
       <br />
-      <div>
-        <Button className="btn-success" onClick={handleShowCadastrar}>
-          Cadastrar Fornecedor
-        </Button>
-      </div>
+      <Row>
+        <Col>
+          <Button className="btn-success" onClick={handleShowCadastrar}>
+            Cadastrar Fornecedor
+          </Button>
+        </Col>
+        <Col>
+          <InputGroup className="mb-3">
+            <FormControl
+              value={nomefantasia}
+              onChange={e => setNomeFantasia(e.target.value.toUpperCase())}
+              placeholder="Buscar fornecedor pelo nome fantasia"
+            />
+            <InputGroup.Append>
+              <Button
+                variant="outline-secondary"
+                onClick={() => getFornByNomeFantasia(nomefantasia)}
+              >
+                Buscar
+              </Button>
+            </InputGroup.Append>
+          </InputGroup>
+        </Col>
+      </Row>
       <br />
 
       <Table striped bordered responsive>

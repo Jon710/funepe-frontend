@@ -9,6 +9,7 @@ import {
   Row,
   Col,
   Card,
+  InputGroup,
 } from 'react-bootstrap';
 import { Grid, Table as TablerTable } from 'tabler-react';
 import { toast } from 'react-toastify';
@@ -18,7 +19,10 @@ import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
 import api from '../../services/api';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
-import { selectProdutoByDescricao } from '../../redux/features/compras/comprasSlice';
+import {
+  selectProdutoByDescricao,
+  requisicaoSuccess,
+} from '../../redux/features/compras/comprasSlice';
 
 export default function Produtos() {
   const [idproduto, setIdProduto] = useState();
@@ -218,15 +222,30 @@ export default function Produtos() {
     if (e.key === 'Enter') handlePesquisarProdutos();
   }
 
+  async function getProdutoByID(id) {
+    try {
+      const response = await api.get(`produtos/id/${id}`);
+
+      const { produtoPorID } = response.data;
+
+      setLoading(true);
+      setListaProdutos(produtoPorID);
+    } catch (error) {
+      toast.error('Erro na busca!');
+    }
+  }
+
   return (
     <Container>
       <NavBar />
       <br />
-      <div>
-        <Button className="btn-success" onClick={handleShowCadastrar}>
-          Cadastrar Produto/Serviço
-        </Button>
-      </div>
+      <Row>
+        <Col>
+          <Button className="btn-success" onClick={handleShowCadastrar}>
+            Cadastrar Produto/Serviço
+          </Button>
+        </Col>
+      </Row>
       <br />
 
       <Card>
@@ -237,25 +256,46 @@ export default function Produtos() {
         </Card.Header>
         <Card.Body>
           <Grid.Row>
-            <Grid.Col sm={10}>
-              <FormControl
-                style={{ textTransform: 'uppercase' }}
-                value={pesquisaDescricao}
-                required
-                type="text"
-                placeholder="Descrição"
-                onChange={e => setPesquisaDescricao(e.target.value)}
-                onKeyPress={e => checkEnter(e)}
-              />
+            <Grid.Col sm={8}>
+              <InputGroup className="mb-3">
+                <FormControl
+                  style={{ textTransform: 'uppercase' }}
+                  value={pesquisaDescricao}
+                  required
+                  type="text"
+                  placeholder="Descrição"
+                  onChange={e => setPesquisaDescricao(e.target.value)}
+                  onKeyPress={e => checkEnter(e)}
+                />
+                <InputGroup.Append>
+                  <Button
+                    type="button"
+                    color="success"
+                    onClick={() => handlePesquisarProdutos()}
+                  >
+                    Buscar
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
             </Grid.Col>
-            <Grid.Col sm={2}>
-              <Button
-                type="button"
-                color="success"
-                onClick={() => handlePesquisarProdutos()}
-              >
-                Buscar
-              </Button>
+
+            <Grid.Col sm={4}>
+              <InputGroup className="mb-3">
+                <FormControl
+                  value={idproduto}
+                  type="number"
+                  onChange={e => setIdProduto(e.target.value)}
+                  placeholder="Buscar produto por ID"
+                />
+                <InputGroup.Append>
+                  <Button
+                    variant="primary"
+                    onClick={() => getProdutoByID(idproduto)}
+                  >
+                    Buscar
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
             </Grid.Col>
           </Grid.Row>
         </Card.Body>

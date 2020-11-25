@@ -32,11 +32,12 @@ export const sliceCompras = createSlice({
   },
   reducers: {
     requisicaoSuccess: (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       const {
         listaRequisicoes,
         requisicaoPorID,
         requisicoesPorPeriodo,
+        fornecedoresPorNome,
         listaProdutos,
         empresas,
         fornecedores,
@@ -64,6 +65,8 @@ export const sliceCompras = createSlice({
       if (empresas !== undefined) state.empresas = empresas;
       if (listaProdutos !== undefined) state.produtos = listaProdutos;
       if (fornecedores !== undefined) state.fornecedores = fornecedores;
+      if (fornecedoresPorNome !== undefined)
+        state.fornecedores = fornecedoresPorNome;
       if (departamentos !== undefined) state.departamentos = departamentos;
       if (marcas !== undefined) state.marcas = marcas;
       if (categorias !== undefined) state.categorias = categorias;
