@@ -19,10 +19,7 @@ import AlertError from '../../pages/alerts/AlertError';
 import NavBar from '../requisicao/NavBar';
 import api from '../../services/api';
 import { showAlertErrorOpen } from '../../redux/features/context/contextSlice';
-import {
-  selectProdutoByDescricao,
-  requisicaoSuccess,
-} from '../../redux/features/compras/comprasSlice';
+import { selectProdutoByDescricao } from '../../redux/features/compras/comprasSlice';
 
 export default function Produtos() {
   const [idproduto, setIdProduto] = useState();
@@ -51,7 +48,6 @@ export default function Produtos() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // const arrayCategoria = [];
     const arrayUnidade = [];
     const arrayMarca = [];
 
@@ -66,18 +62,6 @@ export default function Produtos() {
       }
       setUnidadeDescricao(arrayUnidade);
     }
-
-    // async function loadSelectCategorias() {
-    //   if (categorias.length > 0) {
-    //     categorias.forEach(categoria => {
-    //       arrayCategoria.push({
-    //         value: categoria.idcategoria,
-    //         label: categoria.categoria,
-    //       });
-    //     });
-    //   }
-    //   setCategoriaDescricao(arrayCategoria);
-    // }
 
     async function loadSelectMarcas() {
       if (marcas.length > 0) {

@@ -365,6 +365,7 @@ export default function RequisicaoList() {
         await dispatch(inserirOrcamento({ newOrcamento }))
           .then(async response => {
             const { orcamento } = response;
+
             const forn = {
               identificador: orcamento.idorcamento,
               idfornecedor: fornecedor.value,
@@ -380,7 +381,7 @@ export default function RequisicaoList() {
                 }
               })
               .catch(error => {
-                toast.error(error);
+                toast.error(error.message);
               });
           })
           .catch(err => {
@@ -421,15 +422,17 @@ export default function RequisicaoList() {
                   iditemrequisicao: item.iditemrequisicao,
                 };
 
-                dispatch(inserirItemOrcamento({ newItemOrcamento }));
+                dispatch(inserirItemOrcamento({ newItemOrcamento })).then(
+                  () => {
+                    toast.success('Orçamento gerado com sucesso!');
+                  }
+                );
                 const payload = {
                   conteudo: `Orçamento gerado com sucesso! ${user.username}`,
                   codUsuario: user.cpfusuario,
                 };
                 dispatch(createLogger(payload));
               });
-            } else {
-              toast.error('ERRO!');
             }
           });
         } else {
@@ -453,6 +456,24 @@ export default function RequisicaoList() {
       .catch(() => {
         toast.error('Erro!');
       });
+  }
+
+  function addFornecedorOrcamento() {
+    arraySelectedFornecedores.map(async fornecedor => {
+      const newOrcamento = {
+        idfornecedor: fornecedor.value,
+        idrequisicao: requisicao.idrequisicao,
+        idsolicitante: requisicao.idsolicitante,
+        dataorcamento: new Date(),
+      };
+
+      dispatch(inserirOrcamento({ newOrcamento }));
+      const payload = {
+        conteudo: `Orçamento gerado com sucesso! ${user.username}`,
+        codUsuario: user.cpfusuario,
+      };
+      dispatch(createLogger(payload));
+    });
   }
 
   async function getReqByDate(date) {
@@ -710,7 +731,7 @@ export default function RequisicaoList() {
           <Card>
             <Card.Header>
               <AlertError />
-              <Button block onClick={handleGerarOrcamento}>
+              <Button block onClick={() => handleGerarOrcamento()}>
                 SIM
               </Button>
             </Card.Header>
@@ -744,6 +765,9 @@ export default function RequisicaoList() {
         <Modal.Footer>
           <Button variant="success" onClick={() => handleGerarOrcamento()}>
             Gerar orçamento
+          </Button>
+          <Button variant="warning" onClick={() => addFornecedorOrcamento()}>
+            Adicionar fornecedor
           </Button>
           <Button variant="info" onClick={() => handleEnviarEmail()}>
             Enviar e-mail

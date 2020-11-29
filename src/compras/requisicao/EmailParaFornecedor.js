@@ -8,7 +8,9 @@ import {
   Table,
   Form,
   Alert,
+  Card,
 } from 'react-bootstrap';
+import { formatPrice } from '../../services/formatPrice';
 import logo from '../../assets/logo-funepe.jpg';
 import api from '../../services/api';
 import { createLogger } from '../../redux/features/historico/historicoSlice';
@@ -18,8 +20,9 @@ export default function EmailParaFornecedor() {
   const [itens, setItens] = useState([]);
   const [count, setCount] = useState(0);
   const [alert, setAlert] = useState(false);
+  const [valorTotal, setValorTotal] = useState(0);
   const { fornecedor } = useSelector(state => state.compras);
-  const newItem = [];
+  const [newItem, setNewItem] = useState([]);
 
   useEffect(() => {
     let c = 0;
@@ -53,11 +56,15 @@ export default function EmailParaFornecedor() {
     e.preventDefault();
     item.valorunitario = Number(e.target.value);
 
-    newItem.push(item);
+    const valores = itens.map(valor => valor.valorunitario * valor.quantidade);
+    const total = valores.reduce((acc, prod) => (acc += prod), 0);
+
+    setValorTotal(total);
+
+    setNewItem(itens);
   }
 
-  function finalizarOrcamento(e) {
-    e.preventDefault();
+  function finalizarOrcamento() {
     newItem.map(async item => {
       const objetoItem = {
         valorunitario: item.valorunitario,
@@ -75,7 +82,7 @@ export default function EmailParaFornecedor() {
           return response.data;
         })
         .catch(error => {
-          return error;
+          console.log(error);
         });
     });
   }
@@ -94,7 +101,6 @@ export default function EmailParaFornecedor() {
         <Table striped bordered hover>
           <thead>
             <tr style={{ color: 'black' }}>
-              <th>#</th>
               <th>Produto</th>
               <th>Quantidade</th>
               <th>Valor</th>
@@ -103,8 +109,7 @@ export default function EmailParaFornecedor() {
           <tbody>
             {itens &&
               itens.map(item => (
-                <tr key={count}>
-                  <td>{count}</td>
+                <tr key={item.idproduto}>
                   <td>{item.produto.descricao}</td>
                   <td>{item.quantidade}</td>
                   <td>
@@ -117,8 +122,15 @@ export default function EmailParaFornecedor() {
               ))}
           </tbody>
         </Table>
+        <Card.Body align="center">
+          <Card>
+            <h3>
+              VALOR TOTAL DE {count} PRODUTOS: {formatPrice(valorTotal)}
+            </h3>
+          </Card>
+        </Card.Body>
         <p>
-          <Button variant="primary" onClick={e => finalizarOrcamento(e)}>
+          <Button variant="primary" onClick={() => finalizarOrcamento()}>
             Finalizar
           </Button>
         </p>

@@ -198,7 +198,7 @@ export const inserirItemOrcamento = payload => {
         return response.data;
       }
     } catch (error) {
-      toast.error(`ERRO ao inserir Item orcamento ${error.message}`);
+      toast.error(`ERRO ao inserir Item orcamento`);
       dispatch(orcamentoFailure());
     }
   };
@@ -236,7 +236,7 @@ export const inserirOrcamento = payload => {
       toast.success('Orçamento gerado com sucesso!');
       return response.data;
     } catch (error) {
-      toast.error(`ERRO ao inserir orçamento ${error.message}`);
+      toast.error(`ERRO ao inserir orçamento`);
       dispatch(orcamentoFailure());
     }
   };
