@@ -598,6 +598,7 @@ export default function RequisicaoList() {
       <NavBar />
       <br />
       <CaptionElement />
+
       <ToolkitProvider
         keyField="idrequisicao"
         data={requisicoes}
@@ -609,7 +610,7 @@ export default function RequisicaoList() {
             {loading ? (
               <>
                 <SpinnerLine />
-                <span className="sr-only">Loading...</span>
+                <span className="sr-only">Carregando...</span>
               </>
             ) : (
               <></>

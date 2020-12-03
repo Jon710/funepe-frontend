@@ -22,7 +22,10 @@ import {
   resetContext,
   requisicaoModalOpen,
 } from '../../redux/features/context/contextSlice';
-import { addRequisicaoRequest } from '../../redux/features/compras/comprasSlice';
+import {
+  addRequisicaoRequest,
+  selectAllRequisicaoByDate,
+} from '../../redux/features/compras/comprasSlice';
 import api from '../../services/api';
 
 export default function NavBar() {
@@ -100,7 +103,9 @@ export default function NavBar() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <NavDropdown title="Requisições" id="basic-nav-dropdown">
-              <NavDropdown.Item href="/requisicao">
+              <NavDropdown.Item
+                onClick={() => dispatch(selectAllRequisicaoByDate())}
+              >
                 Caixa de Entrada
               </NavDropdown.Item>
               <NavDropdown.Item href="/minhareq">

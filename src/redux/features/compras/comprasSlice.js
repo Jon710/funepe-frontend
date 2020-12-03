@@ -300,6 +300,18 @@ export const selectAllRequisicao = () => {
   };
 };
 
+export const selectAllRequisicaoByDate = () => {
+  return async dispatch => {
+    const dataFormatada = format(new Date(), 'yyyy-MM-dd');
+    const response = await api.get(`requisicao?datareq=${dataFormatada}`);
+
+    const { listaRequisicoes } = response.data;
+    dispatch(requisicaoSuccess({ listaRequisicoes }));
+
+    history.push('/requisicao');
+  };
+};
+
 export const inserirRequisicao = payload => {
   return async dispatch => {
     try {
