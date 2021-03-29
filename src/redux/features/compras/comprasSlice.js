@@ -254,8 +254,9 @@ export const selectProdutoByDescricao = descricao => {
 export const selectAllItemRequisicao = requisicao_id => {
   return async dispatch => {
     try {
+      console.log('ITENS: ', requisicao_id);
       const response = await api.get(
-        `requisicao/${requisicao_id}/itemrequisicao/`
+        `requisicao/${requisicao_id}/itemrequisicao`
       );
       const { itensrequisicao } = response.data;
       const itensReq = itensrequisicao.map(item => ({
