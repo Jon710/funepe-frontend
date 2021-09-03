@@ -14,7 +14,7 @@
     "date-fns": "^2.14.0",
     "date-fns-tz": "^1.0.7",
     "history": "^4.9.0",
-    "immer": "^6.0.3",
+    "immer": "^9.0.6",
     "js-base64": "^3.2.4",
     "jspdf": "^1.5.3",
     "jspdf-autotable": "^3.5.6",
